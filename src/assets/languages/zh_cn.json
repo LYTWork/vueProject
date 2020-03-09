@@ -1,0 +1,23 @@
+{
+    "SYS": {
+      "confirmButtonText": "确认",
+      "cancelButtonText": "取消"
+    },
+    "user": {
+      "title": "个人中心",
+      "Exit": "退出系统",
+      "Processing": "代办工作",
+      "initiated": "我发起的",
+      "transferring": "办结工作",
+      "phoneService": "电话客服",
+      "Accounts": "账号中心",
+      "modifyPassword": "修改密码",
+      "Language": "切换中英文",
+      "about": "关于",
+      "confirmExit": "确定退出?",
+      "confirmChangeLanguage": "是否切换语言？",
+      "ScExit": "退出成功",
+      "loadingtext": "退出账号中..."
+    }
+  }
+  
