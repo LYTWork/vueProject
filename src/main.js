@@ -10,7 +10,7 @@ import '@/utils/prototype.js' // 导入全局方法
 import i18n from './i18n'
 
 
-// 设置反向代理，前端请求默认发送到 http://localhost:8443/api
+// 设置反向代理(把前端的请求通过前端服务器转发给后端（称为反向代理）)，前端请求默认发送到 http://localhost:8443/api
 // var axios = require('axios')
 // axios.defaults.baseURL = ''
 

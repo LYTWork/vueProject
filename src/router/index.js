@@ -7,6 +7,7 @@ import {
 
 import user from './user.js'
 import admin from './admin.js'
+import system from './system.js'
 
 Vue.use(Router)
 
@@ -29,17 +30,10 @@ export const constantRoutes = [
   // },
   {
     path: '/home',
-    redirect: '/welcom',
+    redirect: '/user/welcom',
     component: () => import('../components/Home'),
     children: [
     {
-      path: '/welcom',
-      component: () => import('../components/user/welcom/index'),
-      meta: {
-        title: '系统首页'
-        // roles: ['admin']
-      }
-    },{
       path: '/403',
       component: () => import('../components/common/errorPage/403'),
       meta: {
@@ -53,7 +47,7 @@ export const constantRoutes = [
         title: '404'
         // roles: ['admin']
       }
-    }].concat(user,admin) // 在这里引入注册模块的路由
+    }].concat(user,admin,system) // 在这里引入注册模块的路由
   },
   {
     path: '/403',
@@ -71,7 +65,7 @@ export const asyncRoutes = [
   {
     path: '/home',
     component: () => import('../components/Home'),
-    children: [].concat(user) // 在这里引入注册模块的路由
+    children: [].concat(user,admin,system) // 在这里引入注册模块的路由
   },
   { path: '*', redirect: '/404', hidden: true }
 ]
@@ -91,7 +85,9 @@ export function resetRouter() {
   router.matcher = newRouter.matcher // reset router
 }
 
-// // 未登陆的用户会被自动导航到login
+// 未登陆的用户会被自动导航到login
+// 登录界面登录成功之后，会把用户信息保存在会话
+// 存在时间为会话生命周期，页面关闭即失效
 // router.beforeEach((to, from, next) => {
 //   if (to.path === '/login' || to.path === '/loginon') {
 //     next()

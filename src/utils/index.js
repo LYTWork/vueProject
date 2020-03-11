@@ -105,7 +105,16 @@ export function param2Obj(url) {
       '"}'
   )
 }
-
+/*
+ * 
+ * [{id: 1,name: "系统管理",parentId: null},{id: 2,name: "菜单资源",parentId: 1},{...}]
+ * [{id: 1,
+    lowerMenu: [{id: 2,name: "菜单资源",parentId: 1}, {…}]
+    name: "系统管理"
+    parentId: null},
+    {...}
+    ]
+ */
 export function dataToTree(data) {
   const result = [];
   if (!Array.isArray(data)) {

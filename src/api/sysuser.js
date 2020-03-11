@@ -1,13 +1,12 @@
 import request from '@/utils/request'
 
 // 获取所有用户(有参数all则不分页)
-export const queryUserAll = params => { return request({ url: 'api/admin/user/queryUserAll', method: 'get', params: params }) }
+export const queryUsers = params => { return request({ url: 'api/admin/user/queryUserAll', method: 'get', params: params }) }
 // 新增用户
 export const insertOne = params => { return request({ url: '/api/admin/user/addUser', method: 'post', data: params }) }
 // 更新用户
 export const updateOne = params => { return request({ url: '/api/admin/user/updateUser', method: 'put', data: params }) }
-// 获取更新用户信息
-export const updateUserInfo = Uid => { return request({ url: './api/admin/user/updateUserInfo?id=' + Uid, method: 'get', params: Uid }) }
+
 // 根据id删除用户
 export const delOne = Uid => { return request({ url: '/api/admin/user/deleteUser?id=' + Uid, method: 'delete', params: Uid }) }
 
@@ -24,8 +23,3 @@ export const getFlagUserPwd = params => { return request({ url: '/api/admin/user
 
 // 修改用户密码
 export const resetPass = (userId, passwd) => { return request({ url: '/api/admin/user/updateUserPwd?id=' + userId + '&password=' + passwd, method: 'post' }) }
-
-// 获取已删除用户 /api/admin/user/queryUserAlldel
-export const queryUserAlldel = params => { return request({ url: 'api/admin/user/queryUserAlldel', method: 'get', params: params }) }
-// 恢复已删除用户 /api/admin/user/updateUserById?id=11
-export const updateUserById = params => { return request({ url: '/api/admin/user/updateUserById', method: 'put', params: params }) }

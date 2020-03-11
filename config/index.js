@@ -10,7 +10,7 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    // 跨域支持，后端访问前端资源
+    // 跨域支持，为了后端访问前端资源
     proxyTable: {
       '/api': {
         target: 'http://192.168.11.114:5002',  // 接口的域名

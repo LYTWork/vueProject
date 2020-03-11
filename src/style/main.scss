@@ -33,7 +33,7 @@ a {
 
 .content-box {
     position: absolute;
-    left: 250px;
+    left: 210px;
     right: 0;
     top: 70px;
     bottom: 0;
@@ -62,14 +62,35 @@ a {
     border-radius: 5px;
 }
 
-// 操作按钮
-.subtitle-button{
-    margin-bottom:.5rem;
-    padding:0 0 .5rem 0;
-    border-bottom:1px solid #e2e2e2;
-    text-align: left;
+// 操作按钮,搜索框
+.handle-box {
+    margin-bottom: 20px;
+    // .el-select {
+    //   width: 120px;
+    // }
+    .el-input {
+      width: 200px;
+      display: inline-block;
+      margin-right: 10px;
+    }
   }
-  
+.el-table{
+    .blue{
+        color: #409eff;
+    }
+    .red{
+        color: #f56c6c;
+    }
+    .green{
+        color: #67c23a;
+    }
+    .yellow{
+        color: #e6a23c;
+    }
+    .gray{
+        color: #909399;
+    }
+}
 .crumbs {
     margin: 10px 0;
 }

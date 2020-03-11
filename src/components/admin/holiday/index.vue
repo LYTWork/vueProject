@@ -1,22 +1,17 @@
 <template>
   <div id="holiday">
     <div class="container">
-      <el-form :model="searchForm" :inline="true" class="demo-form-inline">
-        <el-form-item label="假种名称:">
-          <el-input v-model="searchForm.name" clearable placeholder="请输入假种" />
-        </el-form-item>
-        <el-form-item label="代码:">
-          <el-input v-model="searchForm.code" clearable placeholder="请输入代码" />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="success" icon="el-icon-search" @click="onSearch">搜索数据</el-button>
-        </el-form-item>
-      </el-form>
-      <div class="subtitle-button">
-        <el-button type="primary" icon="el-icon-plus" @click="$refs.addDialog.open(null)">新增假种</el-button>
-        <el-button type="warning" icon="el-icon-download" @click="getExcel">导出EXCEL</el-button>
+      <div class="handle-box">
+        <el-input v-model="searchForm.name" clearable placeholder="假种名称" />
+        <el-input v-model="searchForm.code" clearable placeholder="假种代码" />
+        <el-button type="success" icon="el-icon-search" plain @click="getholidaylist(searchForm)">搜索</el-button>
+        <el-button type="danger" icon="el-icon-delete" plain @click="delAllSelection">批量删除</el-button>
+        <el-button type="primary" icon="el-icon-plus" plain @click="$refs.addDialog.open(null)">新增假种</el-button>
+        <el-button type="warning" icon="el-icon-download" plain @click="getExcel">导出EXCEL</el-button>
       </div>
       <el-table
+        v-loading="loading"
+        element-loading-text="拼命加载中"
         border
         height="83%"
         :data="holidayList"
@@ -54,13 +49,14 @@
         >
           <template>
             <el-button
-              type="warning"
-              plain
+              type="text"
+              icon="el-icon-edit"
               @click.stop="$refs.updateDialog.open(focusedData);"
             >修改</el-button>
             <el-button
-              type="danger"
-              plain
+              type="text"
+              icon="el-icon-delete"
+              class="red"
               @click.stop="delOne(focusedData.id)"
             >删除</el-button>
           </template>
@@ -96,6 +92,7 @@ export default {
         totalSize: 0,
         totalPage: 0
       },
+      loading: true,
       holidayList: [], // 假种
       focusedData: {} // table 点击行的数据
     }
@@ -106,10 +103,6 @@ export default {
   methods: {
     headerStyle,
     columnStyle,
-    onSearch() {
-      // 发送搜索请求
-      this.getholidaylist(this.searchForm)
-    },
     // 获取记录日志
     getholidaylist(param) {
       getholidaylist(param).then(res => {

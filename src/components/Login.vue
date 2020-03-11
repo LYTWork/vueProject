@@ -6,22 +6,22 @@
       :rules="rules"
       class="login-container"
       label-position="left"
-      label-width="50px"
+      label-width="75px"
       >
       <h3 class="login_title">系统登录</h3>
-      <el-form-item label="用户" prop="userName">
+      <el-form-item :label="$t('login.username')" prop="userName">
         <el-input type="text" v-model="loginForm.userName" clearable auto-complete="off" placeholder="账号"></el-input>
       </el-form-item>
-      <el-form-item label="密码" prop="password">
+      <el-form-item :label="$t('login.password')" prop="password">
         <el-input type="password" v-model="loginForm.password " clearable auto-complete="off" placeholder="密码"></el-input>
       </el-form-item>
-      <el-form-item label="类型" prop="type">
+      <el-form-item :label="$t('login.type')" prop="type">
         <el-select
             ref="selection"
             v-model="loginForm.type"
             placeholder="请选择类型"
             clearable
-            style="width:300px"
+            style="width:275px"
           >
             <el-option
               v-for="item in userType"
@@ -35,7 +35,7 @@
           </el-select>
       </el-form-item>
       <el-form-item style="width: 100%">
-        <el-button type="primary" style="width: 100%;background: #505458;border: none" @click="userlogin">登录</el-button>
+        <el-button type="primary" style="width: 100%;background: #505458;border: none" @click="userlogin">{{$t('login.login')}}</el-button>
       </el-form-item>
     </el-form>
   </body>
@@ -115,6 +115,7 @@ import { setToken } from '@/utils/token'
           }
         })
     },
+    // 用户登陆成功后返回的数据
     relog (res) {
       const token = res.data[1];
       const userid = res.data[0].id
@@ -122,7 +123,8 @@ import { setToken } from '@/utils/token'
       const utype = res.data[0].type;
       const imageUrl = res.data[0].imageUrl;
       const roles = res.data[0].roles.map(ele => { return ele.name });
-      setToken(token);
+      setToken(token); // sessionStorage.setItem(TokenKey, token) 本地存储token
+      // 调用store/user.js 中action setUserdata方法，执行commit('USER_MUTATION'）
       this.setUserdata({ token, userid, uname, utype, imageUrl, roles });
       this.$router.replace('/home');
     },

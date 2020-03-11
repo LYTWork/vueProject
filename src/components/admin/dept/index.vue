@@ -1,29 +1,26 @@
 <template>
-  <div class="dept">
+  <div id="dept">
     <div class="container">
-      <el-form v-model="searchForm" :inline="true" center class="demo-form-inline">
-        <el-form-item label="部门名称:">
-          <el-input v-model="searchForm.name" clearable />
-        </el-form-item>
-        <el-form-item label="部门代码:">
-          <el-input v-model="searchForm.code" clearable />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="success" icon="el-icon-search" @click="getdeptlist(searchForm)">搜索部门</el-button>
-        </el-form-item>
-      </el-form>
-      <div class="subtitle-button">
-        <el-button type="primary" icon="el-icon-plus" @click="$refs.addDialog.open(null)">新增部门</el-button>
-        <span style="float:right;margin:1rem;color:gray">共有数据：{{ page.totalSize }} 条</span>
+      <div class="handle-box">
+        <el-input v-model="searchForm.name" clearable placeholder="部门名称" />
+        <el-input v-model="searchForm.code" clearable placeholder="部门代码" />
+        <el-button type="success" icon="el-icon-search" plain @click="querydept(searchForm)">搜索</el-button>
+        <el-button type="danger" icon="el-icon-delete" plain @click="delAllSelection">批量删除</el-button>
+        <el-button type="primary" icon="el-icon-plus" plain @click="$refs.addDialog.open(null)">新增部门</el-button>
+        
       </div>
       <el-table
+        v-loading="loading"
+        element-loading-text="拼命加载中"
         border
         :data="alldept"
         height="82%"
         class="table"
         :header-cell-style="headerStyle"
+        @selection-change="handleSelectionChange"
         @cell-mouse-enter="(data)=>focusedData = Object.assign({}, data)"
       >
+        <el-table-column type="selection" width="55" />
         <el-table-column type="index" label="序号" width="55">
           <template slot-scope="scope">
             <span>{{ (page.currentPage - 1) * page.pageSize + scope.$index + 1 }}</span>
@@ -39,15 +36,13 @@
         >
           <template solt-scope="scope">
             <el-button
-              type="warning"
-              size="mini"
-              plain
+              type="text"
+              icon="el-icon-edit"
               @click.stop="$refs.updateDialog.open(focusedData)"
             >修改</el-button>
             <el-button
-              type="danger"
-              size="mini"
-              plain
+              type="text"
+              icon="el-icon-delete"
               @click.stop="deldept()"
             >删除</el-button>
           </template>
@@ -63,7 +58,7 @@
 import editDialog from './edit-dialog'
 import { headerStyle } from '@/utils/style'
 import PageComponent from '@/components/common/Pagenation/index'
-import { getdeptlist, insertdept, updatedept, deldept } from '@/api/dept'
+import { querydept, insertdept, updatedept, deldept } from '@/api/dept'
 export default {
   components: {
     PageComponent,
@@ -76,25 +71,27 @@ export default {
         code: ''
       },
       page: {
-        currentPage: 1,
-        pageSize: 10,
-        totalSize: 20,
-        totalPage: 100
+        currentPage: 0,
+        pageSize: 0,
+        totalSize: 0,
+        totalPage: 0
       },
+      loading: true,
       alldept: [],
-      focusedData: {}
+      focusedData: {},
+      multipleSelection: []
 
     }
   },
   mounted() {
-    this.getdeptlist(null);
+    this.querydept(null);
   },
   methods: {
     headerStyle,
     // //自定义查询所有数据
-    getdeptlist(param) {
+    querydept(param) {
       console.log(param)
-      getdeptlist(param).then(res => {
+      querydept(param).then(res => {
         console.log('部门信息', res);
         if (res.code === 200) {
           this.page.currentPage = res.data.currentPage;
@@ -102,6 +99,7 @@ export default {
           this.page.totalPage = res.data.pages;
           this.page.totalSize = res.data.total;
           this.alldept = res.data.list;
+          this.loading = false
         }
       }).catch(err => {
         console.log('请求失败');
@@ -121,7 +119,7 @@ export default {
             message: '添加成功',
             type: 'success'
           });
-          this.getdeptlist(null);
+          this.querydept(null);
         } else {
           this.$message({
             message: "保存失败，原因：" + res.msg,
@@ -138,7 +136,7 @@ export default {
             message: '修改成功！',
             type: 'success'
           })
-          this.getdeptlist(null)
+          this.querydept(null)
         } else {
           this.$message({
             message: "保存失败，原因：" + res.msg,
@@ -164,16 +162,32 @@ export default {
                 message: '删除成功！',
                 type: 'success'
               });
-              this.getdeptlist();
+              this.querydept();
             }
           })
         })
         .catch(() => false)
     },
+    
+    // 多选操作
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+    // 删除所选
+    delAllSelection() {
+      const length = this.multipleSelection.length;
+      let str = '';
+      this.delList = this.delList.concat(this.multipleSelection);
+      for (let i = 0; i < length; i++) {
+          str += this.multipleSelection[i].name + ' ';
+      }
+      this.$message.error(`删除了${str}`);
+      this.multipleSelection = [];
+    },
     handlePageChange(item) {
       // 发送分页查询请求
       const para = { currentPage: item.currentPage, pageSize: item.pageSize }
-      this.getdeptlist(para);
+      this.querydept(para);
     }
   }
 }

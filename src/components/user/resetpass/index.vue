@@ -1,10 +1,16 @@
 <template>
   <div id="resetpass">
     <div class="container">
-      <el-form ref="dataForm" :model="item" :rules="rules" class="pass-form" label-width="200px">
-        <el-form-item label="旧密码:" prop="oldpass">
+      <el-form
+        ref="dataForm"
+        :model="item"
+        :rules="rules"
+        class="pass-form"
+        label-width="100px"
+        >
+        <el-form-item label="原密码:" prop="pass">
           <el-input
-            v-model="item.oldpass"
+            v-model="item.pass"
             prefix-icon="el-icon-lock"
             placeholder="若包含字母，请注意区分大小写"
             show-password
@@ -14,24 +20,25 @@
           <el-input
             v-model="item.newpass"
             prefix-icon="el-icon-lock"
-            placeholder="8-16位， 至少含数字/字母/字符2种组合"
+            placeholder="密码有8-16位,至少含数字/字母/字符2种组合"
             show-password
           />
         </el-form-item>
-        <el-form-item label="确认密码:" prop="confirmpass">
+        <el-form-item label="重复新密码:" prop="checknewpass">
           <el-input
-            v-model="item.confirmpass"
+            v-model="item.checknewpass"
             prefix-icon="el-icon-lock"
-            placeholder="请输入"
+            placeholder="请再次输入新密码"
             show-password
           />
         </el-form-item>
         <el-form-item>
           <el-button
-            style="margin:auto;width:80%;font-size:1.1rem;display:block"
-            type="success"
+            style="margin:auto;width:40%;font-size:1.1rem;display:block"
+            type="primary"
             @click="submitForm('dataForm')"
-          >确 定</el-button>
+          >提交</el-button>
+          
         </el-form-item>
       </el-form>
     </div>
@@ -47,10 +54,10 @@ import { resetPass, getFlagUserPwd } from "@/api/sysuser";
 export default {
   components: {},
   data() {
-    // 验证旧密码
-    const validateOldpass = (rule, value, callback) => {
+    // 验证原密码
+    const validatePass = (rule, value, callback) => {
       if (value === "" || value === undefined) {
-        callback("请输入旧密码");
+        callback("请输入原密码");
       } else {
         const param = {
           id: this.userid,
@@ -66,32 +73,28 @@ export default {
       }
     };
     // 密码包含 数字,英文,字符中的两种以上，长度6-16
-    const validatePass = (rule, value, callback) => {
+    const validateNewPass = (rule, value, callback) => {
       var reg = /^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)])+$).{6,16}$/;
-      if (value === "" || value === undefined) {
-        callback("请输入新密码");
-      } else if (value.length < 6 || value.length > 18) {
+      if (value.length < 6 || value.length > 18) {
         callback(new Error("密码8-16位"));
       } else if (reg.test(value)) {
         callback();
         if (
-          this.item.confirmpass !== "" &&
-          this.item.confirmpass !== undefined
+          this.item.checknewpass !== "" &&
+          this.item.checknewpass !== undefined
         ) {
-          this.$refs["dataForm"].validateField("confirmpass");
+          this.$refs["dataForm"].validateField("checknewpass");
         }
       } else {
         callback(new Error("至少含数字/字母/字符2种组合"));
       }
     };
-    // 验证新密码与确认密码一致
-    const validateIsEqual = (rule, value, callback) => {
-      if (value === "" || value === undefined) {
-        callback("请输入密码");
-      } else if (this.item.newpass === value) {
-        callback();
-      } else {
+    // 验证新密码与重复新密码一致
+    const validateCheack = (rule, value, callback) => {
+      if (value !== this.item.newpass) {
         callback("与新密码不一致");
+      } else {
+        callback();
       }
     };
 
@@ -99,12 +102,16 @@ export default {
       item: {},
       // 验证规则
       rules: {
-        oldpass: [
-          { required: true, validator: validateOldpass, trigger: "blur" }
+        pass: [
+          { required: true, validator: validatePass, trigger: "blur" }
         ],
-        newpass: [{ required: true, validator: validatePass, trigger: "blur" }],
-        confirmpass: [
-          { required: true, validator: validateIsEqual, trigger: "blur" }
+        newpass: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          { validator: validateNewPass, trigger: "blur" }
+          ],
+        checknewpass: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          { validator: validateCheack, trigger: "blur" }
         ]
       }
     };
@@ -112,7 +119,6 @@ export default {
   computed: {
     ...mapGetters([
       "token",
-      "themeColor",
       "username",
       "usertype",
       "imageUrl",
@@ -124,8 +130,8 @@ export default {
     submitForm(dataForm) {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
-          this.$confirm("确认保存吗？", "询问", {
-            confirmButtonText: "保存",
+          this.$confirm("确认提交吗？", "询问", {
+            confirmButtonText: "提交",
             cancelButtonText: "取消",
             type: "warning"
           }).then(() => {
@@ -143,19 +149,18 @@ export default {
     updatePass() {
       // 发送请求
       // 修改密码 /sys/user/updateUserPwd?id=21&password=""
-      // const pwd = this.$sha1(this.username + this.item.newpass);
       const pwd = this.$sha1(this.item.newpass);
-      const pId = this.userid;
-      resetPass(pId, pwd).then(res => {
+      const uid = this.userid;
+      resetPass(uid, pwd).then(res => {
         if (res.code === 200) {
           this.$message({
-            message: "保存成功",
+            message: "提交成功",
             type: "success"
           });
           this.userlogout(); // 密码修改成功后强制退出登录
         } else {
           this.$message({
-            message: "保存失败，原因：" + res.msg,
+            message: "提交失败，原因：" + res.msg,
             type: "danger"
           });
         }
@@ -185,10 +190,9 @@ export default {
 
 <style lang="scss" scoped>
 .pass-form {
-  width: 35rem;
-  min-width: 29rem;
-  margin-left: 6rem;
-  margin-top: 8rem;
+  width: 30rem;
+  min-width: 20rem;
+  margin: 6rem auto;
 }
 #resetpass {
   .el-form-item {

@@ -7,19 +7,8 @@
       border: 1px solid greenyellow;
       height: 93%;
   }
-  #sys-role,#sys-user,#menu,#resource,
-  .dept,.staff,
-  #otapply,#ecapply,#attendance,#overtime,#shift,#class,#holiday,#nddevice,#madevice,#onduty,#unquality
-  {
-    .el-table{
-      height:83% !important;
-    }
-  }
-  #ntahl,#worksche{
-    .el-table{
-      height: 73% !important;
-    }
-  }
+  .container>.el-table{height:calc(100% - 76px)!important;}
+  .el-dialog>.el-table{height: 100% !important;}
 }
 @media only screen and (min-width:1680px ) and (max-width:1919px ){ // 兼容1400px,写在这个位置是因为，既能继承@media only screen and (max-width:1563px )的样式，又能覆盖以下样式
   .dashboard{
@@ -30,19 +19,8 @@
     border: 1px solid greenyellow;
     height: 92%;
 }
-  #sys-role,#sys-user,#menu,#resource,
-  .dept,.staff,
-  #otapply,#ecapply,#attendance,#overtime,#shift,#class,#holiday,#nddevice,#madevice,#onduty,#unquality
-  {
-    .el-table{
-      height:73.5% !important;
-    }
-  }
-  #ntahl,#worksche{
-    .el-table{
-      height: 78% !important;
-    }
-  }
+.container>.el-table{height:calc(100% - 76px)!important;}
+.el-dialog>.el-table{height: 100% !important;}
 }
 @media only screen and (min-width:1600px ) and (max-width:1679px ){ // 兼容1400px,写在这个位置是因为，既能继承@media only screen and (max-width:1563px )的样式，又能覆盖以下样式
   .dashboard{
@@ -53,19 +31,8 @@
     border: 1px solid greenyellow;
     height: 92%;
 }
-  #sys-role,#sys-user,#menu,#resource,
-  .dept,.staff,
-  #otapply,#ecapply,#attendance,#overtime,#shift,#class,#holiday,#nddevice,#madevice,#onduty,#unquality
-  {
-    .el-table{
-      height:67% !important;
-    }
-  }
-  #ntahl,#worksche{
-    .el-table{
-      height: 78% !important;
-    }
-  }
+.container>.el-table{height:calc(100% - 76px)!important;}
+.el-dialog>.el-table{height: 100% !important;}
 }
 @media only screen and (min-width:1366px ) and (max-width:1599px ){ // 兼容1400px,写在这个位置是因为，既能继承@media only screen and (max-width:1563px )的样式，又能覆盖以下样式
   .dashboard{
@@ -76,25 +43,18 @@
     border: 1px solid greenyellow;
     height: 88%;
 }
-  #sys-role,#sys-user,#menu,#resource,
-  .dept,.staff,
-  #otapply,#ecapply,#attendance,#overtime,#shift,#class,#holiday,#nddevice,#madevice,#onduty,#unquality
-  {
-    .el-table{
-      height:71% !important;
-    }
-  }
-  #ntahl,#worksche{
-    .el-table{
-      height: 78% !important;
-    }
-  }
-  .staff .demo-form-inline{
-    .el-input__inner{
-      width: 10rem !important;
-    }
-    .el-date-editor.el-input, .el-date-editor.el-input__inner {
-      width: 10rem;
-  }
-  }
+.container>.el-table{height:calc(100% - 76px)!important;}
+.el-dialog>.el-table{height: 100% !important;}
+}
+@media only screen and (max-width:1365px ){ // 兼容1400px,写在这个位置是因为，既能继承@media only screen and (max-width:1563px )的样式，又能覆盖以下样式
+  .dashboard{
+    border: 1px solid red;
+    height: 80.5vh;
+}
+.container {
+    border: 1px solid greenyellow;
+    height: 88%;
+}
+.container>.el-table{height:calc(100% - 76px)!important;}
+.el-dialog>.el-table{height: 100% !important;}
 }

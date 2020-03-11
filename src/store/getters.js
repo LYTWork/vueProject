@@ -1,5 +1,4 @@
 const getters = {
-  themeColor: state => state.app.themeColor,
   token: state => state.user.token,
   userid: state => state.user.userid,
   username: state => state.user.username,

@@ -10,36 +10,38 @@
             unique-opened
             router
         >
-            <template v-for="item in items">
-                <template v-if="item.subs">
-                    <el-submenu :index="item.index" :key="item.index">
+            <!-- 循环对象数组 -->
+            <template v-for="item in menuList"> 
+                <!-- 有二级菜单，循环对象的二级菜单 -->
+                <template v-if="item.lowerMenu">
+                    <el-submenu :index="item.title" :key="item.id">  <!-- 一级菜单的index为自身id -->
                         <template slot="title">
                             <i :class="item.icon"></i>
                             <span slot="title">{{ item.title }}</span>
                         </template>
-                        <template v-for="subItem in item.subs">
-                            <el-submenu
-                                v-if="subItem.subs"
-                                :index="subItem.index"
-                                :key="subItem.index"
+                        <template v-for="child in item.lowerMenu"> <!-- 二级菜单的index为自身index -->
+                            <el-submenu                                
+                                v-if="child.lowerMenu"
+                                :index="child.url"
+                                :key="child.url"
                             >
-                                <template slot="title">{{ subItem.title }}</template>
+                                <template slot="title">{{ child.title }}</template>
                                 <el-menu-item
-                                    v-for="(threeItem,i) in subItem.subs"
+                                    v-for="(threeItem,i) in child.lowerMenu"
                                     :key="i"
-                                    :index="threeItem.index"
+                                    :index="threeItem.url"
                                 >{{ threeItem.title }}</el-menu-item>
                             </el-submenu>
                             <el-menu-item
                                 v-else
-                                :index="subItem.index"
-                                :key="subItem.index"
-                            >{{ subItem.title }}</el-menu-item>
+                                :index="child.url"
+                                :key="child.url"
+                            >{{ child.title }}</el-menu-item>
                         </template>
                     </el-submenu>
                 </template>
                 <template v-else>
-                    <el-menu-item :index="item.index" :key="item.index">
+                    <el-menu-item :index="item.url" :key="item.url">
                         <i :class="item.icon"></i>
                         <span slot="title">{{ item.title }}</span>
                     </el-menu-item>
@@ -53,77 +55,91 @@
 import bus from '@/utils/bus'
 import { mapGetters, mapActions } from "vuex"
   export default {
-    name: 'NavMenu',
+    name: 'Sidebar',
     data () {
       return {
         collapse: false,
-            items: [
-                {
-                    icon: 'el-icon-user',
-                    index: '/welcom',
-                    title: '系统首页'
-                },
-                {
-                    icon: 'el-icon-user',
-                    index: 'tabs',
-                    title: 'tab选项卡'
-                },
-                {
-                    icon: 'el-icon-user',
-                    index: '3',
-                    title: '系统管理',
-                    subs: [
-                        {
-                            index: '/admin/staff',
-                            title: '员工信息'
+        mockdata: [
+            {"id":1,
+            "parentId":null,
+            "title":"系统首页",
+            "url":"/user/welcom",
+            "icon":"el-icon-user"
+            },
+            {"id":2,
+            "parentId":null,
+            "title":"权限设置",
+            "icon":"el-icon-setting",
+            "lowerMenu":[{"id":21,
+                        "parentId":2,
+                        "title":"用户管理",
+                        "url":"/system/user"
                         },
-                        {
-                            index: '/admin/holiday',
-                            title: '假种管理',
+                        {"id":22,
+                        "parentId":2,
+                        "title":"角色管理",
+                        "url":"/system/role"
                         },
-                        {
-                            index: '/admin/dept',
-                            title: '部门管理'
-                        }
-                    ]
-                },
-                {
-                    index: 'charts',
-                    title: 'schart图表'
-                },
-                {
-                    icon: 'el-icon-user',
-                    index: 'i18n',
-                    title: '国际化功能'
-                },
-                {
-                    icon: 'el-icon-user',
-                    index: '7',
-                    title: '错误处理',
-                    subs: [
-                        {
-                            index: '/403',
-                            title: '权限测试'
+                        {"id":23,
+                        "parentId":2,
+                        "title":"菜单管理",
+                        "url":"/system/menu"
                         },
-                        {
-                            index: '/404',
-                            title: '404页面'
-                        }
-                    ]
-                },
-                {
-                    icon: 'el-icon-edit',
-                    index: '/user/resetpass',
-                    title: '修改密码'
-                }
-            ]
-      }
+                        {"id":24,
+                        "parentId":2,
+                        "title":"资源管理",
+                        "url":"/system/resource"
+                        }]
+            },
+            {"id":3,
+            "parentId":null,
+            "title":"基础资料",
+            "icon":"el-icon-orange",
+            "lowerMenu":[{"id":31,
+                        "parentId":3,
+                        "title":"员工信息",
+                        "url":"/admin/staff"
+                        },
+                        {"id":32,
+                        "parentId":3,
+                        "title":"部门信息",
+                        "url":"/admin/dept"
+                        },
+                        {"id":33,
+                        "parentId":3,
+                        "title":"假种信息",
+                        "url":"/admin/holiday"
+                        }]
+            },
+            {"id":4,
+            "parentId":null,
+            "title":"错误处理",
+            "icon":"el-icon-watermelon",
+            "lowerMenu":[{"id":41,
+                        "parentId":4,
+                        "title":"403",
+                        "url":"/403"
+                        },
+                        {"id":42,
+                        "parentId":4,
+                        "title":"404",
+                        "url":"/404"
+                        }]
+
+            },
+            {"id":5,
+            "parentId":null,
+            "title":"修改密码",
+            "url":"/user/resetpass",
+            "icon":"el-icon-edit"
+            }]
+        }
     },
     computed: {
       onRoutes() {
             return this.$route.path.replace('/', '');
         },
-      ...mapGetters([ "themeColor", "typeList", "menuList", "userid"])
+      ...mapGetters([ "menuList", "userid"])
     },
     created() {
         // 通过 Event Bus 进行组件间通信，来折叠侧边栏
@@ -132,8 +148,28 @@ import { mapGetters, mapActions } from "vuex"
             bus.$emit('collapse-content', msg);
         });
     },
+    mounted() {
+        this.savetoStore();
+    },
     methods: {
-      ...mapActions("menu/", ["setMenu"])
+    hoverQueryMenu(val) {
+      // 查询对应二级菜单
+      this.handleChange(val)
+    },
+    // 查询菜单信息
+    savetoStore() {
+    //   getSideBarMenu({ id: this.userid }).then(res => {
+    //     console.log('侧边栏菜单', res);
+    //     // BUG:当切换用户登录时侧边栏菜单缓存未清除
+    //     //! 将第一个顶级菜单作为默认的，同时查询对应的子菜单
+    //     const menuList = res.data[1];
+
+    //     this.setMenu({ menuList });
+    //   })
+        const menuList = this.mockdata
+        this.setMenu({ menuList });
+    },
+    ...mapActions("menu/", ["setMenu"])
     }
   }
 </script>
@@ -151,13 +187,13 @@ import { mapGetters, mapActions } from "vuex"
     width: 0;
 }
 .sidebar-el-menu:not(.el-menu--collapse) {
-    width: 250px;
+    width: 210px;
 }
 .sidebar > ul {
     height: 100%;
 }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
-    width: 250px;
+    width: 210px;
     min-height: 400px;
   }
 </style>

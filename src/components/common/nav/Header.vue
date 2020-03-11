@@ -21,7 +21,7 @@
                         :content="message?`有${message}条未读消息`:`消息中心`"
                         placement="bottom"
                     >
-                        <router-link to="/tabs">
+                        <router-link to="/user/message">
                             <i class="el-icon-bell"></i>
                         </router-link>
                     </el-tooltip>
@@ -38,10 +38,8 @@
                         <i class="el-icon-caret-bottom"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <a href="https://github.com/lin-xin/vue-manage-system" target="_blank">
-                            <el-dropdown-item>项目仓库</el-dropdown-item>
-                        </a>
-                        <el-dropdown-item divided command="loginout">退出登录</el-dropdown-item>
+                        <el-dropdown-item command="changes">{{$t('header.change')}}</el-dropdown-item>
+                        <el-dropdown-item divided command="loginout">{{$t('header.logout')}}</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
@@ -65,9 +63,10 @@ export default {
             console.log(username)
             return username ? username : this.name;
         },
-        ...mapGetters(["token", "themeColor", "username", "usertype", "imageUrl", "userid"])
+        ...mapGetters(["token", "username", "usertype", "imageUrl", "userid"])
     },
     methods: {
+        ...mapActions("user/", ["setUserdata", "resetToken"]),
         // 用户名下拉菜单选择事件
         handleCommand(command) {
             if (command == 'loginout') {
@@ -90,6 +89,11 @@ export default {
                 //     }
                 //   })
                 // },
+            }
+            else if (command == 'changes') {
+                // 选择语言切换
+                this.$i18n.locale = this.$i18n.locale == 'zh' ? this.$i18n.locale = 'en' : this.$i18n.locale = 'zh';
+                localStorage.setItem('locale', this.$i18n.locale);
             }
         },
         // 侧边栏折叠
@@ -126,7 +130,7 @@ export default {
         }
     },
     mounted() {
-        if (document.body.clientWidth < 1500) {
+        if (document.body.clientWidth < 1366) {
             this.collapseChage();
         }
     }
@@ -149,7 +153,7 @@ export default {
 }
 .header .logo {
     float: left;
-    width: 200px;
+    width: 230px;
     line-height: 70px;
 }
 .header-right {
