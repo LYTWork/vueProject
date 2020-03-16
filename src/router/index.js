@@ -23,11 +23,6 @@ export const constantRoutes = [
     hidden: true,
     meta: { title: '登录' }
   },
-  // {
-  //   path: '/loginon',
-  //   component: () => import('../views/login/loginon'),
-  //   hidden: true
-  // },
   {
     path: '/home',
     redirect: '/user/welcom',
@@ -89,7 +84,7 @@ export function resetRouter() {
 // 登录界面登录成功之后，会把用户信息保存在会话
 // 存在时间为会话生命周期，页面关闭即失效
 // router.beforeEach((to, from, next) => {
-//   if (to.path === '/login' || to.path === '/loginon') {
+//   if (to.path === '/login') {
 //     next()
 //     return
 //   }

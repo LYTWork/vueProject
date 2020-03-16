@@ -1,6 +1,6 @@
 <template>
   <el-dialog id="edit-dialog" ref="resourceDialog" :title="title" :visible.sync="visable" :lock-scroll="false" :close-on-click-modal="false" :show-close="false">
-    <el-form ref="rulesForm" :model="item" label-width="110px" :rules="rules">
+    <el-form ref="dataForm" :model="item" label-width="110px" :rules="rules">
       <el-form-item label="资源名称" prop="name">
         <el-input v-model="item.name" placeholder="请输入资源名称" />
       </el-form-item>
@@ -26,13 +26,13 @@
       </el-form-item>
     </el-form>
     <span slot="footer">
-      <el-button type="warning" plain @click="cancel">取消</el-button>
-      <el-button type="success" plain @click="confirm">保存</el-button>
+      <el-button type="warning" plain @click="cancel('dataForm')">取消</el-button>
+      <el-button type="success" plain @click="confirm('dataForm')">保存</el-button>
     </span>
   </el-dialog>
 </template>
 <script>
-import { queryResourceById, updateTimp } from '@/api/resource'
+import { queryResourceById } from '@/api/resource'
 export default {
   props: {
     title: {
@@ -79,8 +79,8 @@ export default {
         }
       });
     },
-    confirm() {
-      this.$refs["rulesForm"].validate(vali => {
+    confirm(dataForm) {
+      this.$refs[dataForm].validate(vali => {
         if (vali) {
           this.$confirm("确认保存吗？", "询问", {
             confirmButtonText: "保存",
@@ -91,7 +91,7 @@ export default {
           }).then(() => {
             // console.log(this.item)
             this.$emit("OnConfirm", this.item);
-            this.visable = false;
+            this.cancel('dataForm')
           });
         } else {
           this.$message({
@@ -102,14 +102,9 @@ export default {
       })
     },
 
-    cancel() {
-      if (this.item.id) {
-        updateTimp({ id: this.item.id }).then(res => {
-          console.log('取消时间戳', res)
-        })
-      }
+    cancel(dataForm) {
+      this.$refs[dataForm].resetFields();
       this.visable = false;
-      // this.$refs.resourceDialog.close()
     }
   }
 };

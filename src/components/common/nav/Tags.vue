@@ -27,17 +27,21 @@
     export default {
         data() {
             return {
-                tagsList: []
+                tagsList: []  // 标签存放在数组中
             }
         },
         methods: {
             isActive(path) {
-                return path === this.$route.fullPath;
+                return path === this.$route.fullPath; // fullPath匹配路由，path匹配路径。路由是：/path/one  真正路径是：/path/true
             },
             // 关闭单个标签
             closeTags(index) {
-                const delItem = this.tagsList.splice(index, 1)[0];
+                // index 为数组下标
+                // delItem 为关闭的对象
+                const delItem = this.tagsList.splice(index, 1)[0]; // 向/从数组中添加/删除项目，然后返回被删除的项目, 1. photos.splice(n,1)返回的是一个数组。2. photos.splice(n,1)[0]，取到数组的第一个元素。
+                // 判断
                 const item = this.tagsList[index] ? this.tagsList[index] : this.tagsList[index - 1];
+                console.log(item)
                 if (item) {
                     delItem.path === this.$route.fullPath && this.$router.push(item.path);
                 }else{
@@ -59,10 +63,11 @@
             // 设置标签
             setTags(route){
                 console.log(11, route)
-                const isExist = this.tagsList.some(item => {
+                const isExist = this.tagsList.some(item => { // 判断一个字段是否存在在某个数组中
                     return item.path === route.fullPath;
                 })
                 if(!isExist){
+                    console.log(222,route)
                     if(this.tagsList.length >= 8){
                         this.tagsList.shift();
                     }
@@ -72,7 +77,7 @@
                         name: route.matched[1].components.default.name
                     })
                 }
-                bus.$emit('tags', this.tagsList);
+                bus.$emit('tags', this.tagsList); // 发送信息,第一个参数为标志变量，第二个参数为通信的值
             },
             handleTags(command){
                 command === 'other' ? this.closeOther() : this.closeAll();
@@ -91,7 +96,8 @@
         created(){
             this.setTags(this.$route);
             // 监听关闭当前页面的标签页
-            bus.$on('close_current_tags', () => {
+            // 接收消息，第一个参数为标志变量，第二个参数中的`e`为通信的值
+            bus.$on('close_current_tags', (e) => {
                 for (let i = 0, len = this.tagsList.length; i < len; i++) {
                     const item = this.tagsList[i];
                     if(item.path === this.$route.fullPath){

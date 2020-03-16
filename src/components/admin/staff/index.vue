@@ -12,6 +12,7 @@
         <el-button type="success" icon="el-icon-search" plain @click="querystaff(searchForm)">搜索</el-button>
         <el-button type="primary" icon="el-icon-plus" plain @click="$refs.addDialog.open(null)">新增员工</el-button>
         <el-button type="danger" icon="el-icon-delete" plain >批量删除</el-button>
+        <el-button type="warning" icon="el-icon-download" plain @click="getExcel">导出EXCEL</el-button>
       </div>
       <el-table
         v-loading="loading"
@@ -21,6 +22,7 @@
         height="82%"
         class="table"
         :header-cell-style="headerStyle"
+        @selection-change="handleSelectionChange"
         @cell-mouse-enter="(data)=>focusedData = Object.assign({}, data)"
       >
         <el-table-column type="expand">
@@ -51,22 +53,23 @@
             </el-form>
           </template>
         </el-table-column>
+        <el-table-column type="selection" width="55" />
         <el-table-column type="index" label="序号" width="55">
           <template slot-scope="scope">
             <span>{{ (page.currentPage - 1) * page.pageSize + scope.$index + 1 }}</span>
           </template>
         </el-table-column>
         <el-table-column label="姓名" prop="name" />
-        <el-table-column label="性别" prop="gender" width="50" />
-        <el-table-column label="工号" prop="empNum" />
-        <el-table-column label="部门" prop="depName" />
+        <el-table-column label="性别" prop="egender" width="50" />
+        <el-table-column label="工号" prop="code" />
+        <el-table-column label="部门" prop="dept" />
         <el-table-column label="职务" prop="title" width="90" />
         <el-table-column label="出生日期" prop="birthday" />
-        <el-table-column label="婚姻状况" prop="married" width="80" />
-        <el-table-column label="政治面貌" prop="polity" width="80" />
-        <el-form-item label="学历" prop="education" width="80" />
-        <el-table-column label="籍贯" prop="nativeName" width="80" />
-        <el-table-column label="人员状态" prop="status" width="80" />
+        <el-table-column label="婚姻状况" prop="emarried" width="80" />
+        <el-table-column label="政治面貌" prop="epolity" width="80" />
+        <el-table-column label="学历" prop="eeducation" width="80" />
+        <el-table-column label="籍贯" prop="enativeName" width="80" />
+        <el-table-column label="人员状态" prop="estatus" width="80" />
         <el-table-column
           width="140"
           prop="control"
@@ -101,6 +104,7 @@ import EditDialog from './edit-dialog'
 import { headerStyle } from '@/utils/style'
 import { querydept } from '@/api/dept'
 import { querystaff, insertstaff, updatestaff, delstaff } from '@/api/staff'
+import { donwnloadExcel } from '@/utils/index'
 export default {
   components: {
     PageComponent,
@@ -113,7 +117,7 @@ export default {
       deptlist: [],
       searchForm: {
         name: '',
-        empNum: '',
+        code: '',
         status: '',
         inDate: '',
         dep: ''
@@ -124,9 +128,17 @@ export default {
         totalSize: 0,
         totalPage: 0
       },
-      loading: true,
+      loading: false,
       allstaff: [],
-      focusedData: {}
+      mockdata:[{id: '001',name: '张三',code: '001',dept: '部门1',gender:0,title: '前端工程师',married: 0,polity:0,education:0,status:0},
+                {id: '002',name: '李四',code: '002',dept: '部门1',gender:0,title: '前端工程师',married: 0,polity:0,education:0,status:0},
+                {id: '003',name: '王五',code: '003',dept: '部门1',gender:0,title: '前端工程师',married: 0,polity:0,education:0,status:0},
+                {id: '004',name: '张三',code: '004',dept: '部门1',gender:0,title: '前端工程师',married: 0,polity:0,education:0,status:0},
+                {id: '005',name: '张三',code: '005',dept: '部门1',gender:0,title: '前端工程师',married: 0,polity:0,education:0,status:0},
+                {id: '006',name: '张三',code: '006',dept: '部门1',gender:0,title: '前端工程师',married: 0,polity:0,education:0,status:0},
+                ],
+      focusedData: {},
+      multipleSelection: [] // 多选
     }
   },
   mounted() {
@@ -137,23 +149,25 @@ export default {
     headerStyle,
     // 获取所有数据
     queryAll(param) {
-      querystaff(param).then(res => {
-        console.log('员工信息', res);
-        if (res.code == '200') {
-          this.page.currentPage = res.data.currentPage;
-          this.page.pageSize = res.data.size;
-          this.page.totalPage = res.data.pages;
-          this.page.totalSize = res.data.total;
-          this.allstaff = res.data.list;
-          this.loading = false
-        }
-      }).catch(err => {
-        console.log('请求失败');
-        console.log(err)
-      })
+      // querystaff(param).then(res => {
+      //   console.log('员工信息', res);
+      //   if (res.code == '200') {
+      //     this.page.currentPage = res.data.currentPage;
+      //     this.page.pageSize = res.data.size;
+      //     this.page.totalPage = res.data.pages;
+      //     this.page.totalSize = res.data.total;
+      //     this.allstaff = res.data.list;
+      //     this.loading = false
+      //   }
+      // }).catch(err => {
+      //   console.log('请求失败');
+      //   console.log(err)
+      // })
+      this.allstaff = this.handleResult(this.mockdata)
     },
     handleResult(item) {
       item.forEach(ele => {
+        console.log(ele)
         switch (ele.gender) {
           case 0:
             ele.egender = '男';
@@ -225,71 +239,111 @@ export default {
     },
     // 添加数据
     addOne(data) {
-      const para = data;
-      this.handleparams(data);
-      insertstaff(para).then(res => {
-        if (res.code == 200) {
-          this.$message({
-            message: '添加成功！',
-            type: 'success'
-          })
-          this.queryAll();
-        } else {
-          this.$message({
-            message: "保存失败，原因：" + res.msg,
-            type: "danger"
-          });
-        }
-      })
+      // const para = data;
+      // this.handleparams(data);
+      // insertstaff(para).then(res => {
+      //   if (res.code == 200) {
+      //     this.$message({
+      //       message: '添加成功！',
+      //       type: 'success'
+      //     })
+      //     this.queryAll();
+      //   } else {
+      //     this.$message({
+      //       message: "保存失败，原因：" + res.msg,
+      //       type: "danger"
+      //     });
+      //   }
+      // })
     },
     // 更新数据
     updateOne(item) {
-      updatestaff(item).then(res => {
-        if (res.code == '200') {
-          this.$message({
-            message: '修改成功！',
-            type: 'success'
-          });
-          this.queryAll()
-        } else {
-          this.$message({
-            message: "保存失败，原因：" + res.msg,
-            type: "danger"
-          });
-        }
-      })
+      // updatestaff(item).then(res => {
+      //   if (res.code == '200') {
+      //     this.$message({
+      //       message: '修改成功！',
+      //       type: 'success'
+      //     });
+      //     this.queryAll()
+      //   } else {
+      //     this.$message({
+      //       message: "保存失败，原因：" + res.msg,
+      //       type: "danger"
+      //     });
+      //   }
+      // })
     },
     // 删除数据
     delOne(eid) {
-      const para = { id: eid }
-      console.log(para)
-      this.$confirm("确认删除吗？", "询问", {
-        confirmButtonText: "确认",
-        cancelButtonText: "取消",
-        type: "warning",
-        lockScroll: false
-      }).then(() => {
-        delstaff(para).then(res => {
-          if (res.code == '200') {
-            this.$message({
-              message: '删除成功！',
-              type: 'success'
-            });
-            this.queryAll();
-          }
-        })
-      })
+      // const para = { id: eid }
+      // console.log(para)
+      // this.$confirm("确认删除吗？", "询问", {
+      //   confirmButtonText: "确认",
+      //   cancelButtonText: "取消",
+      //   type: "warning",
+      //   lockScroll: false
+      // }).then(() => {
+      //   delstaff(para).then(res => {
+      //     if (res.code == '200') {
+      //       this.$message({
+      //         message: '删除成功！',
+      //         type: 'success'
+      //       });
+      //       this.queryAll();
+      //     }
+      //   })
+      // })
     },
     querydept() {
-      querydept().then(res => {
-        // console.log(res)
-        this.deptlist = res.data;
-      })
+      // querydept().then(res => {
+      //   console.log(res)
+      //   this.deptlist = res.data;
+      // })
+      this.deptlist = [{id: '001',name: '部门a',code: 'a'},
+                {id: '002',name: '部门b',code: 'b'},
+                {id: '003',name: '部门c',code: 'c'},
+                {id: '004',name: '部门d',code: 'd'},
+                {id: '005',name: '部门e',code: 'e'},
+                {id: '006',name: '部门f',code: 'f'}
+                ]
+    },
+    // 多选操作
+    handleSelectionChange(val) {
+      console.log(1,val)
+      this.multipleSelection = val;
+    },
+    // 删除所选
+    delAllSelection() {
+      console.log(this.multipleSelection)
+      const length = this.multipleSelection.length;
+      let str = '';
+      // this.delList = this.delList.concat(this.multipleSelection);
+      for (let i = 0; i < length; i++) {
+          str += this.multipleSelection[i].name + ' ';
+      }
+      this.$message.error(`删除了${str}`);
+      this.multipleSelection = [];
     },
     handlePageChange(item) {
       // 发送分页查询请求
       const para = { currentPage: item.currentPage, pageSize: item.pageSize }
       this.queryAll(para);
+    },
+
+    // 导出前端选择的数据
+    getExcel (param) {
+        const filename = "员工明细";
+        var exceldata = this.multipleSelection;
+        const tHeader = [
+          "员工名称",
+          "员工代码"
+        ];
+        const filterVal = [
+          "name",
+          "code"
+        ];
+        donwnloadExcel(filename, tHeader, filterVal, exceldata)
+      
     }
   }
 }

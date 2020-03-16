@@ -4,19 +4,13 @@
       <el-form-item label="部门名称" prop="name">
         <el-input v-model="item.name" />
       </el-form-item>
-      <el-form-item label="部门代码" prop="codeName">
-        <el-input v-model="item.codeName" />
+      <el-form-item label="部门代码" prop="code">
+        <el-input v-model="item.code" />
       </el-form-item>
-      <!-- <el-form-item label="所在区域">
-        <el-select v-model="item.dep" placeholder="请选择所在区域">
-          <el-option label="成都路维" value="成都路维" />
-          <el-option label="深圳路维" value="深圳路维" />
-        </el-select>
-      </el-form-item> -->
     </el-form>
     <span slot="footer">
-      <el-button type="warning" plain @click="()=>visable=false">{{ $t("button.cancel") }}</el-button>
-      <el-button type="success" plain @click="confirm">{{ $t("button.confirm") }}</el-button>
+      <el-button type="warning" plain @click="cancel('dataForm')">{{ $t("button.cancel") }}</el-button>
+      <el-button type="success" plain @click="confirm('dataForm')">{{ $t("button.confirm") }}</el-button>
     </span>
   </el-dialog>
 </template>
@@ -39,7 +33,7 @@ export default {
       dep: [],
       rules: {
         name: [{ required: true, message: '请输入部门名称', trigger: 'blur' }],
-        codeName: [{ required: true, message: '请输入部门代码', trigger: 'blur' }]
+        code: [{ required: true, message: '请输入部门代码', trigger: 'blur' }]
       }
     }
   },
@@ -64,10 +58,14 @@ export default {
             closeOnClickModal: false
           }).then(() => {
             this.$emit("OnConfirm", this.item);
-            this.visable = false;
+            this.cancel('dataForm')
           }).catch(() => { false });
         }
       })
+    },
+  cancel(dataForm) {
+      this.$refs[dataForm].resetFields();
+      this.visable = false;
     }
   }
 }

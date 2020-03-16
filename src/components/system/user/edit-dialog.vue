@@ -8,7 +8,7 @@
     :lock-scroll="false"
     :open="addOrUpdate"
   >
-    <el-form ref="userForm" :model="item" label-width="100px" :rules="rules">
+    <el-form ref="dataForm" :model="item" label-width="100px" :rules="rules">
       <el-row>
         <el-col :span="15">
           <el-form-item label="用户名" prop="name">
@@ -54,8 +54,8 @@
       </el-row>
     </el-form>
     <span slot="footer">
-      <el-button type="warning" plain @click="cancel('userForm')">取消</el-button>
-      <el-button type="success" plain @click="confirm('userForm')">提交</el-button>
+      <el-button type="warning" plain @click="cancel('dataForm')">取消</el-button>
+      <el-button type="success" plain @click="confirm('dataForm')">提交</el-button>
     </span>
   </el-dialog>
 </template>
@@ -152,7 +152,7 @@ export default {
             .then(() => {
               this.item.name = this.name;
               this.$emit("OnConfirm", this.item); // 子组件可以使用 $emit 触发父组件的自定义事件,这里是OnConfirm事件
-              this.cancel("userForm");
+              this.cancel("dataForm");
             })
             .catch(() => {
               console.log("cancel");

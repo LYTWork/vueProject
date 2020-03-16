@@ -125,7 +125,7 @@ export default {
             closeOnClickModal: false
           }).then(() => {
             this.$emit("OnConfirm", this.item);
-            this.visable = false;
+            this.cancel('dataForm')
           })
         }
       })

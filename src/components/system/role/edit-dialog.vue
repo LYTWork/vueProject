@@ -1,6 +1,6 @@
 <template>
   <el-dialog id="edit-dialog" :title="title" :visible.sync="visable" :lock-scroll="false" :close-on-click-modal="false" :show-close="false">
-    <el-form ref="rulesForm" :model="item" label-width="110px" :rules="rules">
+    <el-form ref="dataForm" :model="item" label-width="110px" :rules="rules">
       <el-form-item label="角色名称" prop="name">
         <el-input v-model="item.name" placeholder="请输入角色名" />
       </el-form-item>
@@ -12,8 +12,8 @@
       </el-form-item>
     </el-form>
     <span slot="footer">
-      <el-button type="warning" plain @click="cancel('rulesForm')">取消</el-button>
-      <el-button type="success" plain @click="confirm('rulesForm')">保存</el-button>
+      <el-button type="warning" plain @click="cancel('dataForm')">取消</el-button>
+      <el-button type="success" plain @click="confirm('dataForm')">保存</el-button>
     </span>
   </el-dialog>
 </template>
@@ -76,7 +76,7 @@ export default {
           }).then(() => {
             // this.item.name = this.name;
             this.$emit("OnConfirm", this.item);
-            this.visable = false;
+            this.cancel('dataForm')
           }).catch(() => { return false });
         } else {
           return false

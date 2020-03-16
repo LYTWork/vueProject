@@ -113,21 +113,46 @@ import { mapGetters, mapActions } from "vuex"
             },
             {"id":4,
             "parentId":null,
-            "title":"错误处理",
+            "title":"个人事务",
             "icon":"el-icon-watermelon",
             "lowerMenu":[{"id":41,
                         "parentId":4,
-                        "title":"403",
-                        "url":"/403"
+                        "title":"签到",
+                        "url":"/user/sign"
                         },
                         {"id":42,
                         "parentId":4,
+                        "title":"补签",
+                        "url":"/user/signagin"
+                        },{"id":43,
+                        "parentId":4,
+                        "title":"请假",
+                        "url":"/user/ntahl"
+                        },
+                        {"id":44,
+                        "parentId":4,
+                        "title":"排班",
+                        "url":"/user/worksche"
+                        }]
+
+            },
+            {"id":5,
+            "parentId":null,
+            "title":"错误处理",
+            "icon":"el-icon-watermelon",
+            "lowerMenu":[{"id":51,
+                        "parentId":5,
+                        "title":"403",
+                        "url":"/403"
+                        },
+                        {"id":52,
+                        "parentId":5,
                         "title":"404",
                         "url":"/404"
                         }]
 
             },
-            {"id":5,
+            {"id":6,
             "parentId":null,
             "title":"修改密码",
             "url":"/user/resetpass",

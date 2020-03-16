@@ -1,12 +1,12 @@
 <template>
-  <div id="holiday">
+  <div id="ntahl">
     <div class="container">
       <div class="handle-box">
-        <el-input v-model="searchForm.name" clearable placeholder="假种名称" />
-        <el-input v-model="searchForm.code" clearable placeholder="假种代码" />
-        <el-button type="success" icon="el-icon-search" plain @click="getholidaylist(searchForm)">搜索</el-button>
+        <el-input v-model="searchForm.name" clearable placeholder="请假名称" />
+        <el-input v-model="searchForm.code" clearable placeholder="请假代码" />
+        <el-button type="success" icon="el-icon-search" plain @click="getntahllist(searchForm)">搜索</el-button>
         <el-button type="danger" icon="el-icon-delete" plain @click="delAllSelection">批量删除</el-button>
-        <el-button type="primary" icon="el-icon-plus" plain @click="$refs.addDialog.open(null)">新增假种</el-button>
+        <el-button type="primary" icon="el-icon-plus" plain @click="$refs.addDialog.open(null)">新增请假</el-button>
         <el-button type="warning" icon="el-icon-download" plain @click="getExcel">导出EXCEL</el-button>
       </div>
       <el-table
@@ -14,7 +14,7 @@
         element-loading-text="拼命加载中"
         border
         height="83%"
-        :data="holidayList"
+        :data="ntahlList"
         :header-cell-style="headerStyle"
         @selection-change="handleSelectionChange"
         @cell-mouse-enter="(data)=>focusedData = Object.assign({}, data)"
@@ -27,12 +27,12 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="假种名称"
+          label="请假名称"
           prop="name"
           :width="columnStyle(400,200,150)"
         />
         <el-table-column
-          label="假种代码"
+          label="请假代码"
           prop="code"
         />
         <el-table-column
@@ -62,15 +62,15 @@
       </el-table>
       <page-component :total="page.totalSize" :page="page" @pageChange="(item)=>handlePageChange(item)" />
 
-      <edit-dialog ref="addDialog" title="新增假种" @OnConfirm="(item)=>insertOne(item)" />
-      <edit-dialog ref="updateDialog" title="修改假种" @OnConfirm="(item)=>updateOne(item)" />
+      <edit-dialog ref="addDialog" title="新增请假" @OnConfirm="(item)=>insertOne(item)" />
+      <edit-dialog ref="updateDialog" title="修改请假" @OnConfirm="(item)=>updateOne(item)" />
     </div>
   </div>
 </template>
 <script>
 import EditDialog from "./edit-dialog"
 import PageComponent from '@/components/common/Pagenation/index'
-import { getholidaylist, insertOne, updateOne, delOne, getExcel } from '@/api/holiday'
+// import { getntahllist, insertOne, updateOne, delOne, getExcel } from '@/api/ntahl'
 import { headerStyle, columnStyle } from '@/utils/style'
 import { donwnloadExcel } from '@/utils/index'
 export default {
@@ -91,91 +91,91 @@ export default {
         totalPage: 0
       },
       loading: false,
-      holidayList: [{id: '001',name: '假种a',code: 'a',standday: '8'},
-                    {id: '002',name: '假种b',code: 'b',standday: '8'},
-                    {id: '003',name: '假种c',code: 'c',standday: '8'},
-                    {id: '004',name: '假种d',code: 'd',standday: '8'},
-                    {id: '005',name: '假种e',code: 'e',standday: '8'},
-                    {id: '006',name: '假种f',code: 'f',standday: '8'}
-                    ], // 假种
+      ntahlList: [{id: '001',name: '请假a',code: 'a',standday: '8'},
+                    {id: '002',name: '请假b',code: 'b',standday: '8'},
+                    {id: '003',name: '请假c',code: 'c',standday: '8'},
+                    {id: '004',name: '请假d',code: 'd',standday: '8'},
+                    {id: '005',name: '请假e',code: 'e',standday: '8'},
+                    {id: '006',name: '请假f',code: 'f',standday: '8'}
+                    ], // 请假
       focusedData: {}, // table 点击行的数据
       multipleSelection: [] // 多选
     }
   },
   mounted() {
-    // this.getholidaylist(null);
+    // this.getntahllist(null);
   },
   methods: {
     headerStyle,
     columnStyle,
     // 获取记录日志
-    getholidaylist(param) {
-      // getholidaylist(param).then(res => {
-      //   console.log(res)
-      //   if (res.code === 200) {
-      //     this.page.currentPage = res.data.currentPage;
-      //     this.page.pageSize = res.data.size;
-      //     this.page.totalPage = res.data.pages;
-      //     this.page.totalSize = res.data.total;
-      //     this.holidayList = res.data.list;
-      //     this.loading = false;
-      //   }
-      // }).catch(err => {
-      //   console.log('请求失败');
-      //   console.log(err)
-      // })
+    getntahllist(param) {
+    //   getntahllist(param).then(res => {
+    //     console.log(res)
+    //     if (res.code === 200) {
+    //       this.page.currentPage = res.data.currentPage;
+    //       this.page.pageSize = res.data.size;
+    //       this.page.totalPage = res.data.pages;
+    //       this.page.totalSize = res.data.total;
+    //       this.ntahlList = res.data.list;
+    //       this.loading = false;
+    //     }
+    //   }).catch(err => {
+    //     console.log('请求失败');
+    //     console.log(err)
+    //   })
     },
     insertOne(item) {
-      // insertOne(item).then(res => {
-      //   if (res.code === 200) {
-      //     this.$message({
-      //       message: "保存成功",
-      //       type: "success"
-      //     });
-      //     this.getholidaylist();
-      //   } else {
-      //     this.$message({
-      //       message: "保存失败，原因：" + res.msg,
-      //       type: "danger"
-      //     });
-      //   }
-      // })
+    //   insertOne(item).then(res => {
+    //     if (res.code === 200) {
+    //       this.$message({
+    //         message: "保存成功",
+    //         type: "success"
+    //       });
+    //       this.getntahllist();
+    //     } else {
+    //       this.$message({
+    //         message: "保存失败，原因：" + res.msg,
+    //         type: "danger"
+    //       });
+    //     }
+    //   })
     },
     updateOne(item) {
-      // updateOne(item).then(res => {
-      //   if (res.code === 200) {
-      //     this.$message({
-      //       message: "保存成功",
-      //       type: "success"
-      //     });
-      //     this.getholidaylist();
-      //   } else {
-      //     this.$message({
-      //       message: "保存失败，原因：" + res.msg,
-      //       type: "danger"
-      //     });
-      //   }
-      // })
+    //   updateOne(item).then(res => {
+    //     if (res.code === 200) {
+    //       this.$message({
+    //         message: "保存成功",
+    //         type: "success"
+    //       });
+    //       this.getntahllist();
+    //     } else {
+    //       this.$message({
+    //         message: "保存失败，原因：" + res.msg,
+    //         type: "danger"
+    //       });
+    //     }
+    //   })
     },
     delOne(Hid) {
       // const id = this.focusedData.id
-      // this.$confirm("确认删除吗？", "询问", {
-      //   confirmButtonText: "确认",
-      //   cancelButtonText: "取消",
-      //   type: "warning",
-      //   lockScroll: "false",
-      //   closeOnClickModal: "false"
-      // }).then(() => {
-      //   delOne(Hid).then(res => {
-      //     if (res.code === 200) {
-      //       this.$message({
-      //         message: "删除成功",
-      //         type: "success"
-      //       });
-      //       this.getholidaylist();
-      //     }
-      //   })
-      // })
+    //   this.$confirm("确认删除吗？", "询问", {
+    //     confirmButtonText: "确认",
+    //     cancelButtonText: "取消",
+    //     type: "warning",
+    //     lockScroll: "false",
+    //     closeOnClickModal: "false"
+    //   }).then(() => {
+    //     delOne(Hid).then(res => {
+    //       if (res.code === 200) {
+    //         this.$message({
+    //           message: "删除成功",
+    //           type: "success"
+    //         });
+    //         this.getntahllist();
+    //       }
+    //     })
+    //   })
     },
   // 多选操作
     handleSelectionChange(val) {
@@ -197,16 +197,15 @@ export default {
     handlePageChange(item) {
       // 发送分页查询请求
       const para = { currentPage: item.currentPage, pageSize: item.pageSize }
-      this.getholidaylist(para);
+      this.getntahllist(para);
     },
-    // 导出后端返回数据
     getExcel (param) {
       getExcel(param).then(res => {
-        const filename = "假种明细";
+        const filename = "请假明细";
         var exceldata = res.data;
         const tHeader = [
-          "假种名称",
-          "假种代码",
+          "请假名称",
+          "请假代码",
           "请假日期上限"
         ];
         const filterVal = [

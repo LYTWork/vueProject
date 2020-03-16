@@ -13,11 +13,12 @@
 
 <script>
 export default {
-  methods: {
-      goBack(){
-          this.$router.go(-1);
-      }
-  }
+    name: '404',
+    methods: {
+        goBack(){
+            this.$router.go(-1);
+        }
+    }
 }
 </script>
 

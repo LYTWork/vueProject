@@ -240,7 +240,7 @@ export default {
         })
           .then(() => {
             this.$emit("OnConfirm", this.item);
-            this.visable = false;
+            this.cancel('dataForm')
           })
           .catch(() => false);
       });
@@ -252,9 +252,16 @@ export default {
       });
     },
     querydept() {
-      querydept().then(res => {
-        this.deptlist = res.data;
-      });
+      // querydept().then(res => {
+      //   this.deptlist = res.data;
+      // });
+      this.deptlist = [{id: '001',name: '部门a',code: 'a'},
+                {id: '002',name: '部门b',code: 'b'},
+                {id: '003',name: '部门c',code: 'c'},
+                {id: '004',name: '部门d',code: 'd'},
+                {id: '005',name: '部门e',code: 'e'},
+                {id: '006',name: '部门f',code: 'f'}
+                ]
     }
   }
 };
