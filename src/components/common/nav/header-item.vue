@@ -1,11 +1,11 @@
 <template>
   <div class="header-item">
-    <div ref="role" title="用户" :class="istoggle.toggle[0]==true?'clickStyle':''" @click="toggle(0)">
+    <div ref="role" :class="istoggle.toggle[0]==true?'clickStyle':''" title="用户" @click="toggle(0)">
       <i class="el-icon-user-solid" />
       <!-- 点击弹出框 -->
       <div :class="istoggle.toggle[0]==true?'clickShow':''">
         <div>
-          <el-avatar :src="imageUrl" alt="加载中..." :size="55" :style="{'color':`${themeColor}`}" />"
+          <el-avatar :src="imageUrl" :size="55" :style="{'color':`${themeColor}`}" alt="加载中..." />"
           <!-- <img :src="imageUrl" min-width="60" height="60"> -->
           <!-- <img src="../../../../public/test1.png" min-width="60" height="60"> -->
           <ul>
@@ -21,12 +21,12 @@
         </div>
       </div>
     </div>
-    <div ref="language" title="语言" :class="istoggle.toggle[2]==true?'clickLanguage':''" @click="toggle(2)">
+    <div ref="language" :class="istoggle.toggle[2]==true?'clickLanguage':''" title="语言" @click="toggle(2)">
       <i class="el-icon-picture-outline-round" />
       <div :class="istoggle.toggle[2]==true?'clickShow':''">
-        <el-radio v-model="radio1" label="zh" size="small" fill="#ffffff" :style="{'background':`${themeColor}`}" @change="changes('zh')">中文</el-radio>
-        <el-radio v-model="radio1" label="en" size="small" fill="#ffffff" :style="{'background':`${themeColor}`}" @change="changes('en')">English</el-radio>
-        <el-radio v-model="radio1" label="ko" size="small" fill="#ffffff" :style="{'background':`${themeColor}`}" @change="changes('ko')">한글</el-radio>
+        <el-radio v-model="radio1" :style="{'background':`${themeColor}`}" label="zh" size="small" fill="#ffffff" @change="changes('zh')">中文</el-radio>
+        <el-radio v-model="radio1" :style="{'background':`${themeColor}`}" label="en" size="small" fill="#ffffff" @change="changes('en')">English</el-radio>
+        <el-radio v-model="radio1" :style="{'background':`${themeColor}`}" label="ko" size="small" fill="#ffffff" @change="changes('ko')">한글</el-radio>
       </div>
     </div>
     <!-- <div ref="message" title="消息">

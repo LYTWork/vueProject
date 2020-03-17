@@ -2,16 +2,16 @@
   <div class="page-component">
     <div class="page">
       <el-pagination
-        background
-        layout="sizes,prev, pager, next,jumper"
         :total="total"
         :current-page.sync="page.currentPage"
         :page-size.sync="page.pageSize"
         :page-sizes="[10, 30, 50, 100]"
+        background
+        layout="sizes,prev, pager, next,jumper"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
-  </div>
+    </div>
     <div class="total">共有数据：{{ page.totalSize }} 条</div>
   </div>
 
@@ -41,25 +41,23 @@ export default {
 }
 </script>
 <style lang="scss">
+.page-component{
+  height: 32px;
+  vertical-align: middle;
+  padding: .5rem 0;
+  }
 .total{
   float: right;
   text-align: right;
   width:38%;
   color:gray;
-  margin:.5rem 0;
   line-height: 32px;/*让黄色div中的文字内容垂直居中*/
 }
 .page{
   float: left;
   text-align: right;
   width:60%;
-  margin:.5rem 0;
   margin-left: 2%;
 }
 
-.page-component{
-  // height: 40px;
-  vertical-align: middle
-  // padding: .5rem 0;
-  }
 </style>

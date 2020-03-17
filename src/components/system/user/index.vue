@@ -4,24 +4,24 @@
       <div class="handle-box">
         <el-input v-model="searchForm.username" clearable placeholder="用户名" />
         <el-select v-model="searchForm.usertype" filterable clearable placeholder="请选择类型">
-            <el-option
-              v-for="item in type"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
+          <el-option
+            v-for="item in type"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
         <el-button type="success" icon="el-icon-search" plain @click="queryUsers(searchForm)">搜索</el-button>
         <el-button type="primary" icon="el-icon-plus" plain @click="$refs.addDialog.open(null)">新增用户</el-button>
-        
+
       </div>
       <el-table
         v-loading="loading"
-        element-loading-text="拼命加载中"
         :data="userList"
+        :header-cell-style="headerStyle"
+        element-loading-text="拼命加载中"
         border
         height="83%"
-        :header-cell-style="headerStyle"
         @cell-mouse-enter="(data)=>focusedData = Object.assign({}, data)"
       >
         <el-table-column label="序号" type="index" width="55">
@@ -37,7 +37,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="type" label="类型" />
-        <el-table-column label="操作" :width="columnStyle(420,350,350)">
+        <el-table-column :width="columnStyle(420,350,350)" label="操作">
           <el-button
             type="text"
             icon="el-icon-edit"
@@ -48,7 +48,7 @@
             type="text"
             icon="el-icon-delete"
             class="red"
-          @click="delOne(focusedData.id)"
+            @click="delOne(focusedData.id)"
           >删除</el-button>
           <el-button
             type="text"
@@ -60,12 +60,12 @@
             type="text"
             icon="el-icon-warning-outline"
             class="gray"
-          @click="resetPass(focusedData.id)"
+            @click="resetPass(focusedData.id)"
           >重置密码</el-button>
         </el-table-column>
       </el-table>
       <page-component :total="page.totalSize" :page="page" @pageChange="(item) => handlePageChange(item)" />
-      <edit-dialog ref="addDialog" title="新增用户" :user-type-list="type" @OnConfirm="(item)=>insertOne(item)" />
+      <edit-dialog ref="addDialog" :user-type-list="type" title="新增用户" @OnConfirm="(item)=>insertOne(item)" />
       <edit-dialog ref="updateDialog" title="更新用户" @OnConfirm="(item)=>updateOne(item)" />
       <RolesDialog ref="rolesEditDialog" />
     </div>
@@ -74,7 +74,7 @@
 
 <script>
 import PageComponent from '@/components/common/Pagenation/index';
-import { queryUsers, insertOne, updateOne, delOne, resetPass } from '@/api/sysuser'
+// import { queryUsers, insertOne, updateOne } from '@/api/sysuser'
 import EditDialog from './edit-dialog';
 import RolesDialog from './user-role-dialog';
 import { headerStyle, columnStyle } from '@/utils/style'
@@ -82,7 +82,7 @@ export default {
   components: {
     PageComponent,
     EditDialog,
-    RolesDialog,
+    RolesDialog
   },
   data() {
     return {
@@ -105,7 +105,31 @@ export default {
       }, {
         value: '供应商',
         label: '供应商'
-      }]
+      }],
+      mockdata: [
+        {
+          id: 1,
+          imageUrl: "string",
+          name: "admin",
+          password: "9accb83c1e358e1287d785561056ec597a71eff0",
+          roleList: [{ id: 12,
+            name: "管理员",
+            orgnode: null }],
+          timeStamp: null,
+          type: "公司"
+        },
+        {
+          id: 2,
+          imageUrl: "string",
+          name: "测试新增",
+          password: "9accb83c1e358e1287d785561056ec597a71eff0",
+          roleList: [{ id: 2,
+            name: "测试",
+            orgnode: null }],
+          timeStamp: null,
+          type: "公司"
+        }
+      ]
     };
   },
   mounted() {
@@ -116,53 +140,55 @@ export default {
     columnStyle,
     // 查询数据
     queryUsers(params) {
-      console.log(11,params)
-      queryUsers(params).then(res => {
-        if (res.code == 200) {
-          this.page.currentPage = res.data.currentPage;
-          this.page.pageSize = res.data.size;
-          this.page.totalPage = res.data.pages;
-          this.page.totalSize = res.data.total;
-          this.userList = res.data.list;
-          this.loading = false;
-        }
-      })
+      // queryUsers(params).then(res => {
+      //   if (res.code === 200) {
+      //     this.page.currentPage = res.data.currentPage;
+      //     this.page.pageSize = res.data.size;
+      //     this.page.totalPage = res.data.pages;
+      //     this.page.totalSize = res.data.total;
+      //     this.userList = res.data.list;
+      //     this.loading = false;
+      //     console.log(11, res.data.list)
+      //   }
+      // })
+      this.loading = false;
+      this.userList = this.mockdata
     },
     // 插入数据
     insertOne(user) {
       // 初始密码"123456"
       user.password = this.$sha1("123456");
-      insertOne(user).then(res => {
-        if (res.code === 200) {
-          this.$message({
-            message: "保存成功",
-            type: "success"
-          });
-          this.queryUsers();
-        } else {
-          this.$message({
-            message: "保存失败，原因：" + res.msg,
-            type: "danger"
-          });
-        }
-      })
+      // insertOne(user).then(res => {
+      //   if (res.code === 200) {
+      //     this.$message({
+      //       message: "保存成功",
+      //       type: "success"
+      //     });
+      //     this.queryUsers();
+      //   } else {
+      //     this.$message({
+      //       message: "保存失败，原因：" + res.msg,
+      //       type: "danger"
+      //     });
+      //   }
+      // })
     },
     // 修改数据
     updateOne(user) {
-      updateOne(user).then(res => {
-        if (res.code === 200) {
-          this.$message({
-            message: "保存成功",
-            type: "success"
-          });
-          this.queryUsers();
-        } else {
-          this.$message({
-            message: "保存失败，原因：" + res.msg,
-            type: "danger"
-          });
-        }
-      })
+      // updateOne(user).then(res => {
+      //   if (res.code === 200) {
+      //     this.$message({
+      //       message: "保存成功",
+      //       type: "success"
+      //     });
+      //     this.queryUsers();
+      //   } else {
+      //     this.$message({
+      //       message: "保存失败，原因：" + res.msg,
+      //       type: "danger"
+      //     });
+      //   }
+      // })
     },
     // 删除数据
     delOne(id) {
@@ -195,7 +221,7 @@ export default {
         closeOnClickModal: "false"
       }).then(() => {
         // 重置密码为123456
-        const pwd = this.$sha1(this.focusedData.name + "123456");
+        // const pwd = this.$sha1(this.focusedData.name + "123456");
         // resetPass(Uid, pwd).then(res => {
         //   if (res.code === 200) {
         //     this.$message({
@@ -211,11 +237,11 @@ export default {
         //   }
         // })
       }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消重置'
-          });          
+        this.$message({
+          type: 'info',
+          message: '已取消重置'
         });
+      });
     },
     handlePageChange(item) {
       const para = { currentPage: item.currentPage, pageSize: item.pageSize };

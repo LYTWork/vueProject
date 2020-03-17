@@ -1,60 +1,50 @@
 @media only screen and (min-width:1920px ) { // 兼容1440px,写在这个位置是因为，既能继承@media only screen and (max-width:1563px )的样式，又能覆盖以下样式
   .dashboard{
-      border: 1px solid red;
       height: 87vh;
   }
   .container {
-      border: 1px solid greenyellow;
       height: 93%;
   }
-  .container>.el-table{height:calc(100% - 76px)!important;}
+  .container>.el-table{height:calc(100% - 40px - 40px)!important;}
   .el-dialog>.el-table{height: 100% !important;}
 }
 @media only screen and (min-width:1680px ) and (max-width:1919px ){ // 兼容1400px,写在这个位置是因为，既能继承@media only screen and (max-width:1563px )的样式，又能覆盖以下样式
   .dashboard{
-    border: 1px solid red;
     height: 86.5vh;
 }
 .container {
-    border: 1px solid greenyellow;
     height: 92%;
 }
-.container>.el-table{height:calc(100% - 76px)!important;}
+.container>.el-table{height:calc(100% - 48px)!important;}
 .el-dialog>.el-table{height: 100% !important;}
 }
 @media only screen and (min-width:1600px ) and (max-width:1679px ){ // 兼容1400px,写在这个位置是因为，既能继承@media only screen and (max-width:1563px )的样式，又能覆盖以下样式
   .dashboard{
-    border: 1px solid red;
     height: 83vh;
 }
 .container {
-    border: 1px solid greenyellow;
     height: 92%;
 }
-.container>.el-table{height:calc(100% - 76px)!important;}
+.container>.el-table{height:calc(100% - 48px)!important;}
 .el-dialog>.el-table{height: 100% !important;}
 }
 @media only screen and (min-width:1366px ) and (max-width:1599px ){ // 兼容1400px,写在这个位置是因为，既能继承@media only screen and (max-width:1563px )的样式，又能覆盖以下样式
   .dashboard{
-    border: 1px solid red;
     height: 80.5vh;
 }
 .container {
-    border: 1px solid greenyellow;
     height: 88%;
 }
-.container>.el-table{height:calc(100% - 76px)!important;}
+.container>.el-table{height:calc(100% - 48px)!important;}
 .el-dialog>.el-table{height: 100% !important;}
 }
 @media only screen and (max-width:1365px ){ // 兼容1400px,写在这个位置是因为，既能继承@media only screen and (max-width:1563px )的样式，又能覆盖以下样式
   .dashboard{
-    border: 1px solid red;
     height: 80.5vh;
 }
 .container {
-    border: 1px solid greenyellow;
     height: 88%;
 }
-.container>.el-table{height:calc(100% - 76px)!important;}
+.container>.el-table{height:calc(100% - 48px)!important;}
 .el-dialog>.el-table{height: 100% !important;}
 }

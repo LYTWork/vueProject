@@ -7,7 +7,7 @@
         :rules="rules"
         class="pass-form"
         label-width="100px"
-        >
+      >
         <el-form-item label="原密码:" prop="pass">
           <el-input
             v-model="item.pass"
@@ -38,14 +38,14 @@
             type="primary"
             @click="submitForm('dataForm')"
           >提交</el-button>
-          
+
         </el-form-item>
       </el-form>
     </div>
   </div>
 </template>
 
- <script>
+<script>
 import { mapGetters, mapActions } from "vuex";
 import { removeToken } from "@/utils/token";
 import { logout } from "@/api/login";
@@ -108,7 +108,7 @@ export default {
         newpass: [
           { required: true, message: "请输入密码", trigger: "blur" },
           { validator: validateNewPass, trigger: "blur" }
-          ],
+        ],
         checknewpass: [
           { required: true, message: "请输入密码", trigger: "blur" },
           { validator: validateCheack, trigger: "blur" }
@@ -186,7 +186,7 @@ export default {
     ...mapActions("user/", ["setUserdata", "resetToken"])
   }
 };
- </script>
+</script>
 
 <style lang="scss" scoped>
 .pass-form {

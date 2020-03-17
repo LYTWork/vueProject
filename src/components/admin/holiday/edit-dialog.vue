@@ -2,15 +2,15 @@
   <el-dialog
     id="holiday-dialog"
     :title="title"
-    width="35%"
     :visible.sync="visable"
     :close-on-click-modal="false"
     :show-close="false"
     :lock-scroll="false"
+    width="35%"
   >
     <el-form ref="dataForm" :model="item" :rules="rules" label-width="100px">
       <el-form-item label="假种" prop="name">
-        <el-input v-model="item.name" v-filter-special-char="item.name" placeholder="请输入假种" />
+        <el-input v-filter-special-char="item.name" v-model="item.name" placeholder="请输入假种" />
       </el-form-item>
       <el-form-item label="代码" prop="code">
         <el-input v-model="item.code" placeholder="请输入代码" />

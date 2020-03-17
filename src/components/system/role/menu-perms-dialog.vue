@@ -1,35 +1,35 @@
 <template>
-<el-drawer
-  :title="'角色【'+item.name+'】的菜单可见权限：'"
-  :visible.sync="visible"
-  direction="rtl"
-  size="35%">
+  <el-drawer
+    :title="'角色【'+item.name+'】的菜单可见权限：'"
+    :visible.sync="visible"
+    direction="rtl"
+    size="35%">
     <div class="demo-drawer__content">
       <el-tree
         ref="tree"
         :data="menuList"
-        show-checkbox
-        node-key="id"
-        default-expand-all
         :default-checked-keys="defaultChecked"
         :expand-on-click-node="false"
         :props="defaultProps"
+        show-checkbox
+        node-key="id"
+        default-expand-all
       >
         >
         <span slot-scope="{ node, data }">{{ data.name }}</span>
       </el-tree>
-      
+
     </div>
     <div class="demo-drawer__footer">
-        <el-button type="warning" plain @click="cancel">取消</el-button>
-        <el-button type="success" plain @click="confirm">提交</el-button>
-      </div>
+      <el-button type="warning" plain @click="cancel">取消</el-button>
+      <el-button type="success" plain @click="confirm">提交</el-button>
+    </div>
   </el-drawer>
 </template>
 <script>
 import { getMenuByRid, updateMenuperms } from '@/api/role'
-import { mapGetters, mapActions } from "vuex";
-import { getSideBarMenu, queryMenuLeft } from "@/api/menu";
+import { mapActions } from "vuex";
+import { queryMenuLeft } from "@/api/menu";
 export default {
   props: {
     title: {
@@ -47,7 +47,7 @@ export default {
         name: 'name',
         type: 'type'
       },
-      defaultChecked: [], // 角色所拥有子菜单的id
+      defaultChecked: [] // 角色所拥有子菜单的id
     }
   },
   methods: {
@@ -66,9 +66,9 @@ export default {
       getMenuByRid(params).then(res => {
         console.log(111, res.data)
         this.menuList = res.data[0];
-        
+
         this.defaultChecked = res.data[1];// 只获取子菜单的id
-        console.log(1231,this.menuList,this.defaultChecked)
+        console.log(1231, this.menuList, this.defaultChecked)
       })
     },
     updateMenuperms(params) {
@@ -80,7 +80,7 @@ export default {
         lockScroll: false
       }).then(() => {
         updateMenuperms(params).then(res => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message({
               message: '提交成功！',
               type: 'success'
@@ -91,12 +91,12 @@ export default {
 
             // 更新左侧侧边栏(更新store)
             // 重新查询菜单到store
-            var para = { uid: this.userid};
+            var para = { uid: this.userid };
             queryMenuLeft(para).then(res => {
             //  更新store菜单信息
               var menuList = res.data;
               // console.log('当前展示', res)
-              this.setMenu({ menuList});
+              this.setMenu({ menuList });
             })
           }
         })

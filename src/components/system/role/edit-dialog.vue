@@ -1,6 +1,6 @@
 <template>
   <el-dialog id="edit-dialog" :title="title" :visible.sync="visable" :lock-scroll="false" :close-on-click-modal="false" :show-close="false">
-    <el-form ref="dataForm" :model="item" label-width="110px" :rules="rules">
+    <el-form ref="dataForm" :model="item" :rules="rules" label-width="110px">
       <el-form-item label="角色名称" prop="name">
         <el-input v-model="item.name" placeholder="请输入角色名" />
       </el-form-item>
@@ -30,7 +30,7 @@ export default {
     const validateName = (rule, value, callback) => {
       if (this.name === value) { // 没有修改名字
         callback()
-      } else if (value == '') {
+      } else if (value === '') {
         callback(new Error('请输入角色名'))
       } else {
         getFlagRName({ name: value }).then(res => {

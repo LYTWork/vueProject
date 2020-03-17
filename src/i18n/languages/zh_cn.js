@@ -3,7 +3,7 @@ module.exports = {
     username: '用户名',
     password: '密码',
     type: '类型',
-    login: '登录',
+    login: '登录'
   },
   header: {
     change: 'ENGLISH',

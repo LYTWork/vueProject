@@ -1,139 +1,140 @@
 <template>
-    <div class="header">
-        <!-- 折叠按钮 -->
-        <div class="collapse-btn" @click="collapseChage">
-            <i v-if="!collapse" class="el-icon-s-fold"></i>
-            <i v-else class="el-icon-s-unfold"></i>
-        </div>
-        <div class="logo">Orange后台管理系统</div>
-        <div class="header-right">
-            <div class="header-user-con">
-                <!-- 全屏显示 -->
-                <div class="btn-fullscreen" @click="handleFullScreen">
-                    <el-tooltip effect="dark" :content="fullscreen?`取消全屏`:`全屏`" placement="bottom">
-                        <i class="el-icon-rank"></i>
-                    </el-tooltip>
-                </div>
-                <!-- 消息中心 -->
-                <div class="btn-bell">
-                    <el-tooltip
-                        effect="dark"
-                        :content="message?`有${message}条未读消息`:`消息中心`"
-                        placement="bottom"
-                    >
-                        <router-link to="/user/message">
-                            <i class="el-icon-bell"></i>
-                        </router-link>
-                    </el-tooltip>
-                    <span class="btn-bell-badge" v-if="message"></span>
-                </div>
-                <!-- 用户头像 -->
-                <div class="user-avator">
-                    <img src="@/assets/img/candy.jpg" />
-                </div>
-                <!-- 用户名下拉菜单 -->
-                <el-dropdown class="user-name" trigger="click" @command="handleCommand">
-                    <span class="el-dropdown-link">
-                        {{username}}
-                        <i class="el-icon-caret-bottom"></i>
-                    </span>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item command="changes">{{$t('header.change')}}</el-dropdown-item>
-                        <el-dropdown-item divided command="loginout">{{$t('header.logout')}}</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-            </div>
-        </div>
+  <div class="header">
+    <!-- 折叠按钮 -->
+    <div class="collapse-btn" @click="collapseChage">
+      <i v-if="!collapse" class="el-icon-s-fold"/>
+      <i v-else class="el-icon-s-unfold"/>
     </div>
+    <div class="logo">Orange后台管理系统</div>
+    <div class="header-right">
+      <div class="header-user-con">
+        <!-- 全屏显示 -->
+        <div class="btn-fullscreen" @click="handleFullScreen">
+          <el-tooltip :content="fullscreen?`取消全屏`:`全屏`" effect="dark" placement="bottom">
+            <i class="el-icon-rank"/>
+          </el-tooltip>
+        </div>
+        <!-- 消息中心 -->
+        <div class="btn-bell">
+          <el-tooltip
+            :content="message?`有${message}条未读消息`:`消息中心`"
+            effect="dark"
+            placement="bottom"
+          >
+            <router-link to="/user/message">
+              <i class="el-icon-bell"/>
+            </router-link>
+          </el-tooltip>
+          <span v-if="message" class="btn-bell-badge"/>
+        </div>
+        <!-- 用户头像 -->
+        <div class="user-avator">
+          <img src="@/assets/img/candy.jpg" >
+        </div>
+        <!-- 用户名下拉菜单 -->
+        <el-dropdown class="user-name" trigger="click" @command="handleCommand">
+          <span class="el-dropdown-link">
+            {{ username }}
+            <i class="el-icon-caret-bottom"/>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="changes">{{ $t('header.change') }}</el-dropdown-item>
+            <el-dropdown-item divided command="loginout">{{ $t('header.logout') }}</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 import bus from '@/utils/bus';
 import { mapGetters, mapActions } from "vuex";
 export default {
-    data() {
-        return {
-            collapse: false,
-            fullscreen: false,
-            name: 'linxin',
-            message: 2
-        };
-    },
-    computed: {
-        cheackusername() {
-            console.log(username)
-            return username ? username : this.name;
-        },
-        ...mapGetters(["token", "username", "usertype", "imageUrl", "userid"])
-    },
-    methods: {
-        ...mapActions("user/", ["setUserdata", "resetToken"]),
-        // 用户名下拉菜单选择事件
-        handleCommand(command) {
-            if (command == 'loginout') {
-                localStorage.removeItem('ms_username');
-                this.$router.push('/login');
-                // userlogout() {
-                //   // 退出登录接口
-                //   logout({ uid: this.userid }).then(res => {
-                //     if (res.code === 200) {
-                //       this.$message({
-                //         message: '已退出登录',
-                //         type: 'warning'
-                //       })
-                //       this.setUserdata("");
-                //       // 退出登录时将sessionStorage里的token和store里面的角色都清零
-                //       removeToken();
-                //       this.resetToken();
-                //       sessionStorage.removeItem("store");
-                //       this.$router.replace("/login");
-                //     }
-                //   })
-                // },
-            }
-            else if (command == 'changes') {
-                // 选择语言切换
-                this.$i18n.locale = this.$i18n.locale == 'zh' ? this.$i18n.locale = 'en' : this.$i18n.locale = 'zh';
-                localStorage.setItem('locale', this.$i18n.locale);
-            }
-        },
-        // 侧边栏折叠
-        collapseChage() {
-            this.collapse = !this.collapse;
-            bus.$emit('collapse', this.collapse);
-        },
-        // 全屏事件
-        handleFullScreen() {
-            let element = document.documentElement;
-            if (this.fullscreen) {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitCancelFullScreen) {
-                    document.webkitCancelFullScreen();
-                } else if (document.mozCancelFullScreen) {
-                    document.mozCancelFullScreen();
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                }
-            } else {
-                if (element.requestFullscreen) {
-                    element.requestFullscreen();
-                } else if (element.webkitRequestFullScreen) {
-                    element.webkitRequestFullScreen();
-                } else if (element.mozRequestFullScreen) {
-                    element.mozRequestFullScreen();
-                } else if (element.msRequestFullscreen) {
-                    // IE11
-                    element.msRequestFullscreen();
-                }
-            }
-            this.fullscreen = !this.fullscreen;
-        }
-    },
-    mounted() {
-        if (document.body.clientWidth < 1366) {
-            this.collapseChage();
-        }
+  data() {
+    return {
+      collapse: false,
+      fullscreen: false,
+      name: 'linxin',
+      message: 2
+    };
+  },
+  computed: {
+    ...mapGetters(["token", "username", "usertype", "imageUrl", "userid"]),
+    cheackusername() {
+      // eslint-disable-next-line no-undef
+      console.log(username)
+      // eslint-disable-next-line no-undef
+      return username || this.name;
     }
+  },
+  mounted() {
+    if (document.body.clientWidth < 1366) {
+      this.collapseChage();
+    }
+  },
+  methods: {
+    ...mapActions("user/", ["setUserdata", "resetToken"]),
+    // 用户名下拉菜单选择事件
+    handleCommand(command) {
+      if (command === 'loginout') {
+        localStorage.removeItem('ms_username');
+        this.$router.push('/login');
+        // userlogout() {
+        //   // 退出登录接口
+        //   logout({ uid: this.userid }).then(res => {
+        //     if (res.code === 200) {
+        //       this.$message({
+        //         message: '已退出登录',
+        //         type: 'warning'
+        //       })
+        //       this.setUserdata("");
+        //       // 退出登录时将sessionStorage里的token和store里面的角色都清零
+        //       removeToken();
+        //       this.resetToken();
+        //       sessionStorage.removeItem("store");
+        //       this.$router.replace("/login");
+        //     }
+        //   })
+        // },
+      } else if (command === 'changes') {
+        // 选择语言切换
+        this.$i18n.locale = this.$i18n.locale === 'zh' ? this.$i18n.locale = 'en' : this.$i18n.locale = 'zh';
+        localStorage.setItem('locale', this.$i18n.locale);
+      }
+    },
+    // 侧边栏折叠
+    collapseChage() {
+      this.collapse = !this.collapse;
+      bus.$emit('collapse', this.collapse);
+    },
+    // 全屏事件
+    handleFullScreen() {
+      const element = document.documentElement;
+      if (this.fullscreen) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitCancelFullScreen) {
+          document.webkitCancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+      } else {
+        if (element.requestFullscreen) {
+          element.requestFullscreen();
+        } else if (element.webkitRequestFullScreen) {
+          element.webkitRequestFullScreen();
+        } else if (element.mozRequestFullScreen) {
+          element.mozRequestFullScreen();
+        } else if (element.msRequestFullscreen) {
+          // IE11
+          element.msRequestFullscreen();
+        }
+      }
+      this.fullscreen = !this.fullscreen;
+    }
+  }
 };
 </script>
 <style lang='scss' scoped>

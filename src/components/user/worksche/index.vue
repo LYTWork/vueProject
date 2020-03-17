@@ -1,14 +1,12 @@
-<template>
-    
-</template>
+
 <script>
 export default {
-    data() {
+  data() {
+    return {}
+  },
+  methods: {
 
-    },
-    methods: {
+  }
 
-    }
-    
 }
 </script>

@@ -5,26 +5,26 @@
         <el-input v-model="searchForm.name" clearable placeholder="角色名称" />
         <el-button type="success" icon="el-icon-search" plain @click="queryRoles(searchForm)">搜索</el-button>
         <el-button type="primary" icon="el-icon-plus" plain @click="$refs.addDialog.open(null)">新增角色</el-button>
-        
+
       </div>
       <el-table
         v-loading="loading"
-        element-loading-text="拼命加载中"
         :data="roleList"
-        border
-        height="83%" 
         :header-cell-style="headerStyle"
+        element-loading-text="拼命加载中"
+        border
+        height="83%"
         @cell-mouse-enter="(data)=>focusedData = Object.assign({}, data)"
       >
-        <el-table-column type="index" :width="columnStyle(55,55,50)" label="序号">
+        <el-table-column :width="columnStyle(55,55,50)" type="index" label="序号">
           <template slot-scope="scope">
             <span>{{ (page.currentPage - 1) * page.pageSize + scope.$index + 1 }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="name" :width="columnStyle(120,120,120)" label="角色名称" />
-        <el-table-column prop="weight" label="权重" :width="columnStyle(55,55,55)" />
+        <el-table-column :width="columnStyle(120,120,120)" prop="name" label="角色名称" />
+        <el-table-column :width="columnStyle(55,55,55)" prop="weight" label="权重" />
         <el-table-column prop="orgnode" label="组织架构节点" />
-        <el-table-column label="操作" :width="columnStyle(480,430,480)">
+        <el-table-column :width="columnStyle(480,430,480)" label="操作">
           <template>
             <el-button
               type="text"
@@ -40,17 +40,6 @@
             >删除</el-button>
             <el-button
               type="text"
-              icon="el-icon-edit-outline"
-              @click="$refs.roleuserdialog.open(focusedData)"
-            >隶属用户</el-button>
-            <el-button
-              type="text"
-              icon="el-icon-setting"
-              class="yellow"
-              @click="$refs.resourceDialog.open(focusedData)"
-            >资源权限</el-button>
-            <el-button
-              type="text"
               icon="el-icon-setting"
               class="yellow"
               @click="$refs.menuDialog.open(focusedData)"
@@ -60,30 +49,24 @@
       </el-table>
       <page-component :total="page.totalSize" :page="page" @pageChange="(item)=>handlePageChange(item)" />
 
-    <edit-dialog ref="addDialog" title="新增角色" @OnConfirm="(item)=>insertOne(item)" />
-    <edit-dialog ref="updateDialog" title="更新角色" @OnConfirm="(item)=>updateOne(item)" />
-    <user-dialog ref="roleuserdialog" title="所属用户编辑" />
-    <ResourcePermsedit ref="resourceDialog" title="资源权限编辑" />
-    <MenuPermsedit ref="menuDialog" title="菜单权限编辑" />
-  </div>
+      <edit-dialog ref="addDialog" title="新增角色" @OnConfirm="(item)=>insertOne(item)" />
+      <edit-dialog ref="updateDialog" title="更新角色" @OnConfirm="(item)=>updateOne(item)" />
+      <MenuPermsedit ref="menuDialog" title="菜单权限编辑" />
+    </div>
   </div>
 </template>
 
 <script>
 import EditDialog from "./edit-dialog";
 import MenuPermsedit from "./menu-perms-dialog"
-import ResourcePermsedit from "./resource-perms-dialog"
-import UserDialog from "./role-user-dialog"
 import PageComponent from '@/components/common/Pagenation/index'
 import { headerStyle, columnStyle } from '@/utils/style'
-import { queryRoles, insertOne, updateOne, delOne } from '@/api/role'
+// import { queryRoles } from '@/api/role'
 export default {
   components: {
     EditDialog,
     MenuPermsedit,
-    ResourcePermsedit,
-    PageComponent,
-    UserDialog
+    PageComponent
   },
   data() {
     return {
@@ -101,7 +84,29 @@ export default {
         pageSize: 0,
         totalSize: 0,
         totalPage: 0
-      }
+      },
+      mockdata: [
+        {
+          id: 1,
+          name: "管理员",
+          orgNode: null,
+          users: [{ id: 1,
+            imageUrl: null,
+            name: "Admin",
+            type: "公司" }],
+          weight: 10
+        },
+        {
+          id: 2,
+          name: "测试",
+          orgNode: null,
+          users: [{ id: 2,
+            imageUrl: null,
+            name: "test",
+            type: "公司" }],
+          weight: 10
+        }
+      ]
     };
   },
   mounted() {
@@ -112,51 +117,54 @@ export default {
     columnStyle,
     // 查询数据
     queryRoles(param) {
-      queryRoles(param).then(res => {
-        console.log('role',res)
-        if (res.code == 200) {
-        this.page.currentPage = res.data.currentPage;
-        this.page.pageSize = res.data.size;
-        this.page.totalPage = res.data.pages;
-        this.page.totalSize = res.data.total;
-        this.roleList = res.data.list;
-        this.loading = false;
-        }
-      })
+      // queryRoles(param).then(res => {
+      //   console.log('role', res)
+      //   if (res.code === 200) {
+      //     this.page.currentPage = res.data.currentPage;
+      //     this.page.pageSize = res.data.size;
+      //     this.page.totalPage = res.data.pages;
+      //     this.page.totalSize = res.data.total;
+      //     this.roleList = res.data.list;
+      //     this.loading = false;
+      //     console.log(this.roleList)
+      //   }
+      // })
+      this.roleList = this.mockdata;
+      this.loading = false;
     },
     // 插入数据
     insertOne(role) {
-      insertOne(role).then(res => {
-        if (res.code === 200) {
-          this.$message({
-            message: "保存成功",
-            type: "success"
-          });
-          this.queryRoles();
-        } else {
-          this.$message({
-            message: "保存失败，原因：" + res.msg,
-            type: "danger"
-          });
-        }
-      });
+      // insertOne(role).then(res => {
+      //   if (res.code === 200) {
+      //     this.$message({
+      //       message: "保存成功",
+      //       type: "success"
+      //     });
+      //     this.queryRoles();
+      //   } else {
+      //     this.$message({
+      //       message: "保存失败，原因：" + res.msg,
+      //       type: "danger"
+      //     });
+      //   }
+      // });
     },
     // 修改数据
     updateOne(role) {
-      updateOne(role).then(res => {
-        if (res.code === 200) {
-          this.$message({
-            message: "保存成功",
-            type: "success"
-          });
-          this.queryRoles();
-        } else {
-          this.$message({
-            message: "保存失败，原因：" + res.msg,
-            type: "danger"
-          });
-        }
-      })
+      // updateOne(role).then(res => {
+      //   if (res.code === 200) {
+      //     this.$message({
+      //       message: "保存成功",
+      //       type: "success"
+      //     });
+      //     this.queryRoles();
+      //   } else {
+      //     this.$message({
+      //       message: "保存失败，原因：" + res.msg,
+      //       type: "danger"
+      //     });
+      //   }
+      // })
     },
     // 删除数据
     delOne(rid) {
@@ -167,18 +175,18 @@ export default {
         lockScroll: false,
         closeOnClickModal: false
       })
-        .then(() => {
-          delOne({ id: rid }).then(res => {
-            if (res.code == "200") {
-              this.$message({
-                message: "删除成功！",
-                type: "success"
-              });
-              this.queryRoles();
-            }
-          })
-        })
-        .catch(() => false)
+      // .then(() => {
+      //   delOne({ id: rid }).then(res => {
+      //     if (res.code === 200) {
+      //       this.$message({
+      //         message: "删除成功！",
+      //         type: "success"
+      //       });
+      //       this.queryRoles();
+      //     }
+      //   })
+      // })
+      // .catch(() => false)
     },
     handlePageChange(item) {
       this.searchForm.currentPage = item.currentPage;

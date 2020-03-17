@@ -1,13 +1,13 @@
 <template>
-    <el-autocomplete
-      v-model="searchString"
-      :fetch-suggestions="querySearch"
-      placeholder="请输入关键词进行搜索"
-      :trigger-on-focus="false"
-      clearable
-    >
-    <el-button slot="append" icon="el-icon-search" @click="onSearch"></el-button>
-    </el-autocomplete>
+  <el-autocomplete
+    v-model="searchString"
+    :fetch-suggestions="querySearch"
+    :trigger-on-focus="false"
+    placeholder="请输入关键词进行搜索"
+    clearable
+  >
+    <el-button slot="append" icon="el-icon-search" @click="onSearch"/>
+  </el-autocomplete>
 </template>
 <script>
 export default {

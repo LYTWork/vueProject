@@ -1,0 +1,5 @@
+build/*.js
+src/assets
+src/utils/sha1.js
+public
+dist

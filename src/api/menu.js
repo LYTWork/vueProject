@@ -6,7 +6,6 @@ export const getMenuParent = params => { return request({ url: '/api/admin/menu/
 
 export const insertOne = params => { return request({ url: '/api/admin/menu/addMenu', method: 'post', data: params }) }
 
-
 export const updateOne = params => { return request({ url: '/api/admin/menu/updateMenu', method: 'put', data: params }) }
 
 export const delOne = params => { return request({ url: '/api/admin/menu/deleteMenu', method: 'delete', params: params }) }

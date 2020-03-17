@@ -8,13 +8,13 @@
       </div>
       <el-table
         v-loading="loading"
-        element-loading-text="拼命加载中"
         :data="mockdata"
+        :header-cell-style="headerStyle"
+        :tree-props="{children: 'lowerMenu', hasChildren: 'hasChildren'}"
+        element-loading-text="拼命加载中"
         border
         row-key="id"
-        :header-cell-style="headerStyle"
         height="83%"
-        :tree-props="{children: 'lowerMenu', hasChildren: 'hasChildren'}"
         @cell-mouse-enter="mouseEnter"
       >
         <el-table-column prop="title" label="菜单名称" width="200" />
@@ -23,7 +23,7 @@
             <i :class="scope.row.icon" style="font-size:1.1rem" />
           </template>
         </el-table-column>
-        <el-table-column prop="type" :formatter="parseType" label="菜单类型" />
+        <el-table-column :formatter="parseType" prop="type" label="菜单类型" />
         <el-table-column prop="url" label="菜单链接" />
         <el-table-column label="操作" width="260">
           <template >
@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import { dataToTree } from '@/utils/index'
+// import { dataToTree } from '@/utils/index'
 import EditDialog from "./edit-dialog";
 import PageComponent from '@/components/common/Pagenation/index';
 import { headerStyle } from '@/utils/style.js'
@@ -74,7 +74,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
     EditDialog,
-    PageComponent,
+    PageComponent
   },
   data () {
     return {
@@ -85,79 +85,74 @@ export default {
         pageSize: ''
       },
       mockdata: [
-            {"id":1,
-            "parentId":null,
-            "title":"系统首页",
-            "url":"/user/welcom",
-            "icon":"el-icon-user"
-            },
-            {"id":2,
-            "parentId":null,
-            "title":"权限设置",
-            "icon":"el-icon-setting",
-            "lowerMenu":[{"id":21,
-                        "parentId":2,
-                        "title":"用户管理",
-                        "url":"/system/user"
-                        },
-                        {"id":22,
-                        "parentId":2,
-                        "title":"角色管理",
-                        "url":"/system/role"
-                        },
-                        {"id":23,
-                        "parentId":2,
-                        "title":"菜单管理",
-                        "url":"/system/menu"
-                        },
-                        {"id":24,
-                        "parentId":2,
-                        "title":"资源管理",
-                        "url":"/system/resource"
-                        }]
-            },
-            {"id":3,
-            "parentId":null,
-            "title":"基础资料",
-            "icon":"el-icon-orange",
-            "lowerMenu":[{"id":31,
-                        "parentId":3,
-                        "title":"员工信息",
-                        "url":"/admin/staff"
-                        },
-                        {"id":32,
-                        "parentId":3,
-                        "title":"部门信息",
-                        "url":"/admin/dept"
-                        },
-                        {"id":33,
-                        "parentId":3,
-                        "title":"假种信息",
-                        "url":"/admin/holiday"
-                        }]
-            },
-            {"id":4,
-            "parentId":null,
-            "title":"错误处理",
-            "icon":"el-icon-watermelon",
-            "lowerMenu":[{"id":41,
-                        "parentId":4,
-                        "title":"403",
-                        "url":"/403"
-                        },
-                        {"id":42,
-                        "parentId":4,
-                        "title":"404",
-                        "url":"/404"
-                        }]
+        { "id": 1,
+          "parentId": null,
+          "title": "系统首页",
+          "url": "/user/welcom",
+          "icon": "el-icon-user"
+        },
+        { "id": 2,
+          "parentId": null,
+          "title": "权限设置",
+          "icon": "el-icon-setting",
+          "lowerMenu": [{ "id": 21,
+            "parentId": 2,
+            "title": "用户管理",
+            "url": "/system/user"
+          },
+          { "id": 22,
+            "parentId": 2,
+            "title": "角色管理",
+            "url": "/system/role"
+          },
+          { "id": 23,
+            "parentId": 2,
+            "title": "菜单管理",
+            "url": "/system/menu"
+          }]
+        },
+        { "id": 3,
+          "parentId": null,
+          "title": "基础资料",
+          "icon": "el-icon-orange",
+          "lowerMenu": [{ "id": 31,
+            "parentId": 3,
+            "title": "员工信息",
+            "url": "/admin/staff"
+          },
+          { "id": 32,
+            "parentId": 3,
+            "title": "部门信息",
+            "url": "/admin/dept"
+          },
+          { "id": 33,
+            "parentId": 3,
+            "title": "假种信息",
+            "url": "/admin/holiday"
+          }]
+        },
+        { "id": 4,
+          "parentId": null,
+          "title": "错误处理",
+          "icon": "el-icon-watermelon",
+          "lowerMenu": [{ "id": 41,
+            "parentId": 4,
+            "title": "403",
+            "url": "/403"
+          },
+          { "id": 42,
+            "parentId": 4,
+            "title": "404",
+            "url": "/404"
+          }]
 
-            },
-            {"id":5,
-            "parentId":null,
-            "title":"修改密码",
-            "url":"/user/resetpass",
-            "icon":"el-icon-edit"
-            }],
+        },
+        { "id": 5,
+          "parentId": null,
+          "title": "修改密码",
+          "url": "/user/resetpass",
+          "icon": "el-icon-edit"
+        }],
       focusedData: {},
       page: {
         currentPage: 0,

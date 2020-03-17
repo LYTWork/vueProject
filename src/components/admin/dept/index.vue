@@ -8,16 +8,16 @@
         <el-button type="danger" icon="el-icon-delete" plain @click="delAllSelection">批量删除</el-button>
         <el-button type="primary" icon="el-icon-plus" plain @click="$refs.addDialog.open(null)">新增部门</el-button>
         <el-button type="warning" icon="el-icon-download" plain @click="getExcel">导出EXCEL</el-button>
-        
+
       </div>
       <el-table
         v-loading="loading"
+        :data="alldept"
+        :header-cell-style="headerStyle"
         element-loading-text="拼命加载中"
         border
-        :data="alldept"
         height="82%"
         class="table"
-        :header-cell-style="headerStyle"
         @selection-change="handleSelectionChange"
         @cell-mouse-enter="(data)=>focusedData = Object.assign({}, data)"
       >
@@ -59,7 +59,7 @@
 import editDialog from './edit-dialog'
 import { headerStyle } from '@/utils/style'
 import PageComponent from '@/components/common/Pagenation/index'
-import { querydept, insertdept, updatedept, deldept } from '@/api/dept'
+// import { querydept, insertdept, updatedept, deldept } from '@/api/dept'
 import { donwnloadExcel } from '@/utils/index'
 export default {
   components: {
@@ -79,13 +79,13 @@ export default {
         totalPage: 0
       },
       loading: false,
-      alldept: [{id: '001',name: '部门a',code: 'a'},
-                {id: '002',name: '部门b',code: 'b'},
-                {id: '003',name: '部门c',code: 'c'},
-                {id: '004',name: '部门d',code: 'd'},
-                {id: '005',name: '部门e',code: 'e'},
-                {id: '006',name: '部门f',code: 'f'}
-                ],
+      alldept: [{ id: 1, name: '部门a', code: 'a' },
+        { id: 2, name: '部门b', code: 'b' },
+        { id: 3, name: '部门c', code: 'c' },
+        { id: 4, name: '部门d', code: 'd' },
+        { id: 5, name: '部门e', code: 'e' },
+        { id: 6, name: '部门f', code: 'f' }
+      ],
       focusedData: {},
       multipleSelection: [] // 多选
 
@@ -173,10 +173,10 @@ export default {
       //   })
       //   .catch(() => false)
     },
-    
+
     // 多选操作
     handleSelectionChange(val) {
-      console.log(1,val)
+      console.log(1, val)
       this.multipleSelection = val;
     },
     // 删除所选
@@ -186,7 +186,7 @@ export default {
       let str = '';
       // this.delList = this.delList.concat(this.multipleSelection);
       for (let i = 0; i < length; i++) {
-          str += this.multipleSelection[i].name + ' ';
+        str += this.multipleSelection[i].name + ' ';
       }
       this.$message.error(`删除了${str}`);
       this.multipleSelection = [];
@@ -198,18 +198,17 @@ export default {
     },
     // 导出前端选择的数据
     getExcel (param) {
-        const filename = "部门明细";
-        var exceldata = this.multipleSelection;
-        const tHeader = [
-          "部门名称",
-          "部门代码"
-        ];
-        const filterVal = [
-          "name",
-          "code"
-        ];
-        donwnloadExcel(filename, tHeader, filterVal, exceldata)
-      
+      const filename = "部门明细";
+      var exceldata = this.multipleSelection;
+      const tHeader = [
+        "部门名称",
+        "部门代码"
+      ];
+      const filterVal = [
+        "name",
+        "code"
+      ];
+      donwnloadExcel(filename, tHeader, filterVal, exceldata)
     }
   }
 }

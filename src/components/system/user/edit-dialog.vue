@@ -8,7 +8,7 @@
     :lock-scroll="false"
     :open="addOrUpdate"
   >
-    <el-form ref="dataForm" :model="item" label-width="100px" :rules="rules">
+    <el-form ref="dataForm" :model="item" :rules="rules" label-width="100px">
       <el-row>
         <el-col :span="15">
           <el-form-item label="用户名" prop="name">
@@ -24,15 +24,15 @@
         <el-col :span="15">
           <el-form-item label="头像" prop="imageUrl">
             <el-upload
-              class="avatar-uploader"
-              action="https://jsonplaceholder.typicode.com/posts/"
               :data="uptoken"
               :show-file-list="false"
               :on-change="onchange"
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
+              class="avatar-uploader"
+              action="https://jsonplaceholder.typicode.com/posts/"
             >
-              <img v-if="item.imageUrl" :src="item.imageUrl" class="avatar" />
+              <img v-if="item.imageUrl" :src="item.imageUrl" class="avatar" >
               <i v-else class="el-icon-plus avatar-uploader-icon" />
             </el-upload>
           </el-form-item>
@@ -79,7 +79,7 @@ export default {
       if (this.name === value) {
         // 没有修改名字
         callback();
-      } else if (value == "") {
+      } else if (value === "") {
         callback(new Error("请输入用户名"));
       } else {
         getUnameFlag({ name: value }).then(res => {

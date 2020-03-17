@@ -11,11 +11,11 @@
       </div>
       <el-table
         v-loading="loading"
+        :data="holidayList"
+        :header-cell-style="headerStyle"
         element-loading-text="拼命加载中"
         border
         height="83%"
-        :data="holidayList"
-        :header-cell-style="headerStyle"
         @selection-change="handleSelectionChange"
         @cell-mouse-enter="(data)=>focusedData = Object.assign({}, data)"
       >
@@ -27,9 +27,9 @@
           </template>
         </el-table-column>
         <el-table-column
+          :width="columnStyle(400,200,150)"
           label="假种名称"
           prop="name"
-          :width="columnStyle(400,200,150)"
         />
         <el-table-column
           label="假种代码"
@@ -41,9 +41,9 @@
           width="300"
         />
         <el-table-column
+          :width="columnStyle(230,200,150)"
           label="操作"
           prop="operation"
-          :width="columnStyle(230,200,150)"
         >
           <template>
             <el-button
@@ -70,9 +70,9 @@
 <script>
 import EditDialog from "./edit-dialog"
 import PageComponent from '@/components/common/Pagenation/index'
-import { getholidaylist, insertOne, updateOne, delOne, getExcel } from '@/api/holiday'
+// import { getholidaylist, insertOne, updateOne, delOne, getExcel } from '@/api/holiday'
 import { headerStyle, columnStyle } from '@/utils/style'
-import { donwnloadExcel } from '@/utils/index'
+// import { donwnloadExcel } from '@/utils/index'
 export default {
   components: {
     EditDialog,
@@ -91,13 +91,17 @@ export default {
         totalPage: 0
       },
       loading: false,
-      holidayList: [{id: '001',name: '假种a',code: 'a',standday: '8'},
-                    {id: '002',name: '假种b',code: 'b',standday: '8'},
-                    {id: '003',name: '假种c',code: 'c',standday: '8'},
-                    {id: '004',name: '假种d',code: 'd',standday: '8'},
-                    {id: '005',name: '假种e',code: 'e',standday: '8'},
-                    {id: '006',name: '假种f',code: 'f',standday: '8'}
-                    ], // 假种
+      holidayList: [{ id: 1, name: '事假', code: 'a', standday: '8' },
+        { id: 2, name: '病假', code: 'b', standday: '15' },
+        { id: 3, name: '婚假', code: 'c', standday: '8' },
+        { id: 4, name: '工伤假', code: 'd', standday: '8' },
+        { id: 5, name: '年休假', code: 'e', standday: '6' },
+        { id: 6, name: '丧假', code: 'f', standday: '8' },
+        { id: 7, name: '产假', code: 'a', standday: '8' },
+        { id: 8, name: '陪产假', code: 'b', standday: '8' },
+        { id: 9, name: '调休假', code: 'c', standday: '9' },
+        { id: 10, name: '其他假', code: 'd', standday: '10' }
+      ], // 假种
       focusedData: {}, // table 点击行的数据
       multipleSelection: [] // 多选
     }
@@ -177,9 +181,9 @@ export default {
       //   })
       // })
     },
-  // 多选操作
+    // 多选操作
     handleSelectionChange(val) {
-      console.log(1,val)
+      console.log(1, val)
       this.multipleSelection = val;
     },
     // 删除所选
@@ -189,7 +193,7 @@ export default {
       let str = '';
       // this.delList = this.delList.concat(this.multipleSelection);
       for (let i = 0; i < length; i++) {
-          str += this.multipleSelection[i].name + ' ';
+        str += this.multipleSelection[i].name + ' ';
       }
       this.$message.error(`删除了${str}`);
       this.multipleSelection = [];
@@ -201,21 +205,21 @@ export default {
     },
     // 导出后端返回数据
     getExcel (param) {
-      getExcel(param).then(res => {
-        const filename = "假种明细";
-        var exceldata = res.data;
-        const tHeader = [
-          "假种名称",
-          "假种代码",
-          "请假日期上限"
-        ];
-        const filterVal = [
-          "name",
-          "code",
-          "standday"
-        ];
-        donwnloadExcel(filename, tHeader, filterVal, exceldata)
-      })
+      // getExcel(param).then(res => {
+      //   const filename = "假种明细";
+      //   var exceldata = res.data;
+      //   const tHeader = [
+      //     "假种名称",
+      //     "假种代码",
+      //     "请假日期上限"
+      //   ];
+      //   const filterVal = [
+      //     "name",
+      //     "code",
+      //     "standday"
+      //   ];
+      //   donwnloadExcel(filename, tHeader, filterVal, exceldata)
+      // })
     }
   }
 }

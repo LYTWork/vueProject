@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 function encodeUTF8(s) {
   var i; var r = []; var c; var x;
   for (i = 0; i < s.length; i++) {

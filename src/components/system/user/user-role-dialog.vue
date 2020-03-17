@@ -1,22 +1,22 @@
 <template>
   <el-dialog
     id="user-role-dialog"
-    custom-class="customWidth"
     :title="'用户【'+item.name+'】隶属角色：'"
     :visible.sync="visable"
     :close-on-click-modal="false"
     :show-close="false"
     :lock-scroll="false"
+    custom-class="customWidth"
     width="50%"
   >
     <search-component ref="search" :tablelist="roleList_copy" :search-states="searchStates" @onSearch="(item) =>handleSearchChange(item)" />
-    
+
     <el-table
+      :data="roleList"
+      :header-cell-style="headerStyle"
       border
       height="20rem"
-      :data="roleList"
       tooltip-effect="dark"
-      :header-cell-style="headerStyle"
       @selection-change="handleSelectionChange"
       @select-all="selectall"
       @cell-mouse-enter="(data)=>focusedData = Object.assign({}, data)"
@@ -36,11 +36,10 @@
       <el-button type="warning" plain @click="cancel">取消</el-button>
       <el-button type="success" plain @click="confirm">提交</el-button>
     </span>
-    <detail-dialog ref="detailDialog" title="角色清单" :existrole="existrole" @OnConfirm="(data)=>adduserrole(data)" />
+    <detail-dialog ref="detailDialog" :existrole="existrole" title="角色清单" @OnConfirm="(data)=>adduserrole(data)" />
   </el-dialog>
 </template>
 <script>
-
 
 import DetailDialog from './role-detail-dialog'
 import SearchComponent from '@/components/common/Search/index'
@@ -101,7 +100,7 @@ export default {
     },
     // addroles为添加角色对话框传过来的角色对象数组，前端添加角色到此页面
     adduserrole(addroles) {
-      const tabledata = this.roleList.map(a => a.id);  // 当前页面 角色id数组
+      const tabledata = this.roleList.map(a => a.id); // 当前页面 角色id数组
       const selectdatda = addroles.map(a => a.id) // 添加角色页面返回的 角色id数组
       const arr = delWeight(selectdatda, tabledata) // 添加的角色中有和table重复的
       if (arr.length === 0 || arr.length === null || arr.length === undefined) {
@@ -127,12 +126,12 @@ export default {
     delRole(data) {
       if (Array.isArray(data) && data.length !== 0) {
         data.forEach(ele => {
-          this.roleList = this.roleList.filter(val => val.id != ele);
-          this.roleList_copy = this.roleList_copy.filter(val => val.id != ele);
+          this.roleList = this.roleList.filter(val => val.id !== ele);
+          this.roleList_copy = this.roleList_copy.filter(val => val.id !== ele);
         });
       } else if (data !== '' && data !== null && data !== undefined && data.length !== 0) {
-        this.roleList = this.roleList.filter(val => val.id != data); // table上实际展示的用户
-        this.roleList_copy = this.roleList_copy.filter(val => val.id != data) // 实际上删除的用户
+        this.roleList = this.roleList.filter(val => val.id !== data); // table上实际展示的用户
+        this.roleList_copy = this.roleList_copy.filter(val => val.id !== data) // 实际上删除的用户
       } else {
         this.$message({
           message: '请至少选择一个选项',

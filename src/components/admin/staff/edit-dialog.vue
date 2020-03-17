@@ -4,12 +4,12 @@
     :title="title"
     :visible.sync="visable"
     :lock-scroll="false"
-    width="70%"
-    top="5.5rem"
     :close-on-click-modal="false"
     :show-close="false"
+    width="70%"
+    top="5.5rem"
   >
-    <el-form ref="dataForm1" inline :model="item" :rules="rules" label-width="90px">
+    <el-form ref="dataForm1" :model="item" :rules="rules" inline label-width="90px">
       <el-form-item label="姓名" prop="name">
         <el-input v-model="item.name" />
       </el-form-item>
@@ -20,11 +20,9 @@
       <el-form-item label="手机号" prop="mobile">
         <el-input v-model="item.mobile" />
       </el-form-item>
-      
-      
-      
+
     </el-form>
-    <el-form ref="dataForm2" inline :model="item" :rules="rules" label-width="90px">
+    <el-form ref="dataForm2" :model="item" :rules="rules" inline label-width="90px">
       <el-form-item label="学历" prop="education">
         <el-select v-model="item.education" placeholder="请选择学历">
           <el-option
@@ -56,7 +54,7 @@
         </el-select>
       </el-form-item>
     </el-form>
-    <el-form ref="dataForm3" inline :model="item" :rules="rules" label-width="90px">
+    <el-form ref="dataForm3" :model="item" :rules="rules" inline label-width="90px">
       <el-form-item label="身份证号" prop="card">
         <el-input v-model="item.card" />
       </el-form-item>
@@ -66,15 +64,15 @@
       <el-form-item label="出生日期" prop="birthday">
         <el-date-picker
           v-model="item.birthday"
+          :picker-options="pickerOptions0"
           type="date"
           placeholder="选择日期"
           value-format="yyyy-MM-dd"
           format="yyyy-MM-dd"
-          :picker-options="pickerOptions0"
         />
       </el-form-item>
     </el-form>
-    <el-form ref="dataForm4" inline :model="item" :rules="rules" label-width="90px">
+    <el-form ref="dataForm4" :model="item" :rules="rules" inline label-width="90px">
       <el-form-item label="部门" prop="dep">
         <el-select v-model="item.dep" placeholder="请选择部门">
           <el-option v-for="ele in deptlist" :key="ele.name" :label="ele.name" :value="ele.id" />
@@ -86,7 +84,7 @@
       <el-form-item label="工号" prop="empNum">
         <el-input v-model="item.empNum" />
       </el-form-item>
-      
+
       <el-form-item label="状态" prop="status">
         <el-select v-model="item.status" placeholder="请选择状态">
           <el-option label="在职" value="在职" />
@@ -113,8 +111,8 @@
         />
       </el-form-item>
     </el-form>
-    <el-form ref="dataForm5" inline :model="item" label-width="90px">
-      
+    <el-form ref="dataForm5" :model="item" inline label-width="90px">
+
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="item.email" />
       </el-form-item>
@@ -140,7 +138,7 @@
   </el-dialog>
 </template>
 <script>
-import { querydept } from "@/api/dept";
+// import { querydept } from "@/api/dept";
 export default {
   props: {
     title: {
@@ -150,7 +148,7 @@ export default {
   },
   data() {
     const cheackCard = (rule, value, callback) => {
-      if (/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(value) == false) {
+      if (/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(value) === false) {
         callback(new Error("你的身份证格式不正确"));
       } else {
         // callback();
@@ -255,13 +253,13 @@ export default {
       // querydept().then(res => {
       //   this.deptlist = res.data;
       // });
-      this.deptlist = [{id: '001',name: '部门a',code: 'a'},
-                {id: '002',name: '部门b',code: 'b'},
-                {id: '003',name: '部门c',code: 'c'},
-                {id: '004',name: '部门d',code: 'd'},
-                {id: '005',name: '部门e',code: 'e'},
-                {id: '006',name: '部门f',code: 'f'}
-                ]
+      this.deptlist = [{ id: '001', name: '部门a', code: 'a' },
+        { id: '002', name: '部门b', code: 'b' },
+        { id: '003', name: '部门c', code: 'c' },
+        { id: '004', name: '部门d', code: 'd' },
+        { id: '005', name: '部门e', code: 'e' },
+        { id: '006', name: '部门f', code: 'f' }
+      ]
     }
   }
 };

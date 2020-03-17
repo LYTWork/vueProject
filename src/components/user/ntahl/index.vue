@@ -2,20 +2,28 @@
   <div id="ntahl">
     <div class="container">
       <div class="handle-box">
-        <el-input v-model="searchForm.name" clearable placeholder="请假名称" />
-        <el-input v-model="searchForm.code" clearable placeholder="请假代码" />
+        <el-date-picker
+          v-model="searchForm.docDate"
+          format="yyyy-MM-dd"
+          value-format="yyyy-MM-dd"
+          placeholder="填表日期"
+        />
+        <el-input v-model="searchForm.employee" clearable placeholder="员工姓名" />
+        <el-select v-model="searchForm.dept" clearable placeholder="员工部门">
+          <el-option v-for="(ele,index) of deptlist" :key="index" :label="ele.name" :value="ele.name" />
+        </el-select>
         <el-button type="success" icon="el-icon-search" plain @click="getntahllist(searchForm)">搜索</el-button>
         <el-button type="danger" icon="el-icon-delete" plain @click="delAllSelection">批量删除</el-button>
         <el-button type="primary" icon="el-icon-plus" plain @click="$refs.addDialog.open(null)">新增请假</el-button>
-        <el-button type="warning" icon="el-icon-download" plain @click="getExcel">导出EXCEL</el-button>
+        <el-button v-if="$checkPermission(['管理员','测试'])" type="warning" icon="el-icon-download" plain @click="getExcel">导出EXCEL</el-button>
       </div>
       <el-table
         v-loading="loading"
+        :data="ntahlList"
+        :header-cell-style="headerStyle"
         element-loading-text="拼命加载中"
         border
         height="83%"
-        :data="ntahlList"
-        :header-cell-style="headerStyle"
         @selection-change="handleSelectionChange"
         @cell-mouse-enter="(data)=>focusedData = Object.assign({}, data)"
       >
@@ -27,23 +35,49 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="请假名称"
-          prop="name"
-          :width="columnStyle(400,200,150)"
+          :width="columnStyle(100,95,95)"
+          label="填表日期"
+          prop="docDate"
         />
         <el-table-column
-          label="请假代码"
-          prop="code"
+          :width="columnStyle(200,200,150)"
+          label="员工"
+          prop="employee"
         />
         <el-table-column
-          label="请假上限"
-          prop="standday"
-          width="300"
+          label="部门"
+          prop="dept"
         />
         <el-table-column
+          :width="columnStyle(110,90,70)"
+          label="职位"
+          prop="position"
+        />
+        <el-table-column
+          :width="columnStyle(180,160,95)"
+          label="请假类型"
+          prop="holitype"
+        />
+        <el-table-column
+          :width="columnStyle(270,260,160)"
+          label="请假时间"
+          prop="date"
+        />
+        <el-table-column
+          label="请假事由"
+          prop="reason"
+        />
+        <el-table-column
+          :width="columnStyle(90,80,80)"
+          label="请假时长"
+          prop="leavetime"
+        >
+          <template slot-scope="scope">{{ scope.row.leavetime+'天 ' }}</template>
+        </el-table-column>
+        <el-table-column
+          :width="columnStyle(230,200,150)"
           label="操作"
           prop="operation"
-          :width="columnStyle(230,200,150)"
         >
           <template>
             <el-button
@@ -81,8 +115,8 @@ export default {
   data() {
     return {
       searchForm: {
-        code: '',
-        name: ''
+        dept: '',
+        employee: ''
       },
       page: {
         currentPage: 0,
@@ -91,13 +125,20 @@ export default {
         totalPage: 0
       },
       loading: false,
-      ntahlList: [{id: '001',name: '请假a',code: 'a',standday: '8'},
-                    {id: '002',name: '请假b',code: 'b',standday: '8'},
-                    {id: '003',name: '请假c',code: 'c',standday: '8'},
-                    {id: '004',name: '请假d',code: 'd',standday: '8'},
-                    {id: '005',name: '请假e',code: 'e',standday: '8'},
-                    {id: '006',name: '请假f',code: 'f',standday: '8'}
-                    ], // 请假
+      deptlist: [{ id: '001', name: '部门a', code: 'a' },
+        { id: '002', name: '部门b', code: 'b' },
+        { id: '003', name: '部门c', code: 'c' },
+        { id: '004', name: '部门d', code: 'd' },
+        { id: '005', name: '部门e', code: 'e' },
+        { id: '006', name: '部门f', code: 'f' }
+      ], // 部门
+      ntahlList: [{ id: '001', docDate: '2020-03-02', employee: '张三a', dept: '部门a', position: '职位好好', holitype: '事假', date: '2020-03-01', leavetime: '8', reason: '我是原因' },
+        { id: '002', docDate: '2020-03-02', employee: '张三b', dept: '部门b', position: '职位好好', holitype: '事假', date: '2020-03-01', leavetime: '8', reason: '我是原因' },
+        { id: '003', docDate: '2020-03-02', employee: '张三c', dept: '部门c', position: '职位好好', holitype: '事假', date: '2020-03-01', leavetime: '8', reason: '我是原因' },
+        { id: '004', docDate: '2020-03-02', employee: '张三d', dept: '部门d', position: '职位好好', holitype: '事假', date: '2020-03-01', leavetime: '8', reason: '我是原因' },
+        { id: '005', docDate: '2020-03-02', employee: '张三e', dept: '部门e', position: '职位好好', holitype: '事假', date: '2020-03-01', leavetime: '8', reason: '我是原因' },
+        { id: '006', docDate: '2020-03-02', employee: '张三f', dept: '部门f', position: '职位好好', holitype: '事假', date: '2020-03-01', leavetime: '8', reason: '我是原因' }
+      ], // 张三
       focusedData: {}, // table 点击行的数据
       multipleSelection: [] // 多选
     }
@@ -110,9 +151,10 @@ export default {
     columnStyle,
     // 获取记录日志
     getntahllist(param) {
+      console.log(param)
     //   getntahllist(param).then(res => {
     //     console.log(res)
-    //     if (res.code === 200) {
+    //     if (res.dept === 200) {
     //       this.page.currentPage = res.data.currentPage;
     //       this.page.pageSize = res.data.size;
     //       this.page.totalPage = res.data.pages;
@@ -127,7 +169,7 @@ export default {
     },
     insertOne(item) {
     //   insertOne(item).then(res => {
-    //     if (res.code === 200) {
+    //     if (res.dept === 200) {
     //       this.$message({
     //         message: "保存成功",
     //         type: "success"
@@ -143,7 +185,7 @@ export default {
     },
     updateOne(item) {
     //   updateOne(item).then(res => {
-    //     if (res.code === 200) {
+    //     if (res.dept === 200) {
     //       this.$message({
     //         message: "保存成功",
     //         type: "success"
@@ -167,7 +209,7 @@ export default {
     //     closeOnClickModal: "false"
     //   }).then(() => {
     //     delOne(Hid).then(res => {
-    //       if (res.code === 200) {
+    //       if (res.dept === 200) {
     //         this.$message({
     //           message: "删除成功",
     //           type: "success"
@@ -177,9 +219,9 @@ export default {
     //     })
     //   })
     },
-  // 多选操作
+    // 多选操作
     handleSelectionChange(val) {
-      console.log(1,val)
+      console.log(1, val)
       this.multipleSelection = val;
     },
     // 删除所选
@@ -189,7 +231,7 @@ export default {
       let str = '';
       // this.delList = this.delList.concat(this.multipleSelection);
       for (let i = 0; i < length; i++) {
-          str += this.multipleSelection[i].name + ' ';
+        str += this.multipleSelection[i].employee + ' ';
       }
       this.$message.error(`删除了${str}`);
       this.multipleSelection = [];
@@ -199,22 +241,30 @@ export default {
       const para = { currentPage: item.currentPage, pageSize: item.pageSize }
       this.getntahllist(para);
     },
+    // 导出选中数据
     getExcel (param) {
-      getExcel(param).then(res => {
-        const filename = "请假明细";
-        var exceldata = res.data;
-        const tHeader = [
-          "请假名称",
-          "请假代码",
-          "请假日期上限"
-        ];
-        const filterVal = [
-          "name",
-          "code",
-          "standday"
-        ];
-        donwnloadExcel(filename, tHeader, filterVal, exceldata)
-      })
+      const fileemployee = "请假明细";
+      var exceldata = this.multipleSelection;
+      const tHeader = [
+        "填表日期",
+        "员工",
+        "部门",
+        "职位",
+        "请假类型",
+        "请假时间",
+        "请假事由",
+        "请假时长"
+      ];
+      const filterVal = [
+        "docDate",
+        "employee",
+        "position",
+        "holitype",
+        "date",
+        "leavetime",
+        "reason"
+      ];
+      donwnloadExcel(fileemployee, tHeader, filterVal, exceldata)
     }
   }
 }

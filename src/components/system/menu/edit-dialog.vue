@@ -22,11 +22,11 @@
           @change="parentChanged"
         />
       </el-form-item>
-        
+
       <el-form-item label="菜单类型" prop="type">
         <el-select v-model="item.type">
-          <el-option label="一级菜单" :value="1" />
-          <el-option label="二级菜单" :value="2" />
+          <el-option :value="1" label="一级菜单" />
+          <el-option :value="2" label="二级菜单" />
         </el-select>
       </el-form-item>
 
@@ -43,12 +43,12 @@
             :value="ele.value"
           >
             <span style="float: left">{{ ele.label }}</span>
-            <i style="float:right;line-height:34px" :class="ele.value" />
+            <i :class="ele.value" style="float:right;line-height:34px" />
           </el-option>
         </el-select>
       </el-form-item>
 
-      <el-form-item label="链接路径" prop="url" :rules="{required: item.type === 2?true:false, message: '请填写链接路径', trigger: 'blur' }">
+      <el-form-item :rules="{required: item.type === 2?true:false, message: '请填写链接路径', trigger: 'blur' }" label="链接路径" prop="url">
         <el-input v-model="item.url" />
       </el-form-item>
     </el-form>

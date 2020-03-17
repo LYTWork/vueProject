@@ -6,8 +6,8 @@
         <el-input v-model="searchForm.name" clearable placeholder="员工姓名" />
         <el-input v-model="searchForm.code" clearable placeholder="员工工号" />
         <el-select v-model="searchForm.status" clearable placeholder="在职/离职">
-          <el-option label="在职" :value="0">在职</el-option>
-          <el-option label="离职" :value="1">离职</el-option>
+          <el-option :value="0" label="在职">在职</el-option>
+          <el-option :value="1" label="离职">离职</el-option>
         </el-select>
         <el-button type="success" icon="el-icon-search" plain @click="querystaff(searchForm)">搜索</el-button>
         <el-button type="primary" icon="el-icon-plus" plain @click="$refs.addDialog.open(null)">新增员工</el-button>
@@ -16,12 +16,12 @@
       </div>
       <el-table
         v-loading="loading"
+        :data="allstaff"
+        :header-cell-style="headerStyle"
         element-loading-text="拼命加载中"
         border
-        :data="allstaff"
         height="82%"
         class="table"
-        :header-cell-style="headerStyle"
         @selection-change="handleSelectionChange"
         @cell-mouse-enter="(data)=>focusedData = Object.assign({}, data)"
       >
@@ -49,7 +49,7 @@
               <el-form-item label="现住址">
                 <span>{{ props.row.addr2 }}</span>
               </el-form-item>
-              
+
             </el-form>
           </template>
         </el-table-column>
@@ -102,8 +102,8 @@
 import PageComponent from '@/components/common/Pagenation/index'
 import EditDialog from './edit-dialog'
 import { headerStyle } from '@/utils/style'
-import { querydept } from '@/api/dept'
-import { querystaff, insertstaff, updatestaff, delstaff } from '@/api/staff'
+// import { querydept } from '@/api/dept'
+// import { querystaff, insertstaff, updatestaff, delstaff } from '@/api/staff'
 import { donwnloadExcel } from '@/utils/index'
 export default {
   components: {
@@ -130,13 +130,13 @@ export default {
       },
       loading: false,
       allstaff: [],
-      mockdata:[{id: '001',name: '张三',code: '001',dept: '部门1',gender:0,title: '前端工程师',married: 0,polity:0,education:0,status:0},
-                {id: '002',name: '李四',code: '002',dept: '部门1',gender:0,title: '前端工程师',married: 0,polity:0,education:0,status:0},
-                {id: '003',name: '王五',code: '003',dept: '部门1',gender:0,title: '前端工程师',married: 0,polity:0,education:0,status:0},
-                {id: '004',name: '张三',code: '004',dept: '部门1',gender:0,title: '前端工程师',married: 0,polity:0,education:0,status:0},
-                {id: '005',name: '张三',code: '005',dept: '部门1',gender:0,title: '前端工程师',married: 0,polity:0,education:0,status:0},
-                {id: '006',name: '张三',code: '006',dept: '部门1',gender:0,title: '前端工程师',married: 0,polity:0,education:0,status:0},
-                ],
+      mockdata: [{ id: 1, name: '张三', code: '001', dept: '部门1', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 },
+        { id: 2, name: '李四', code: '002', dept: '部门1', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 },
+        { id: 3, name: '王五', code: '003', dept: '部门1', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 },
+        { id: 4, name: '张三', code: '004', dept: '部门1', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 },
+        { id: 5, name: '张三', code: '005', dept: '部门1', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 },
+        { id: 6, name: '张三', code: '006', dept: '部门1', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 }
+      ],
       focusedData: {},
       multipleSelection: [] // 多选
     }
@@ -299,17 +299,17 @@ export default {
       //   console.log(res)
       //   this.deptlist = res.data;
       // })
-      this.deptlist = [{id: '001',name: '部门a',code: 'a'},
-                {id: '002',name: '部门b',code: 'b'},
-                {id: '003',name: '部门c',code: 'c'},
-                {id: '004',name: '部门d',code: 'd'},
-                {id: '005',name: '部门e',code: 'e'},
-                {id: '006',name: '部门f',code: 'f'}
-                ]
+      this.deptlist = [{ id: '001', name: '部门a', code: 'a' },
+        { id: '002', name: '部门b', code: 'b' },
+        { id: '003', name: '部门c', code: 'c' },
+        { id: '004', name: '部门d', code: 'd' },
+        { id: '005', name: '部门e', code: 'e' },
+        { id: '006', name: '部门f', code: 'f' }
+      ]
     },
     // 多选操作
     handleSelectionChange(val) {
-      console.log(1,val)
+      console.log(1, val)
       this.multipleSelection = val;
     },
     // 删除所选
@@ -319,7 +319,7 @@ export default {
       let str = '';
       // this.delList = this.delList.concat(this.multipleSelection);
       for (let i = 0; i < length; i++) {
-          str += this.multipleSelection[i].name + ' ';
+        str += this.multipleSelection[i].name + ' ';
       }
       this.$message.error(`删除了${str}`);
       this.multipleSelection = [];
@@ -332,18 +332,17 @@ export default {
 
     // 导出前端选择的数据
     getExcel (param) {
-        const filename = "员工明细";
-        var exceldata = this.multipleSelection;
-        const tHeader = [
-          "员工名称",
-          "员工代码"
-        ];
-        const filterVal = [
-          "name",
-          "code"
-        ];
-        donwnloadExcel(filename, tHeader, filterVal, exceldata)
-      
+      const filename = "员工明细";
+      var exceldata = this.multipleSelection;
+      const tHeader = [
+        "员工名称",
+        "员工代码"
+      ];
+      const filterVal = [
+        "name",
+        "code"
+      ];
+      donwnloadExcel(filename, tHeader, filterVal, exceldata)
     }
   }
 }

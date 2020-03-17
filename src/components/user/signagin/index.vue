@@ -10,31 +10,31 @@
           <div>
             <div class="calendar-day" >{{ data.day.split('-').slice(2).join('-') }}</div>
             <div v-for="item in attendance" :key="item.key" @click.stop="select(item)">
-                <div v-if="(item.date).indexOf(data.day)!=-1" @click.stop="select(item)">
-                  <span v-for="(val,_in) in item.type" :key="_in" @click.stop="select(item)">
-                    <span class="node" v-if="val==0"></span>
-                    <span v-if="val==1" class=" blue" @click.stop="select(item)">加</span>
-                    <span v-if="val==2" class=" purple" @click.stop="select(item)">差</span>
-                    <span v-if="val==3" class=" yellow" @click.stop="select(item)">假</span>
-                    <span v-if="val==4" class=" green" @click.stop="select(item)">节</span>
-                  </span>
-                </div>
-                <div v-else />
+              <div v-if="(item.date).indexOf(data.day)!=-1" @click.stop="select(item)">
+                <span v-for="(val,_in) in item.type" :key="_in" @click.stop="select(item)">
+                  <span v-if="val==0" class="node"/>
+                  <span v-if="val==1" class=" blue" @click.stop="select(item)">加</span>
+                  <span v-if="val==2" class=" purple" @click.stop="select(item)">差</span>
+                  <span v-if="val==3" class=" yellow" @click.stop="select(item)">假</span>
+                  <span v-if="val==4" class=" green" @click.stop="select(item)">节</span>
+                </span>
+              </div>
+              <div v-else />
             </div>
           </div>
         </template>
       </el-calendar>
       <div v-show="showFlag" style="float: right;width: 39%;border-left: 1px solid #E6E6EB;height: 284px;margin-top: 8px;text-align: center;">
-                <div>
-                    <div style="color: #5AC8FA;font-size: 54px;">{{showdata.day}}</div>
-                    <div style="color: #75787B;font-size: 18px;">{{showdata.year}}年{{showdata.month}}月</div>
-                    <div style="color: #FF4C4D;font-size: 16px;margin-top: 6px;">出勤状态：<span v-for="type in showdata.type">{{type}}/</span></div>
-                    <div v-for="item in showdata.value">
-                      <div style="margin-top: 16px;"><span :class="item.isflag ? 'normal' : 'abnormal'" >{{item.namevalue}}</span></div>
-                    </div>
-                    
-                </div>
-            </div>
+        <div>
+          <div style="color: #5AC8FA;font-size: 54px;">{{ showdata.day }}</div>
+          <div style="color: #75787B;font-size: 18px;">{{ showdata.year }}年{{ showdata.month }}月</div>
+          <div style="color: #FF4C4D;font-size: 16px;margin-top: 6px;">出勤状态：<span v-for="(type,index) in showdata.type" :key="index">{{ type }}/</span></div>
+          <div v-for="(item,index) in showdata.value" :key="index">
+            <div style="margin-top: 16px;"><span :class="item.isflag ? 'normal' : 'abnormal'" >{{ item.namevalue }}</span></div>
+          </div>
+
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -67,124 +67,123 @@ export default {
       currentPage: 1,
       pagesize: 10,
       attendance: [
-        { date:'2020-03-01',
-                type:[1,2],// 0、代表异常 1、代表加班 2、出差 3、假期 4、节日;
-                num:4,//2、代表一天打两次卡 4、代表一天打四次卡
-                value:[
-                    {
-                        isflag:true,//正常
-                        namevalue:"上午上班/08:35:00(正常)"
-                    },
-                    {
-                        isflag:false,//异常
-                        namevalue:"上午下班/08:35:00(早退)"
-                    },
-                    {
-                        isflag:true,
-                        namevalue:"下午上班/---"
-                    },
-                    {
-                        isflag:true,
-                        namevalue:"下午下班/---"
-                    },
-                ] },{
-                date:'2020-03-02',
-                type:[0],// 0、代表异常 1、代表加班 2、出差 3、假期 4、节日;
-                num:2,//2、代表一天打两次卡 4、代表一天打四次卡
-                value:[
-                    {
-                        isflag:true,//正常
-                        namevalue:"上班/08:35:00(正常)"
-                    },
-                    {
-                        isflag:false,//异常
-                        namevalue:"下班/08:35:00(早退)"
-                    },
-                    
-                ]
-        
-            },{
-                date:'2020-03-08',
-                type:[3],// 0、代表异常 1、代表加班 2、出差 3、假期 4、节日;
-                num:2,//2、代表一天打两次卡 4、代表一天打四次卡
-                value:[
-                    {
-                        isflag:true,//正常
-                        namevalue:"上班/08:35:00(正常)"
-                    },
-                    {
-                        isflag:false,//异常
-                        namevalue:"下班/08:35:00(早退)"
-                    },
-                    
-                ]
-        
-            },{
-                date:'2020-03-09',
-                type:[4],// 0、代表异常 1、代表加班 2、出差 3、假期 4、节日;
-                num:2,//2、代表一天打两次卡 4、代表一天打四次卡
-                value:[
-                    {
-                        isflag:true,//正常
-                        namevalue:"上班/08:35:00(正常)"
-                    },
-                    {
-                        isflag:false,//异常
-                        namevalue:"下班/08:35:00(早退)"
-                    },
-                    
-                ]
-        
-            },{
-                date:'2020-03-07',
-                type:[1],// 0、代表异常 1、代表加班 2、出差 3、假期 4、节日;
-                num:2,//2、代表一天打两次卡 4、代表一天打四次卡
-                value:[
-                    {
-                        isflag:true,//正常
-                        namevalue:"上班/08:35:00(正常)"
-                    },
-                    {
-                        isflag:false,//异常
-                        namevalue:"下班/08:35:00(早退)"
-                    },
-                    
-                ]
-        
-            }]
+        { date: '2020-03-01',
+          type: [1, 2], // 0、代表异常 1、代表加班 2、出差 3、假期 4、节日;
+          num: 4, // 2、代表一天打两次卡 4、代表一天打四次卡
+          value: [
+            {
+              isflag: true, // 正常
+              namevalue: "上午上班/08:35:00(正常)"
+            },
+            {
+              isflag: false, // 异常
+              namevalue: "上午下班/08:35:00(早退)"
+            },
+            {
+              isflag: true,
+              namevalue: "下午上班/---"
+            },
+            {
+              isflag: true,
+              namevalue: "下午下班/---"
+            }
+          ] }, {
+          date: '2020-03-02',
+          type: [0], // 0、代表异常 1、代表加班 2、出差 3、假期 4、节日;
+          num: 2, // 2、代表一天打两次卡 4、代表一天打四次卡
+          value: [
+            {
+              isflag: true, // 正常
+              namevalue: "上班/08:35:00(正常)"
+            },
+            {
+              isflag: false, // 异常
+              namevalue: "下班/08:35:00(早退)"
+            }
+
+          ]
+
+        }, {
+          date: '2020-03-08',
+          type: [3], // 0、代表异常 1、代表加班 2、出差 3、假期 4、节日;
+          num: 2, // 2、代表一天打两次卡 4、代表一天打四次卡
+          value: [
+            {
+              isflag: true, // 正常
+              namevalue: "上班/08:35:00(正常)"
+            },
+            {
+              isflag: false, // 异常
+              namevalue: "下班/08:35:00(早退)"
+            }
+
+          ]
+
+        }, {
+          date: '2020-03-09',
+          type: [4], // 0、代表异常 1、代表加班 2、出差 3、假期 4、节日;
+          num: 2, // 2、代表一天打两次卡 4、代表一天打四次卡
+          value: [
+            {
+              isflag: true, // 正常
+              namevalue: "上班/08:35:00(正常)"
+            },
+            {
+              isflag: false, // 异常
+              namevalue: "下班/08:35:00(早退)"
+            }
+
+          ]
+
+        }, {
+          date: '2020-03-07',
+          type: [1], // 0、代表异常 1、代表加班 2、出差 3、假期 4、节日;
+          num: 2, // 2、代表一天打两次卡 4、代表一天打四次卡
+          value: [
+            {
+              isflag: true, // 正常
+              namevalue: "上班/08:35:00(正常)"
+            },
+            {
+              isflag: false, // 异常
+              namevalue: "下班/08:35:00(早退)"
+            }
+
+          ]
+
+        }]
     }
   },
   mounted() {
   },
   methods: {
-    select(data){
+    select(data) {
       this.showFlag = true
       console.log(data)
-      this.showdata = {year: '',
+      this.showdata = { year: '',
         month: '',
-        day:'',
-        type:[]
-        }
+        day: '',
+        type: []
+      }
       this.showdata.num = data.num;
       this.showdata.value = data.value;
       var now = new Date(data.date);
-      this.showdata.year = now.getFullYear(); //得到年份
-      this.showdata.month = now.getMonth()+1;//得到月份
-      this.showdata.day = now.getDate();//得到日期
+      this.showdata.year = now.getFullYear(); // 得到年份
+      this.showdata.month = now.getMonth() + 1;// 得到月份
+      this.showdata.day = now.getDate();// 得到日期
       data.type.forEach(element => {
-        switch(element){
+        switch (element) {
           case 0: this.showdata.type.push('异常');
-          break;
+            break;
           case 1: this.showdata.type.push('加班');
-          break;
+            break;
           case 2: this.showdata.type.push('出差');
-          break;
+            break;
           case 3: this.showdata.type.push('假期');
-          break;
+            break;
           case 4: this.showdata.type.push('节日');
-          break;
+            break;
         }
-        
       });
     }
   }

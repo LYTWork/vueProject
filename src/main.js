@@ -9,7 +9,6 @@ import store from './store'
 import '@/utils/prototype.js' // 导入全局方法
 import i18n from './i18n'
 
-
 // 设置反向代理(把前端的请求通过前端服务器转发给后端（称为反向代理）)，前端请求默认发送到 http://localhost:8443/api
 // var axios = require('axios')
 // axios.defaults.baseURL = ''
@@ -34,7 +33,7 @@ Vue.use(ElementUI)
 //     next()
 //   }
 // })
-//使用钩子函数对路由进行权限跳转
+// 使用钩子函数对路由进行权限跳转
 // router.beforeEach((to, from, next) => {
 //   document.title = `${to.meta.title} | 企业管理系统`;
 //   const role = localStorage.getItem('ms_username');
@@ -60,7 +59,6 @@ new Vue({
   store,
   i18n,
   components: { App },
-  template: '<App/>',
   created() {
     if (sessionStorage.getItem('store')) { // 页面加载前读取sessionStorage里的状态信息
       this.$store.replaceState(Object.assign({}, this.$store.state, JSON.parse(sessionStorage.getItem('store'))))
@@ -70,5 +68,6 @@ new Vue({
       sessionStorage.setItem('store', JSON.stringify(this.$store.state))
     })
   },
+  template: '<App/>',
   render: h => h(App)
 })

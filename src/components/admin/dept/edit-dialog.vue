@@ -1,6 +1,6 @@
 <template>
-  <el-dialog id="edit-dialog" :title="title" :visible.sync="visable" :lock-scroll="false" width="30%" :show-close="false" :close-on-click-modal="false">
-    <el-form ref="dataForm" :model="item" label-width="100px" :rules="rules">
+  <el-dialog id="edit-dialog" :title="title" :visible.sync="visable" :lock-scroll="false" :show-close="false" :close-on-click-modal="false" width="30%">
+    <el-form ref="dataForm" :model="item" :rules="rules" label-width="100px">
       <el-form-item label="部门名称" prop="name">
         <el-input v-model="item.name" />
       </el-form-item>
@@ -63,7 +63,7 @@ export default {
         }
       })
     },
-  cancel(dataForm) {
+    cancel(dataForm) {
       this.$refs[dataForm].resetFields();
       this.visable = false;
     }

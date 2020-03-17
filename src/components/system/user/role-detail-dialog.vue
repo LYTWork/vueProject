@@ -1,27 +1,27 @@
 <template>
   <el-dialog
     id="role-detail-dialog"
-    custom-class="customWidth"
     :title="title"
     :visible.sync="visable"
     :close-on-click-modal="false"
     :show-close="false"
     :lock-scroll="false"
+    custom-class="customWidth"
     append-to-body
     width="50%"
   >
     <search-component ref="search" :tablelist="details_copy" :search-states="searchStates" @onSearch="(item) =>handleSearchChange(item)" />
 
     <el-table
+      :data="details"
+      :header-cell-style="headerStyle"
       border
       height="20rem"
-      :data="details"
       tooltip-effect="dark"
-      :header-cell-style="headerStyle"
       @selection-change="handleSelectionChange"
       @select-all="selectall"
     >
-      <el-table-column type="selection" :selectable="selectInit"/>
+      <el-table-column :selectable="selectInit" type="selection"/>
       <el-table-column type="index" label="序号" width="55" />
       <el-table-column prop="name" label="角色名称" />
       <el-table-column label="操作" width="100">
@@ -80,7 +80,6 @@ export default {
       queryRoles().then(res => {
         this.details = res.data.list;
         this.details_copy = this.details;
-        console.log(22,this.details_copy)
         // 匹配搜索建议
         this.searchStates = [];
         this.details_copy.forEach(ele => {
@@ -124,8 +123,8 @@ export default {
       this.$refs.search.searchString = "";
     },
     selectInit(row, index) {
-      console.log(2121231,this.existrole)
-      if (this.existrole.indexOf(row.id) != -1) {
+      console.log(2121231, this.existrole)
+      if (this.existrole.indexOf(row.id) !== -1) {
         // 判断 test 字符串是否存在于 arr 数组中，存在返回true 否则false，此处将返回true) {
         return false; // 不可勾选
       } else {

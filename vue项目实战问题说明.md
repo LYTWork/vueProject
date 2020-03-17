@@ -231,6 +231,8 @@ mounted () {
 
 ![image-20200311155153396](C:\Users\CDIT006\AppData\Roaming\Typora\typora-user-images\image-20200311155153396.png)
 
+![image-20200317170355321](C:\Users\CDIT006\AppData\Roaming\Typora\typora-user-images\image-20200317170355321.png)
+
 ##### 需求分析阶段：
 
 ###### 　　用例图

@@ -106,7 +106,7 @@ export function param2Obj(url) {
   )
 }
 /*
- * 
+ *
  * [{id: 1,name: "系统管理",parentId: null},{id: 2,name: "菜单资源",parentId: 1},{...}]
  * [{id: 1,
     lowerMenu: [{id: 2,name: "菜单资源",parentId: 1}, {…}]
@@ -145,9 +145,9 @@ export function delWeight(current, table) {
     tempArray1[table[i]] = true;
   }
 
-  for (var i = 0; i < current.length; i++) {
-    if (tempArray1[current[i]]) {
-      tempArray2.push(current[i]);
+  for (var j = 0; j < current.length; j++) {
+    if (tempArray1[current[j]]) {
+      tempArray2.push(current[j]);
     }
   }
 
@@ -163,13 +163,13 @@ function timestampToTime (timestamp) {
       : date.getMonth() + 1) + "-";
   var D =
     (date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) + " ";
-  var h =
-    (date.getHours() < 10 ? "0" + date.getHours() : date.getHours()) + ":";
-  var m =
-    (date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()) +
-    ":";
-  var s =
-    date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+  // var h =
+  //   (date.getHours() < 10 ? "0" + date.getHours() : date.getHours()) + ":";
+  // var m =
+  //   (date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()) +
+  //   ":";
+  // var s =
+  //   date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
   return Y + M + D;
 }
 
@@ -238,9 +238,11 @@ export function getdays(startTime, endTime) {
   // 判断请假时间是否为上午；
   var beginTime = startTime.split(" ")[1].split(":")[0];
   var stopTime = endTime.split(" ")[1].split(":")[0];
+  // eslint-disable-next-line eqeqeq
   if (beginTime[0] == '0') {
     beginTime = beginTime[1]
   }
+  // eslint-disable-next-line eqeqeq
   if (stopTime[0] == '0') {
     stopTime = stopTime[1]
   }
@@ -269,6 +271,7 @@ export function isObjectValueEqual(a, b) {
   var bProps = Object.getOwnPropertyNames(b);
   // console.log(aProps,bProps)
 
+  // eslint-disable-next-line eqeqeq
   if (aProps.length != bProps.length) {
     return false;
   }
