@@ -232,12 +232,12 @@ export function donwnloadExcel(filename, tHeader, filterVal, exceldata) {
 // }
 
 // 计算时间间隔（最小单位0.5天）
-export function getdays(startTime, endTime) {
-  var begin = new Date(startTime);
-  var end = new Date(endTime);
+export function getdays(start_time, end_time) {
+  var begin = new Date(start_time);
+  var end = new Date(end_time);
   // 判断请假时间是否为上午；
-  var beginTime = startTime.split(" ")[1].split(":")[0];
-  var stopTime = endTime.split(" ")[1].split(":")[0];
+  var beginTime = start_time.split(" ")[1].split(":")[0];
+  var stopTime = end_time.split(" ")[1].split(":")[0];
   // eslint-disable-next-line eqeqeq
   if (beginTime[0] == '0') {
     beginTime = beginTime[1]

@@ -97,13 +97,18 @@ export default {
           },
           { "id": 32,
             "parentId": 3,
-            "title": "部门信息",
+            "title": "部门管理",
             "url": "/admin/dept"
           },
           { "id": 33,
             "parentId": 3,
-            "title": "假种信息",
+            "title": "假种管理",
             "url": "/admin/holiday"
+          },
+          { "id": 34,
+            "parentId": 3,
+            "title": "班别管理",
+            "url": "/admin/class"
           }]
         },
         { "id": 4,

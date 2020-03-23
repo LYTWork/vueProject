@@ -1,5 +1,5 @@
 <template>
-  <el-dialog id="edit-dialog" :title="title" :visible.sync="visable" :lock-scroll="false" :show-close="false" :close-on-click-modal="false" width="30%">
+  <el-dialog id="edit-dialog" :title="title" :visible.sync="visible" :lock-scroll="false" :show-close="false" :close-on-click-modal="false" width="30%">
     <el-form ref="dataForm" :model="item" :rules="rules" label-width="100px">
       <el-form-item label="部门名称" prop="name">
         <el-input v-model="item.name" />
@@ -25,7 +25,7 @@ export default {
   data() {
     return {
       item: {},
-      visable: false,
+      visible: false,
       value1: '',
       radio: '',
       name: '',
@@ -39,10 +39,9 @@ export default {
   },
   methods: {
     open (item, data) {
-      this.visable = true;
+      this.visible = true;
       if (item === undefined || item === null) {
         this.item = {};
-        this.item.dep = "成都路维"
       } else {
         this.item = item;
       }
@@ -65,7 +64,7 @@ export default {
     },
     cancel(dataForm) {
       this.$refs[dataForm].resetFields();
-      this.visable = false;
+      this.visible = false;
     }
   }
 }

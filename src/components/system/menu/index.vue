@@ -9,10 +9,9 @@
       <el-table
         v-loading="loading"
         :data="mockdata"
-        :header-cell-style="headerStyle"
         :tree-props="{children: 'lowerMenu', hasChildren: 'hasChildren'}"
         element-loading-text="拼命加载中"
-        border
+        stripe
         row-key="id"
         height="83%"
         @cell-mouse-enter="mouseEnter"
@@ -67,9 +66,8 @@
 
 <script>
 // import { dataToTree } from '@/utils/index'
-import EditDialog from "./edit-dialog";
-import PageComponent from '@/components/common/Pagenation/index';
-import { headerStyle } from '@/utils/style.js'
+import EditDialog from "./edit-dialog"
+import PageComponent from '@/components/common/Pagenation/index'
 import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
@@ -167,7 +165,6 @@ export default {
     ...mapGetters(["sidebar", "menuType", "menuList", "typeList", "userid"])
   },
   methods: {
-    headerStyle,
     ...mapActions("menu/", ["setMenu"]),
     onSearch() {
       // 发送请求

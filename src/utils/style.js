@@ -1,7 +1,3 @@
-export const headerStyle = function() {
-  const css = { background: '#f5f7fa', height: '3.5rem' }
-  return css
-};
 // 不同分辨率下的列宽度修改
 export const columnStyle = function(a, b, c) {
   if (screen.width >= 1920) {

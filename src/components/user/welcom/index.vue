@@ -37,7 +37,7 @@
                 <i class="el-icon-lx-people grid-con-icon"/>
                 <div class="grid-cont-right">
                   <div class="grid-num">1234</div>
-                  <div>用户访问量</div>
+                  <div>考勤异常</div>
                 </div>
               </div>
             </el-card>
@@ -94,7 +94,7 @@
         </el-card>
       </el-col>
     </el-row>
-    <el-row :gutter="20">
+    <!-- <el-row :gutter="20">
       <el-col :span="12">
         <el-card shadow="hover">
           <schart ref="bar" :options="options" class="schart" canvas-id="bar"/>
@@ -105,7 +105,7 @@
           <schart ref="line" :options="options2" class="schart" canvas-id="line"/>
         </el-card>
       </el-col>
-    </el-row>
+    </el-row> -->
   </div>
 </template>
 

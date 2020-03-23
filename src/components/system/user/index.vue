@@ -18,11 +18,9 @@
       <el-table
         v-loading="loading"
         :data="userList"
-        :header-cell-style="headerStyle"
         element-loading-text="拼命加载中"
-        border
+        stripe
         height="83%"
-        @cell-mouse-enter="(data)=>focusedData = Object.assign({}, data)"
       >
         <el-table-column label="序号" type="index" width="55">
           <template slot-scope="scope">
@@ -38,30 +36,32 @@
         </el-table-column>
         <el-table-column prop="type" label="类型" />
         <el-table-column :width="columnStyle(420,350,350)" label="操作">
-          <el-button
-            type="text"
-            icon="el-icon-edit"
-            @click="$refs.updateDialog.open(focusedData)"
-          >修改</el-button>
+          <template slot-scope="scope">
+            <el-button
+              type="text"
+              icon="el-icon-edit"
+              @click="$refs.updateDialog.open(scope.row)"
+            >修改</el-button>
 
-          <el-button
-            type="text"
-            icon="el-icon-delete"
-            class="red"
-            @click="delOne(focusedData.id)"
-          >删除</el-button>
-          <el-button
-            type="text"
-            icon="el-icon-edit-outline"
-            @click="$refs.rolesEditDialog.open(focusedData)"
-          >隶属角色</el-button>
+            <el-button
+              type="text"
+              icon="el-icon-delete"
+              class="red"
+              @click="delOne(scope.row.id)"
+            >删除</el-button>
+            <el-button
+              type="text"
+              icon="el-icon-edit-outline"
+              @click="$refs.rolesEditDialog.open(scope.row)"
+            >隶属角色</el-button>
 
-          <el-button
-            type="text"
-            icon="el-icon-warning-outline"
-            class="gray"
-            @click="resetPass(focusedData.id)"
-          >重置密码</el-button>
+            <el-button
+              type="text"
+              icon="el-icon-warning-outline"
+              class="gray"
+              @click="resetPass(scope.row.name,scope.row.id)"
+            >重置密码</el-button>
+          </template>
         </el-table-column>
       </el-table>
       <page-component :total="page.totalSize" :page="page" @pageChange="(item) => handlePageChange(item)" />
@@ -77,7 +77,7 @@ import PageComponent from '@/components/common/Pagenation/index';
 // import { queryUsers, insertOne, updateOne } from '@/api/sysuser'
 import EditDialog from './edit-dialog';
 import RolesDialog from './user-role-dialog';
-import { headerStyle, columnStyle } from '@/utils/style'
+import { columnStyle } from '@/utils/style'
 export default {
   components: {
     PageComponent,
@@ -88,7 +88,6 @@ export default {
     return {
       userList: [], // 用户数据
       loading: true,
-      focusedData: {}, // table选中行数据
       searchForm: {}, // 搜索表单数据
       page: {
         currentPage: 0,
@@ -136,7 +135,6 @@ export default {
     this.queryUsers(null);
   },
   methods: {
-    headerStyle,
     columnStyle,
     // 查询数据
     queryUsers(params) {
@@ -211,7 +209,7 @@ export default {
       }).catch(() => false)
     },
 
-    resetPass(Uid) {
+    resetPass(Uname, Uid) {
       // 发送请求
       this.$confirm("确认重置密码为123456吗？", "提示", {
         confirmButtonText: "确认",
@@ -221,7 +219,7 @@ export default {
         closeOnClickModal: "false"
       }).then(() => {
         // 重置密码为123456
-        // const pwd = this.$sha1(this.focusedData.name + "123456");
+        // const pwd = this.$sha1(Uname + "123456");
         // resetPass(Uid, pwd).then(res => {
         //   if (res.code === 200) {
         //     this.$message({

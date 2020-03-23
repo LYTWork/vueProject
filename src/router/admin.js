@@ -21,6 +21,14 @@ const admin = [{
     title: '部门管理'
     // roles: ['admin']
   }
+},
+{
+  path: '/admin/class',
+  component: () => import('../components/admin/class/index'),
+  meta: {
+    title: '班别管理'
+    // roles: ['admin']
+  }
 }
 ]
 export default admin

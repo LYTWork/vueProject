@@ -17,13 +17,11 @@
       <el-table
         v-loading="loading"
         :data="allstaff"
-        :header-cell-style="headerStyle"
         element-loading-text="拼命加载中"
-        border
+        stripe
         height="82%"
         class="table"
         @selection-change="handleSelectionChange"
-        @cell-mouse-enter="(data)=>focusedData = Object.assign({}, data)"
       >
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -76,17 +74,17 @@
           align="center"
           label="操作"
         >
-          <template>
+          <template slot-scope="scope">
             <el-button
               type="text"
               icon="el-icon-edit"
-              @click.stop="$refs.updateDialog.open(focusedData)"
+              @click.stop="$refs.updateDialog.open(scope.row)"
             >修改</el-button>
             <el-button
               type="text"
               icon="el-icon-delete"
               class="red"
-              @click.stop="delOne(focusedData.id)"
+              @click.stop="delOne(scope.row.id)"
             >删除</el-button>
           </template>
         </el-table-column>
@@ -101,7 +99,6 @@
 <script>
 import PageComponent from '@/components/common/Pagenation/index'
 import EditDialog from './edit-dialog'
-import { headerStyle } from '@/utils/style'
 // import { querydept } from '@/api/dept'
 // import { querystaff, insertstaff, updatestaff, delstaff } from '@/api/staff'
 import { donwnloadExcel } from '@/utils/index'
@@ -137,7 +134,6 @@ export default {
         { id: 5, name: '张三', code: '005', dept: '部门1', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 },
         { id: 6, name: '张三', code: '006', dept: '部门1', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 }
       ],
-      focusedData: {},
       multipleSelection: [] // 多选
     }
   },
@@ -146,7 +142,6 @@ export default {
     this.queryAll(null);
   },
   methods: {
-    headerStyle,
     // 获取所有数据
     queryAll(param) {
       // querystaff(param).then(res => {

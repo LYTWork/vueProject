@@ -2,7 +2,7 @@
   <el-dialog
     id="role-detail-dialog"
     :title="title"
-    :visible.sync="visable"
+    :visible.sync="visible"
     :close-on-click-modal="false"
     :show-close="false"
     :lock-scroll="false"
@@ -14,8 +14,7 @@
 
     <el-table
       :data="details"
-      :header-cell-style="headerStyle"
-      border
+      stripe
       height="20rem"
       tooltip-effect="dark"
       @selection-change="handleSelectionChange"
@@ -42,7 +41,6 @@
 </template>
 <script>
 
-import { headerStyle } from "@/utils/style";
 import { queryRoles } from "@/api/role";
 import SearchComponent from "@/components/common/Search/index";
 export default {
@@ -61,7 +59,7 @@ export default {
   },
   data() {
     return {
-      visable: false,
+      visible: false,
       multipleSelection: [], // 选中的数据二维数组
       details: [], // table展示的角色列表
       details_copy: [], // 实现模糊搜索的原始数据
@@ -69,10 +67,9 @@ export default {
     };
   },
   methods: {
-    headerStyle,
     // 对外暴露的接口
     open() {
-      this.visable = true;
+      this.visible = true;
       this.queryRoles();
     },
     // 获取新增角色下拉框的角色数据
@@ -119,7 +116,7 @@ export default {
       !item ? this.queryRoles() : (this.details = item);
     },
     cancel() {
-      this.visable = false;
+      this.visible = false;
       this.$refs.search.searchString = "";
     },
     selectInit(row, index) {

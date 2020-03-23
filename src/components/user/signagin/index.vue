@@ -9,14 +9,14 @@
           <!--自定义内容-->
           <div>
             <div class="calendar-day" >{{ data.day.split('-').slice(2).join('-') }}</div>
-            <div v-for="item in attendance" :key="item.key" @click.stop="select(item)">
+            <div v-for="item in attendance" :key="item.key">
               <div v-if="(item.date).indexOf(data.day)!=-1" @click.stop="select(item)">
                 <span v-for="(val,_in) in item.type" :key="_in" @click.stop="select(item)">
                   <span v-if="val==0" class="node"/>
-                  <span v-if="val==1" class=" blue" @click.stop="select(item)">加</span>
-                  <span v-if="val==2" class=" purple" @click.stop="select(item)">差</span>
-                  <span v-if="val==3" class=" yellow" @click.stop="select(item)">假</span>
-                  <span v-if="val==4" class=" green" @click.stop="select(item)">节</span>
+                  <span v-if="val==1" class=" blue">加</span>
+                  <span v-if="val==2" class=" purple">差</span>
+                  <span v-if="val==3" class=" yellow">假</span>
+                  <span v-if="val==4" class=" green">节</span>
                 </span>
               </div>
               <div v-else />
@@ -52,7 +52,7 @@ export default {
       // value3: new Date().setMonth(new Date().getMonth() - 1),
       showdata: {
       },
-      visable: false,
+      visible: false,
       showFlag: false,
       base_title: {
         week1: [],

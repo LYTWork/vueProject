@@ -1,5 +1,5 @@
 <template>
-  <el-dialog id="edit-dialog" :title="title" :visible.sync="visable" :lock-scroll="false" :close-on-click-modal="false" :show-close="false">
+  <el-dialog id="edit-dialog" :title="title" :visible.sync="visible" :lock-scroll="false" :close-on-click-modal="false" :show-close="false">
     <el-form ref="dataForm" :model="item" :rules="rules" label-width="110px">
       <el-form-item label="角色名称" prop="name">
         <el-input v-model="item.name" placeholder="请输入角色名" />
@@ -30,12 +30,10 @@ export default {
     const validateName = (rule, value, callback) => {
       if (this.name === value) { // 没有修改名字
         callback()
-      } else if (value === '') {
-        callback(new Error('请输入角色名'))
       } else {
         getFlagRName({ name: value }).then(res => {
           if (res.data) {
-            callback(new Error('角色名已存在，若已删除可进行恢复'))
+            callback(new Error('角色名已存在'))
           } else {
             callback()
           }
@@ -44,11 +42,12 @@ export default {
     }
     return {
       item: {},
-      visable: false,
+      visible: false,
       timeout: null,
       name: '',
       rules: {
-        name: [{ required: true, trigger: "blur", validator: validateName }],
+        name: [{ required: true, trigger: "blur", message: "请输入角色名" },
+          { trigger: "blur", validator: validateName }],
         weight: [{ required: true, message: "请填写权重", trigger: "blur" }],
         orgNode: [{ required: true, message: "", trigger: "blur" }]
       }
@@ -57,7 +56,7 @@ export default {
   methods: {
     // 对外暴露的接口,item用来接收当前修改的对象
     open(item) {
-      this.visable = true;
+      this.visible = true;
       if (item === undefined || item === null) {
         this.item = {};
       } else {
@@ -84,7 +83,7 @@ export default {
       })
     },
     cancel(dataForm) {
-      this.visable = false;
+      this.visible = false;
       this.$refs[dataForm].resetFields();
     }
   }

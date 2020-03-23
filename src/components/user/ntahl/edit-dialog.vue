@@ -1,5 +1,5 @@
 <template>
-  <el-dialog id="ntahl-dialog" :title="title" :visible.sync="visable" :lock-scroll="false" :show-close="false" :close-on-click-modal="false" width="70%">
+  <el-dialog id="ntahl-dialog" :title="title" :visible.sync="visible" :lock-scroll="false" :show-close="false" :close-on-click-modal="false" width="70%">
     <el-form ref="dataForm" :model="item" :inline="true" :rules="rules" align="center">
       <el-form-item label="姓名" prop="name">
         <el-input
@@ -86,7 +86,7 @@ export default {
   data() {
     return {
       item: {},
-      visable: false,
+      visible: false,
       name: '',
       dep: '',
       holidayType: [{ id: 1, name: '事假', code: 'a', standday: '8' },
@@ -111,7 +111,7 @@ export default {
     getdays,
     // 对外暴露的接口
     open (item) {
-      this.visable = true;
+      this.visible = true;
       if (item === undefined || item === null) {
         this.name = ''
         this.item = {}
@@ -122,6 +122,7 @@ export default {
         this.item.docDate = year + '-' + month + '-' + day
       } else {
         this.item = item
+        console.log(item)
       }
     },
     setInfo(data) {
@@ -150,7 +151,7 @@ export default {
       })
     },
     cancel(formArr) {
-      this.visable = false;
+      this.visible = false;
       formArr.forEach(ele => {
         this.$refs[ele].resetFields()
       });

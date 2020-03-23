@@ -2,7 +2,7 @@
   <el-dialog
     id="menu-dialog"
     :title="title"
-    :visible.sync="visable"
+    :visible.sync="visible"
     :lock-scroll="false"
     :show-close="false"
     :close-on-click-modal="false"
@@ -80,7 +80,7 @@ export default {
         expandTrigger: "hover"
       },
       item: {},
-      visable: false,
+      visible: false,
       rules: {
         title: [{ required: true, message: "请填写名字", trigger: "blur" }],
         parentId: [{ required: false, message: "请选择父节点", trigger: "blur" }],
@@ -100,7 +100,7 @@ export default {
   methods: {
     // 对外暴露的接口
     open (item) {
-      this.visable = true;
+      this.visible = true;
       if (item === undefined || item === null || item === {}) {
         this.item = {};
       } else {
@@ -133,7 +133,7 @@ export default {
     cancel(dataForm) {
       this.$refs[dataForm].resetFields();
       this.$set(this.item, 'parentId', '')
-      this.visable = false;
+      this.visible = false;
     }
   }
 };

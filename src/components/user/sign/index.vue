@@ -1,290 +1,312 @@
 <template>
-  <div id="sign">
+  <div id="sigin">
     <div class="container">
-      <el-calendar id="calendar" :first-day-of-week="7">
-        <template
-          slot="dateCell"
-          slot-scope="{date, data}"
-        >
-          <!--自定义内容-->
-          <div>
-            <div class="calendar-day" >{{ data.day.split('-').slice(2).join('-') }}</div>
-            <div v-for="item in attendance" :key="item.key" @click.stop="select(item)">
-              <div v-if="(item.date).indexOf(data.day)!=-1" @click.stop="select(item)">
-                <span v-for="(val,_in) in item.type" :key="_in" @click.stop="select(item)">
-                  <span v-if="val==0" class="node"/>
-                  <span v-if="val==1" class=" blue" @click.stop="select(item)">加</span>
-                  <span v-if="val==2" class=" purple" @click.stop="select(item)">差</span>
-                  <span v-if="val==3" class=" yellow" @click.stop="select(item)">假</span>
-                  <span v-if="val==4" class=" green" @click.stop="select(item)">节</span>
-                </span>
-              </div>
-              <div v-else />
-            </div>
-          </div>
-        </template>
-      </el-calendar>
-      <div v-show="showFlag" style="float: right;width: 39%;border-left: 1px solid #E6E6EB;height: 284px;margin-top: 8px;text-align: center;">
-        <div>
-          <div style="color: #5AC8FA;font-size: 54px;">{{ showdata.day }}</div>
-          <div style="color: #75787B;font-size: 18px;">{{ showdata.year }}年{{ showdata.month }}月</div>
-          <div style="color: #FF4C4D;font-size: 16px;margin-top: 6px;">出勤状态：<span v-for="(type,index) in showdata.type" :key="index">{{ type }}/</span></div>
-          <div v-for="(item,index) in showdata.value" :key="index">
-            <div style="margin-top: 16px;"><span :class="item.isflag ? 'normal' : 'abnormal'" >{{ item.namevalue }}</span></div>
-          </div>
-
-        </div>
+      <div class="handle-box">
+        <el-date-picker
+          v-model="searchForm.docDate"
+          format="yyyy-MM-dd"
+          value-format="yyyy-MM-dd"
+          placeholder="填表日期"
+        />
+        <el-input v-model="searchForm.employee" clearable placeholder="员工姓名" />
+        <el-select v-model="searchForm.dept" clearable placeholder="员工部门">
+          <el-option v-for="(ele,index) of deptlist" :key="index" :label="ele.name" :value="ele.name" />
+        </el-select>
+        <el-button type="success" icon="el-icon-search" plain @click="getsiginlist(searchForm)">搜索</el-button>
+        <el-button type="danger" icon="el-icon-delete" plain @click="delAllSelection">批量删除</el-button>
+        <el-button type="primary" icon="el-icon-plus" plain @click="$refs.addntahldialog.open(null)">新增请假</el-button>
+        <el-button v-if="$checkPermission(['管理员','测试'])" type="warning" icon="el-icon-download" plain @click="getExcel">导出EXCEL</el-button>
       </div>
+      <el-table
+        v-loading="loading"
+        :data="siginList"
+        element-loading-text="拼命加载中"
+        stripe
+        height="83%"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="55" />
+        <el-table-column label="序号" type="index" width="55" >
+          <template slot-scope="scope">
+            <!-- (当前页 - 1) * 当前显示数据条数 + 当前行数据的索引 + 1 -->
+            <span>{{ (page.currentPage - 1) * page.pageSize + scope.$index + 1 }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="user_name"
+          label="姓名"
+          align="center"/>
+        <el-table-column
+          prop="docDate"
+          label="打卡日期"
+          sortable
+          align="center"/>
+        <el-table-column
+          label="打卡记录"
+          align="center">
+          <template slot-scope="scope">
+            <div :class="{red: (scope.row.status === '异常'), blue: ((scope.row.status === '补打卡') || (scope.row.status === '请假')) }">
+              <span>{{ scope.row.start_time }}</span>
+              <span>--</span>
+              <span>{{ scope.row.end_time }}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="工作时长(h)"
+          align="center">
+          <template slot-scope="scope">
+            <span :class="{red:(scope.row.status === '异常'), blue: ((scope.row.status === '请假') || (scope.row.status === '补打卡')) }">
+              {{ scope.row.workday }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="状态"
+          prop="status"
+          column-key="status"
+          align="center">
+          <template slot-scope="scope">
+            <span :class="{red: scope.row.status === '异常', blue: ((scope.row.status === '补打卡') || (scope.row.status === '请假'))}">
+              {{ scope.row.status }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          align="center"
+          fixed="right">
+          <template slot-scope="scope">
+            <el-button
+              v-if="$checkPermission(['管理员'])"
+              type="text"
+              icon="el-icon-edit"
+              @click="$refs.updateDialog.open(scope.row)">
+              更改状态
+            </el-button>
+            <el-button
+              v-if="$checkPermission(['管理员','部长'])"
+              type="text"
+              icon="el-icon-more"
+              class="gray"
+              @click="$refs.detailDialog.open(scope.row)">
+              详情
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <page-component :total="page.totalSize" :page="page" @pageChange="(item)=>handlePageChange(item)" />
+      <edit-dialog ref="updateDialog" title="更改状态" @OnConfirm="(item)=>updateOne(item)" />
+      <detail-dialog ref="detailDialog" title="详细信息" @OnConfirm="(item)=>updateOne(item)" />
+      <add-ntahl-dialog ref="addntahldialog" title="新增气请假" @OnConfirm="(item)=>updateOne(item)" />
     </div>
   </div>
 </template>
-
 <script>
+import AddNtahlDialog from '../ntahl/edit-dialog'
+import EditDialog from './edit-dialog'
+import DetailDialog from './detail-dialog'
+import PageComponent from '@/components/common/Pagenation/index'
+// import { getsiginlist, insertOne, updateOne, delOne, getExcel } from '@/api/sigin'
+import { columnStyle } from '@/utils/style'
+import { donwnloadExcel } from '@/utils/index'
 export default {
-  props: {
-    title: {
-      type: String,
-      default: "title"
-    }
+  components: {
+    PageComponent,
+    EditDialog,
+    DetailDialog,
+    AddNtahlDialog
   },
   data() {
     return {
-      // value3: new Date().setMonth(new Date().getMonth() - 1),
-      showdata: {
+      searchForm: {
+        dept: '',
+        employee: ''
       },
-      visable: false,
-      showFlag: false,
-      base_title: {
-        week1: [],
-        week2: [],
-        week3: [],
-        week4: [],
-        week5: [],
-        week6: []
-      }, // 动态表头信息（每月天数）
-      tableData: [], // 个人信息
-      workdata: [], // 排班信息
-      currentPage: 1,
-      pagesize: 10,
-      attendance: [
-        { date: '2020-03-01',
-          type: [1, 2], // 0、代表异常 1、代表加班 2、出差 3、假期 4、节日;
-          num: 4, // 2、代表一天打两次卡 4、代表一天打四次卡
-          value: [
-            {
-              isflag: true, // 正常
-              namevalue: "上午上班/08:35:00(正常)"
-            },
-            {
-              isflag: false, // 异常
-              namevalue: "上午下班/08:35:00(早退)"
-            },
-            {
-              isflag: true,
-              namevalue: "下午上班/---"
-            },
-            {
-              isflag: true,
-              namevalue: "下午下班/---"
-            }
-          ] }, {
-          date: '2020-03-02',
-          type: [0], // 0、代表异常 1、代表加班 2、出差 3、假期 4、节日;
-          num: 2, // 2、代表一天打两次卡 4、代表一天打四次卡
-          value: [
-            {
-              isflag: true, // 正常
-              namevalue: "上班/08:35:00(正常)"
-            },
-            {
-              isflag: false, // 异常
-              namevalue: "下班/08:35:00(早退)"
-            }
-
-          ]
-
-        }, {
-          date: '2020-03-08',
-          type: [3], // 0、代表异常 1、代表加班 2、出差 3、假期 4、节日;
-          num: 2, // 2、代表一天打两次卡 4、代表一天打四次卡
-          value: [
-            {
-              isflag: true, // 正常
-              namevalue: "上班/08:35:00(正常)"
-            },
-            {
-              isflag: false, // 异常
-              namevalue: "下班/08:35:00(早退)"
-            }
-
-          ]
-
-        }, {
-          date: '2020-03-09',
-          type: [4], // 0、代表异常 1、代表加班 2、出差 3、假期 4、节日;
-          num: 2, // 2、代表一天打两次卡 4、代表一天打四次卡
-          value: [
-            {
-              isflag: true, // 正常
-              namevalue: "上班/08:35:00(正常)"
-            },
-            {
-              isflag: false, // 异常
-              namevalue: "下班/08:35:00(早退)"
-            }
-
-          ]
-
-        }, {
-          date: '2020-03-07',
-          type: [1], // 0、代表异常 1、代表加班 2、出差 3、假期 4、节日;
-          num: 2, // 2、代表一天打两次卡 4、代表一天打四次卡
-          value: [
-            {
-              isflag: true, // 正常
-              namevalue: "上班/08:35:00(正常)"
-            },
-            {
-              isflag: false, // 异常
-              namevalue: "下班/08:35:00(早退)"
-            }
-
-          ]
-
-        }]
+      page: {
+        currentPage: 0,
+        pageSize: 0,
+        totalSize: 0,
+        totalPage: 0
+      },
+      loading: false,
+      deptlist: [],
+      // 模拟表格数据
+      siginList: [
+        {
+          "id": 1,
+          "docDate": "2018-05-14",
+          "status": "异常",
+          "end_time": "",
+          "start_time": "",
+          "user_name": "黎雨彤",
+          "workday": 1
+        },
+        {
+          "id": 2,
+          "docDate": "2018-05-16",
+          "status": "正常",
+          "end_time": "",
+          "start_time": "",
+          "user_name": "lyt",
+          "workday": 1
+        },
+        {
+          "id": 3,
+          "docDate": "2018-05-19",
+          "status": "请假",
+          "end_time": "",
+          "start_time": "",
+          "user_name": "fff",
+          "workday": 1
+        },
+        {
+          "id": 4,
+          "docDate": "2018-05-22",
+          "status": "补打卡",
+          "end_time": "21:05",
+          "start_time": "21:05",
+          "user_name": "test",
+          "workday": 1
+        }],
+      multipleSelection: [] // 多选
     }
   },
   mounted() {
+    // this.getsiginlist(null);
+    this.getdept()
   },
   methods: {
-    select(data) {
-      this.showFlag = true
-      console.log(data)
-      this.showdata = { year: '',
-        month: '',
-        day: '',
-        type: []
+    columnStyle,
+    // 获取记录日志
+    getsiginlist(param) {
+      console.log(param)
+    //   getsiginlist(param).then(res => {
+    //     console.log(res)
+    //     if (res.dept === 200) {
+    //       this.page.currentPage = res.data.currentPage;
+    //       this.page.pageSize = res.data.size;
+    //       this.page.totalPage = res.data.pages;
+    //       this.page.totalSize = res.data.total;
+    //       this.siginList = res.data.list;
+    //       this.loading = false;
+    //     }
+    //   }).catch(err => {
+    //     console.log('请求失败');
+    //     console.log(err)
+    //   })
+    },
+    getdept() {
+      // getdept().then(res => {
+      //   console.log('部门信息', res.data)
+      //   this.deptlist = res.data
+      // })
+      this.deptlist = [{ id: '001', name: '部门a', code: 'a' },
+        { id: '002', name: '部门b', code: 'b' },
+        { id: '003', name: '部门c', code: 'c' },
+        { id: '004', name: '部门d', code: 'd' },
+        { id: '005', name: '部门e', code: 'e' },
+        { id: '006', name: '部门f', code: 'f' }
+      ]
+    },
+    insertOne(item) {
+    //   insertOne(item).then(res => {
+    //     if (res.dept === 200) {
+    //       this.$message({
+    //         message: "保存成功",
+    //         type: "success"
+    //       });
+    //       this.getsiginlist();
+    //     } else {
+    //       this.$message({
+    //         message: "保存失败，原因：" + res.msg,
+    //         type: "danger"
+    //       });
+    //     }
+    //   })
+    },
+    updateOne(item) {
+    //   updateOne(item).then(res => {
+    //     if (res.dept === 200) {
+    //       this.$message({
+    //         message: "保存成功",
+    //         type: "success"
+    //       });
+    //       this.getsiginlist();
+    //     } else {
+    //       this.$message({
+    //         message: "保存失败，原因：" + res.msg,
+    //         type: "danger"
+    //       });
+    //     }
+    //   })
+    },
+    delOne(Hid) {
+    //   this.$confirm("确认删除吗？", "询问", {
+    //     confirmButtonText: "确认",
+    //     cancelButtonText: "取消",
+    //     type: "warning",
+    //     lockScroll: "false",
+    //     closeOnClickModal: "false"
+    //   }).then(() => {
+    //     delOne(Hid).then(res => {
+    //       if (res.dept === 200) {
+    //         this.$message({
+    //           message: "删除成功",
+    //           type: "success"
+    //         });
+    //         this.getsiginlist();
+    //       }
+    //     })
+    //   })
+    },
+    // 多选操作
+    handleSelectionChange(val) {
+      console.log(1, val)
+      this.multipleSelection = val;
+    },
+    // 删除所选
+    delAllSelection() {
+      console.log(this.multipleSelection)
+      const length = this.multipleSelection.length;
+      let str = '';
+      // this.delList = this.delList.concat(this.multipleSelection);
+      for (let i = 0; i < length; i++) {
+        str += this.multipleSelection[i].employee + ' ';
       }
-      this.showdata.num = data.num;
-      this.showdata.value = data.value;
-      var now = new Date(data.date);
-      this.showdata.year = now.getFullYear(); // 得到年份
-      this.showdata.month = now.getMonth() + 1;// 得到月份
-      this.showdata.day = now.getDate();// 得到日期
-      data.type.forEach(element => {
-        switch (element) {
-          case 0: this.showdata.type.push('异常');
-            break;
-          case 1: this.showdata.type.push('加班');
-            break;
-          case 2: this.showdata.type.push('出差');
-            break;
-          case 3: this.showdata.type.push('假期');
-            break;
-          case 4: this.showdata.type.push('节日');
-            break;
-        }
-      });
+      this.$message.error(`删除了${str}`);
+      this.multipleSelection = [];
+    },
+    handlePageChange(item) {
+      // 发送分页查询请求
+      const para = { currentPage: item.currentPage, pageSize: item.pageSize }
+      this.getsiginlist(para);
+    },
+    // 导出选中数据
+    getExcel (param) {
+      const fileemployee = "请假明细";
+      var exceldata = this.multipleSelection;
+      const tHeader = [
+        "填表日期",
+        "员工",
+        "部门",
+        "职位",
+        "请假类型",
+        "请假时间",
+        "请假事由",
+        "请假时长"
+      ];
+      const filterVal = [
+        "docDate",
+        "employee",
+        "position",
+        "holitype",
+        "date",
+        "leavetime",
+        "reason"
+      ];
+      donwnloadExcel(fileemployee, tHeader, filterVal, exceldata)
     }
   }
 }
 </script>
-<style lang="scss" scoped>
-// 日历样式calendar-day-worksche
-.is-leaf{
-  padding:.5rem 0 0 0!important;
-}
-.el-calendar__title {
-  font-weight: bold;
-}
-.el-calendar{
-  // margin: 2rem;
-  width:50%;
-  text-align:center;
-  float:left;
-}
-.node{
-  position: absolute;
-  top: 4px;
-  right: 1px;
-  border-radius: 100%;
-  width: 6px;
-  height: 6px;
-  background: red;
-}
-.purple{
-  color: #a98be2;
-  font-size: 13px;
-}
-.blue{
-  color: #0089FA;
-  font-size: 13px;
-
-}
-.green{
-  color: #00A753;
-  font-size: 13px;
-
-}
-.yellow{
-  color: #FF9500;
-  font-size: 13px;
-}
-.el-table{
-  width:65%;
-  float:right;
-  margin-top: 4rem;
-}
-.normal{
-  color: #2D2D2D;
-  font-size: 15px;
-}
-.abnormal{
-  color: #FF4C4D;
-  font-size: 15px;
-}
-</style>
-<style lang="scss">
-.el-calendar-table {
-  .el-calendar-day {
-    position: relative;
-    // height: 80px!important;
-  }
-  td {
-    &.is-today {
-      .calendar-day {
-        font-size: 17px;
-        color: rgb(80, 147, 185);
-      }
-      // background-color: #0089FA;
-    }
-  }
-}
-.el-calendar-table thead th:first-child,.el-calendar-table thead th:last-child {
-  color: rgb(129, 168, 219);
-}
-.el-tabs__content{
-    overflow: auto;
-    height: 74vh
-    }
-.calendar-day {
-  text-align: center;
-  line-height: 30px;
-  font-size: 15px;
-}
-.is-selected {
-  color: #9096a1;
-  font-size: 0.7rem;
-  margin-top: 10px;
-}
-.el-calendar {
-  .el-button-group {
-    & > .el-button {
-      &:not(:first-child):not(:last-child):after {
-        content: '当月';
-      }
-    }
-  }
-}
-
-</style>

@@ -20,12 +20,10 @@
       <el-table
         v-loading="loading"
         :data="ntahlList"
-        :header-cell-style="headerStyle"
         element-loading-text="拼命加载中"
-        border
+        stripe
         height="83%"
         @selection-change="handleSelectionChange"
-        @cell-mouse-enter="(data)=>focusedData = Object.assign({}, data)"
       >
         <el-table-column type="selection" width="55" />
         <el-table-column label="序号" type="index" width="55" >
@@ -79,17 +77,18 @@
           label="操作"
           prop="operation"
         >
-          <template>
+          <template slot-scope="scope">
             <el-button
               type="text"
               icon="el-icon-edit"
-              @click.stop="$refs.updateDialog.open(focusedData);"
+              class="yellow"
+              @click.stop="$refs.updateDialog.open(scope.row)"
             >修改</el-button>
             <el-button
               type="text"
               icon="el-icon-delete"
               class="red"
-              @click.stop="delOne(focusedData.id)"
+              @click.stop="delOne(scope.row.id)"
             >删除</el-button>
           </template>
         </el-table-column>
@@ -105,7 +104,7 @@
 import EditDialog from "./edit-dialog"
 import PageComponent from '@/components/common/Pagenation/index'
 // import { getntahllist, insertOne, updateOne, delOne, getExcel } from '@/api/ntahl'
-import { headerStyle, columnStyle } from '@/utils/style'
+import { columnStyle } from '@/utils/style'
 import { donwnloadExcel } from '@/utils/index'
 export default {
   components: {
@@ -139,7 +138,6 @@ export default {
         { id: '005', docDate: '2020-03-02', employee: '张三e', dept: '部门e', position: '职位好好', holitype: '事假', date: '2020-03-01', leavetime: '8', reason: '我是原因' },
         { id: '006', docDate: '2020-03-02', employee: '张三f', dept: '部门f', position: '职位好好', holitype: '事假', date: '2020-03-01', leavetime: '8', reason: '我是原因' }
       ], // 张三
-      focusedData: {}, // table 点击行的数据
       multipleSelection: [] // 多选
     }
   },
@@ -147,7 +145,6 @@ export default {
     // this.getntahllist(null);
   },
   methods: {
-    headerStyle,
     columnStyle,
     // 获取记录日志
     getntahllist(param) {
@@ -200,7 +197,7 @@ export default {
     //   })
     },
     delOne(Hid) {
-      // const id = this.focusedData.id
+      // const id = Hid
     //   this.$confirm("确认删除吗？", "询问", {
     //     confirmButtonText: "确认",
     //     cancelButtonText: "取消",

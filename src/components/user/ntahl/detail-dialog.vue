@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :visible.sync="visable" :lock-scroll="false" :show-close="false" :close-on-click-modal="false" width="81%" class="detail-dialog" append-to-body>
+  <el-dialog :title="title" :visible.sync="visible" :lock-scroll="false" :show-close="false" :close-on-click-modal="false" width="81%" class="detail-dialog" append-to-body>
     <el-form :data="searchForm" :inline="true" align="center">
       <el-form-item label="姓名:">
         <el-input v-model="searchForm.emp" clearable />
@@ -24,7 +24,11 @@
         <el-button type="success" size="medium" plain @click="getdetails(searchForm)">查询员工</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="details" :header-cell-style="headerStyle" border height="600" @row-click="getInfo">
+    <el-table
+      :data="details"
+      stripe
+      height="600"
+      @row-click="getInfo">
       <el-table-column type="index" label="序号" prop="id" width="55" />
       <el-table-column label="姓名" prop="emp" />
       <el-table-column label="员工工号" prop="empcode" />
@@ -36,14 +40,13 @@
       <el-table-column label="职务" prop="title" />
     </el-table>
     <span slot="footer">
-      <el-button type="warning" plain @click="()=>visable = false">取消</el-button>
+      <el-button type="warning" plain @click="()=>visible = false">取消</el-button>
     </span>
   </el-dialog>
 </template>
 <script>
 // import { getdetails } from '@/api/staff'
 // import { getdept } from '@/api/dept'
-import { headerStyle } from '@/utils/style.js'
 export default {
   props: {
     title: {
@@ -54,7 +57,7 @@ export default {
   data() {
     return {
       item: {},
-      visable: false,
+      visible: false,
       isOnjob: '在职',
       details: [],
       deptlist: [],
@@ -73,10 +76,9 @@ export default {
     this.getdetails()
   },
   methods: {
-    headerStyle,
     // 对外暴露的接口
     open (item) {
-      this.visable = true;
+      this.visible = true;
       if (item === undefined || item === null) {
         this.item = {};
         // 获取员工信息
@@ -119,7 +121,7 @@ export default {
         depcode: data.depcode
       }
       this.$emit("OnConfirm", item);
-      this.visable = false
+      this.visible = false
     }
   }
 }

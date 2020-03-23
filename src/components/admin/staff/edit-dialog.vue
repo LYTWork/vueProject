@@ -2,7 +2,7 @@
   <el-dialog
     id="edit-dialog"
     :title="title"
-    :visible.sync="visable"
+    :visible.sync="visible"
     :lock-scroll="false"
     :close-on-click-modal="false"
     :show-close="false"
@@ -151,7 +151,6 @@ export default {
       if (/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(value) === false) {
         callback(new Error("你的身份证格式不正确"));
       } else {
-        // callback();
         // 获取出生日期
         var birth =
           value.substring(6, 10) +
@@ -160,12 +159,13 @@ export default {
           "-" +
           value.substring(12, 14);
         this.$set(this.item, "birthday", birth); // 动态添加
+        callback();
       }
     };
     return {
       // birthday: null,
       item: {},
-      visable: false,
+      visible: false,
       value1: "",
       radio: "",
       pickerOptions0: {
@@ -212,7 +212,7 @@ export default {
   },
   methods: {
     open(item) {
-      this.visable = true;
+      this.visible = true;
       if (item === undefined || item === null) {
         this.item = {};
         this.$set(this.item, "status", "在职");
@@ -244,7 +244,7 @@ export default {
       });
     },
     cancel(formArr) {
-      this.visable = false;
+      this.visible = false;
       formArr.forEach(ele => {
         this.$refs[ele].resetFields();
       });

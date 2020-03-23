@@ -2,7 +2,7 @@
   <el-dialog
     id="holiday-dialog"
     :title="title"
-    :visible.sync="visable"
+    :visible.sync="visible"
     :close-on-click-modal="false"
     :show-close="false"
     :lock-scroll="false"
@@ -10,7 +10,7 @@
   >
     <el-form ref="dataForm" :model="item" :rules="rules" label-width="100px">
       <el-form-item label="假种" prop="name">
-        <el-input v-filter-special-char="item.name" v-model="item.name" placeholder="请输入假种" />
+        <el-input v-model="item.name" placeholder="请输入假种" />
       </el-form-item>
       <el-form-item label="代码" prop="code">
         <el-input v-model="item.code" placeholder="请输入代码" />
@@ -27,7 +27,6 @@
   </el-dialog>
 </template>
 <script>
-import { getholidayadd, getholidaybyid } from '@/api/holiday';
 export default {
   props: {
     title: {
@@ -37,7 +36,7 @@ export default {
   },
   data() {
     return {
-      visable: false, // 对话框显示或隐藏
+      visible: false, // 对话框显示或隐藏
       item: {
         name: '',
         code: '',
@@ -52,29 +51,12 @@ export default {
   },
   methods: {
     open(item) { // item用来接收当前修改的对象
-      this.visable = true;
+      this.visible = true;
       if (item === undefined || item === null) { // 新增
-        this.getholidayadd();
+        this.item = {}
       } else { // 修改
-        this.getholidaybyid(item.id);
+        this.item = item;
       }
-    },
-    getholidayadd() {
-      getholidayadd().then(res => {
-        console.log(res)
-        this.item.name = res.data.name;
-        this.item.code = res.data.code;
-        this.item.standday = res.data.standday;
-      })
-    },
-    getholidaybyid(id) {
-      getholidaybyid(id).then(res => {
-        console.log(res)
-        this.item.id = res.data.id;
-        this.item.name = res.data.name;
-        this.item.code = res.data.code;
-        this.item.standday = res.data.standday;
-      })
     },
     confirm(dataForm) {
       this.$refs.dataForm.validate((valid) => {
@@ -96,7 +78,7 @@ export default {
     },
     cancel(dataForm) {
       this.$refs[dataForm].resetFields();
-      this.visable = false;
+      this.visible = false;
     }
   }
 }

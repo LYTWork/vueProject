@@ -1,22 +1,21 @@
 <template>
-  <div id="dept">
+  <div id="class">
     <div class="container">
       <div class="handle-box">
-        <el-input v-model="searchForm.name" clearable placeholder="部门名称" />
-        <el-input v-model="searchForm.code" clearable placeholder="部门代码" />
-        <el-button type="success" icon="el-icon-search" plain @click="querydept(searchForm)">搜索</el-button>
+        <el-input v-model="searchForm.name" clearable placeholder="班别名称" />
+        <el-input v-model="searchForm.code" clearable placeholder="班别代码" />
+        <el-button type="success" icon="el-icon-search" plain @click="queryclass(searchForm)">搜索</el-button>
         <el-button type="danger" icon="el-icon-delete" plain @click="delAllSelection">批量删除</el-button>
-        <el-button type="primary" icon="el-icon-plus" plain @click="$refs.addDialog.open(null)">新增部门</el-button>
+        <el-button type="primary" icon="el-icon-plus" plain @click="$refs.addDialog.open(null)">新增班别</el-button>
         <el-button type="warning" icon="el-icon-download" plain @click="getExcel">导出EXCEL</el-button>
 
       </div>
       <el-table
         v-loading="loading"
-        :data="alldept"
+        :data="allclass"
         element-loading-text="拼命加载中"
         stripe
         height="82%"
-        class="table"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" />
@@ -25,38 +24,45 @@
             <span>{{ (page.currentPage - 1) * page.pageSize + scope.$index + 1 }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="部门名称" prop="name" />
-        <el-table-column label="部门代码" prop="code" />
+        <el-table-column label="班别名称" prop="name" />
+        <el-table-column label="班别代码" prop="code" />
+        <el-table-column label="开始时间--结束时间" >
+          <template slot-scope="scope">
+            {{ scope.row.start_time }}--{{ scope.row.end_time }}
+          </template>
+        </el-table-column>
+        <el-table-column label="时长（单位:小时）" prop="worktime" />
         <el-table-column
           width="160px"
+          prop="control"
           align="center"
           label="操作"
         >
-          <template slot-scope="scope">
+          <template solt-scope="scope">
             <el-button
               type="text"
               icon="el-icon-edit"
-              @click.stop="$refs.updateDialog.open(scope.row)"
+              @click.stop="$refs.updateDialog.open()"
             >修改</el-button>
             <el-button
               type="text"
               icon="el-icon-delete"
               class="red"
-              @click.stop="deldept(scope.row.id)"
+              @click.stop="delclass(scope.row.id)"
             >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
       <page-component :total="page.totalSize" :page="page" @pageChange="(item)=>handlePageChange(item)" />
-      <edit-dialog ref="addDialog" title="添加部门" @OnConfirm="(item)=>addOne(item,'post')" />
-      <edit-dialog ref="updateDialog" title="编辑信息" @OnConfirm="(item)=>updatedept(item)" />
+      <edit-dialog ref="addDialog" title="添加班别" @OnConfirm="(item)=>addOne(item,'post')" />
+      <edit-dialog ref="updateDialog" title="编辑信息" @OnConfirm="(item)=>updateclass(item)" />
     </div>
   </div>
 </template>
 <script>
 import editDialog from './edit-dialog'
 import PageComponent from '@/components/common/Pagenation/index'
-// import { querydept, insertdept, updatedept, deldept } from '@/api/dept'
+// import { queryclass, insertclass, updateclass, delclass } from '@/api/class'
 import { donwnloadExcel } from '@/utils/index'
 export default {
   components: {
@@ -76,30 +82,57 @@ export default {
         totalPage: 0
       },
       loading: false,
-      alldept: [{ id: 1, name: '部门a', code: 'a' },
-        { id: 2, name: '部门b', code: 'b' },
-        { id: 3, name: '部门c', code: 'c' },
-        { id: 4, name: '部门d', code: 'd' },
-        { id: 5, name: '部门e', code: 'e' },
-        { id: 6, name: '部门f', code: 'f' }
+      allclass: [
+        {
+          id: 1,
+          name: "职能常白班",
+          code: "A",
+          start_time: '08:00',
+          end_time: '18:00',
+          worktime: 10.0
+        },
+        {
+          id: 2,
+          name: "工程师早班",
+          code: "B",
+          start_time: '08:00',
+          end_time: '12:00',
+          worktime: 4.0
+        },
+        {
+          id: 3,
+          name: "工程师中班",
+          code: "C",
+          start_time: '14:00',
+          end_time: '18:00',
+          worktime: 4.0
+        },
+        {
+          id: 4,
+          name: "工程师晚班",
+          code: "D",
+          start_time: '19:00',
+          end_time: '07:00',
+          worktime: 14.0
+        }
       ],
       multipleSelection: [] // 多选
 
     }
   },
   mounted() {
-    // this.querydept(null);
+    // this.queryclass(null);
   },
   methods: {
     // 自定义查询所有数据
-    querydept(param) {
-      // querydept(param).then(res => {
+    queryclass(param) {
+      // queryclass(param).then(res => {
       //   if (res.code === 200) {
       //     this.page.currentPage = res.data.currentPage;
       //     this.page.pageSize = res.data.size;
       //     this.page.totalPage = res.data.pages;
       //     this.page.totalSize = res.data.total;
-      //     this.alldept = res.data.list;
+      //     this.allclass = res.data.list;
       //     this.loading = false
       //   }
       // }).catch(err => {
@@ -107,19 +140,19 @@ export default {
       //   console.log(err)
       // })
     },
-    // /添加部门数据
+    // /添加班别数据
     addOne(data, method) {
       // const params = {
       //   name: data.name,
       //   code: data.code,
       // }
-      // insertdept(params).then(res => {
+      // insertclass(params).then(res => {
       //   if (res.code == 200) {
       //     this.$message({
       //       message: '添加成功',
       //       type: 'success'
       //     });
-      //     this.querydept(null);
+      //     this.queryclass(null);
       //   } else {
       //     this.$message({
       //       message: "保存失败，原因：" + res.msg,
@@ -128,15 +161,15 @@ export default {
       //   }
       // })
     },
-    // 修改部门信息
-    updatedept(item) {
-      // updatedept(item).then(res => {
+    // 修改班别信息
+    updateclass(item) {
+      // updateclass(item).then(res => {
       //   if (res.code == '200') {
       //     this.$message({
       //       message: '修改成功！',
       //       type: 'success'
       //     })
-      //     this.querydept(null)
+      //     this.queryclass(null)
       //   } else {
       //     this.$message({
       //       message: "保存失败，原因：" + res.msg,
@@ -145,8 +178,8 @@ export default {
       //   }
       // })
     },
-    deldept(Did) {
-      // const para = { id: Did }
+    delclass(Cid) {
+      // const para = { id: cid }
       // this.$confirm("确认删除吗？", "询问", {
       //   confirmButtonText: "确定",
       //   cancelButtonText: "取消",
@@ -155,14 +188,14 @@ export default {
       //   closeOnClickModal: false
       // })
       //   .then(() => {
-      //   // /删除部门数据
-      //     deldept(para).then(res => {
+      //   // /删除班别数据
+      //     delclass(para).then(res => {
       //       if (res.code == '200') {
       //         this.$message({
       //           message: '删除成功！',
       //           type: 'success'
       //         });
-      //         this.querydept();
+      //         this.queryclass();
       //       }
       //     })
       //   })
@@ -189,19 +222,25 @@ export default {
     handlePageChange(item) {
       // 发送分页查询请求
       const para = { currentPage: item.currentPage, pageSize: item.pageSize }
-      this.querydept(para);
+      this.queryclass(para);
     },
     // 导出前端选择的数据
     getExcel (param) {
-      const filename = "部门明细";
+      const filename = "班别明细";
       var exceldata = this.multipleSelection;
       const tHeader = [
-        "部门名称",
-        "部门代码"
+        "班别名称",
+        "班别代码",
+        "开始时间",
+        "结束时间",
+        "时长"
       ];
       const filterVal = [
         "name",
-        "code"
+        "code",
+        "start_time",
+        "end_time",
+        "worktime"
       ];
       donwnloadExcel(filename, tHeader, filterVal, exceldata)
     }

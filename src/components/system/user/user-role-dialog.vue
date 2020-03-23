@@ -2,7 +2,7 @@
   <el-dialog
     id="user-role-dialog"
     :title="'用户【'+item.name+'】隶属角色：'"
-    :visible.sync="visable"
+    :visible.sync="visible"
     :close-on-click-modal="false"
     :show-close="false"
     :lock-scroll="false"
@@ -13,20 +13,18 @@
 
     <el-table
       :data="roleList"
-      :header-cell-style="headerStyle"
-      border
+      stripe
       height="20rem"
       tooltip-effect="dark"
       @selection-change="handleSelectionChange"
       @select-all="selectall"
-      @cell-mouse-enter="(data)=>focusedData = Object.assign({}, data)"
     >
       <el-table-column type="selection"/>
       <el-table-column type="index" label="序号" width="55" />
       <el-table-column prop="name" label="角色名称" />
       <el-table-column label="操作" width="100">
-        <template>
-          <el-button type="text" icon="el-icon-delete" class="red" @click="delRole(focusedData.id)">删除</el-button>
+        <template slot-scope="scope">
+          <el-button type="text" icon="el-icon-delete" class="red" @click="delRole(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -43,7 +41,6 @@
 
 import DetailDialog from './role-detail-dialog'
 import SearchComponent from '@/components/common/Search/index'
-import { headerStyle } from '@/utils/style'
 import { delWeight } from '@/utils/index'
 import { queryRolesUid, updateUserRole } from "@/api/sysuser";
 
@@ -61,9 +58,8 @@ export default {
   data () {
     return {
       item: {},
-      visable: false,
+      visible: false,
       multipleSelection: [], // 选中的数据二维数组
-      focusedData: {}, // table 点击行数据
       roleList: [], // el-table 绑定的数据
       delroles: [], // 选择删除的角色
       roleList_copy: [], // 实现模糊搜索的原始数据
@@ -72,10 +68,9 @@ export default {
     }
   },
   methods: {
-    headerStyle,
     // 对外暴露的接口,item接受对象数据
     open (item) {
-      this.visable = true;
+      this.visible = true;
       if (item === undefined || item === null) {
         this.item = {};
       } else {
@@ -188,7 +183,7 @@ export default {
       })
     },
     cancel () {
-      this.visable = false;
+      this.visible = false;
       this.$refs.search.searchString = '';
     },
     updateUserRole(param) {

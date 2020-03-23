@@ -2,27 +2,33 @@
   <el-dialog
     id="user-dialog"
     :title="title"
-    :visible.sync="visable"
+    :visible.sync="visible"
     :close-on-click-modal="false"
     :show-close="false"
     :lock-scroll="false"
-    :open="addOrUpdate"
   >
     <el-form ref="dataForm" :model="item" :rules="rules" label-width="100px">
-      <el-row>
-        <el-col :span="15">
-          <el-form-item label="用户名" prop="name">
-            <el-input
-              v-model="item.name"
-              clearable
-              placeholder="请输入"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="15">
-          <el-form-item label="头像" prop="imageUrl">
+      <el-form-item label="用户名" prop="name">
+        <el-input
+          v-model="item.name"
+          clearable
+          placeholder="请输入"
+        />
+      </el-form-item>
+      <section>
+        <img v-if="!progressFlag" :src="imageUrl" class="head-img" >
+        <div v-show="progressFlag" class="head-img">
+          <el-progress :percentage="progressPercent" type="circle"/>
+        </div>
+        <el-upload
+          :show-file-list="false"
+          :before-upload="beforeAvatarUpload"
+          :http-request="uploadImg"
+          class="img-btn"
+          action="#">
+        <el-button type="success" plain round size="mini">更改头像</el-button></el-upload>
+      </section>
+      <!-- <el-form-item label="头像" prop="imageUrl">
             <el-upload
               :data="uptoken"
               :show-file-list="false"
@@ -35,23 +41,17 @@
               <img v-if="item.imageUrl" :src="item.imageUrl" class="avatar" >
               <i v-else class="el-icon-plus avatar-uploader-icon" />
             </el-upload>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="18">
-          <el-form-item label="类型" prop="type">
-            <el-select v-model="item.type" clearable placeholder="请选择">
-              <el-option
-                v-for="type in userTypeList"
-                :key="type.value"
-                :label="type.label"
-                :value="type.value"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
+          </el-form-item> -->
+      <el-form-item label="类型" prop="type">
+        <el-select v-model="item.type" clearable placeholder="请选择">
+          <el-option
+            v-for="type in userTypeList"
+            :key="type.value"
+            :label="type.label"
+            :value="type.value"
+          />
+        </el-select>
+      </el-form-item>
     </el-form>
     <span slot="footer">
       <el-button type="warning" plain @click="cancel('dataForm')">取消</el-button>
@@ -62,7 +62,7 @@
 
 <script>
 // import { parseTime } from "@/utils/index.js";
-import { getUnameFlag } from "@/api/sysuser";
+import { getUnameFlag } from "@/api/sysuser"
 export default {
   props: {
     title: {
@@ -79,12 +79,10 @@ export default {
       if (this.name === value) {
         // 没有修改名字
         callback();
-      } else if (value === "") {
-        callback(new Error("请输入用户名"));
       } else {
         getUnameFlag({ name: value }).then(res => {
           if (res.data) {
-            callback(new Error("用户名已存在,若已删除可进行恢复"));
+            callback(new Error("用户名已存在"));
           } else {
             callback();
           }
@@ -92,17 +90,18 @@ export default {
       }
     };
     return {
-      addOrUpdate: null, // 用户新增或者用户修改
+      progressFlag: false,
+      progressPercent: 0,
       item: {},
-      visable: false,
-      flag: false,
+      visible: false,
       name: "",
       uptoken: {
         token: "",
         key: ""
       },
       rules: {
-        name: [{ required: true, trigger: "blur", validator: validateName }],
+        name: [{ required: true, trigger: "blur", message: "请输入用户名" },
+          { trigger: "blur", validator: validateName }],
         type: [{ required: true, message: "请选择类型", trigger: "change" }]
       }
     };
@@ -110,32 +109,70 @@ export default {
   methods: {
     // 对外暴露的接口,item用来接收当前修改的对象
     open(item) {
-      this.visable = true;
+      this.visible = true;
       if (item === undefined || item === null) {
         this.item = {}
       } else {
         this.item = item
       }
     },
+    uploadImg (f) {
+      console.log(f)
+      this.progressFlag = true
+      const formdata = new FormData()
+      formdata.append('image', f.file)
+      // axios({
+      //   url: 'tast' + '/image',
+      //   method: 'post',
+      //   data: formdata,
+      //   headers: { 'Content-Type': 'multipart/form-data' },
+      //   onUploadProgress: progressEvent => {
+      //     // progressEvent.loaded:已上传文件大小
+      //     // progressEvent.total:被上传文件的总大小
+      //     this.progressPercent = (progressEvent.loaded / progressEvent.total * 100)
+      //   }
+      // }).then(res => {
+      //   this.imageUrl = res.data.data
+      //   if (this.progressPercent === 100) {
+      //     this.progressFlag = false
+      //     this.progressPercent = 0
+      //   }
+      // }).then(error => {
+      //   console.log(error)
+      // })
+    },
+    // 上传图片前的过滤
+    beforeAvatarUpload (file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = (file.size / 1024 / 1024) < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
     handleAvatarSuccess(res, file) {
       this.$set(this.item, "imageUrl", URL.createObjectURL(file.raw));
     },
     // 检测选择的图片是否合适
-    beforeAvatarUpload(file) {
-      this.uptoken.key = file.name;
-      const isJPG = file.type === "image/jpeg";
-      const isPNG = file.type === "image/png";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+    // beforeAvatarUpload(file) {
+    //   this.uptoken.key = file.name;
+    //   const isJPG = file.type === "image/jpeg";
+    //   const isPNG = file.type === "image/png";
+    //   const isLt2M = file.size / 1024 / 1024 < 2;
 
-      if (!isJPG && !isPNG) {
-        // 如果不是jpg，也不是png的时候就弹出这条信息
-        this.$message.error("上传头像图片只能是 JPG或PNG 格式!");
-      }
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
-      }
-      return isJPG || (isPNG && isLt2M);
-    },
+    //   if (!isJPG && !isPNG) {
+    //     // 如果不是jpg，也不是png的时候就弹出这条信息
+    //     this.$message.error("上传头像图片只能是 JPG或PNG 格式!");
+    //   }
+    //   if (!isLt2M) {
+    //     this.$message.error("上传头像图片大小不能超过 2MB!");
+    //   }
+    //   return isJPG || (isPNG && isLt2M);
+    // },
     // 当上传图片后，调用onchange方法，获取图片本地路径
     onchange(file) {},
 
@@ -165,7 +202,7 @@ export default {
     },
     cancel(dataForm) {
       this.$refs[dataForm].resetFields();
-      this.visable = false;
+      this.visible = false;
     }
   }
 };

@@ -10,11 +10,9 @@
       <el-table
         v-loading="loading"
         :data="roleList"
-        :header-cell-style="headerStyle"
+        stripe
         element-loading-text="拼命加载中"
-        border
         height="83%"
-        @cell-mouse-enter="(data)=>focusedData = Object.assign({}, data)"
       >
         <el-table-column :width="columnStyle(55,55,50)" type="index" label="序号">
           <template slot-scope="scope">
@@ -25,24 +23,24 @@
         <el-table-column :width="columnStyle(55,55,55)" prop="weight" label="权重" />
         <el-table-column prop="orgnode" label="组织架构节点" />
         <el-table-column :width="columnStyle(480,430,480)" label="操作">
-          <template>
+          <template slot-scope="scope">
             <el-button
               type="text"
               icon="el-icon-edit"
-              @click="$refs.updateDialog.open(focusedData)"
+              @click="$refs.updateDialog.open(scope.row)"
             >修改</el-button>
 
             <el-button
               type="text"
               icon="el-icon-delete"
               class="red"
-              @click="delOne(focusedData.id)"
+              @click="delOne(scope.row.id)"
             >删除</el-button>
             <el-button
               type="text"
               icon="el-icon-setting"
               class="yellow"
-              @click="$refs.menuDialog.open(focusedData)"
+              @click="$refs.menuDialog.open(scope.row)"
             >菜单权限</el-button>
           </template>
         </el-table-column>
@@ -60,7 +58,7 @@
 import EditDialog from "./edit-dialog";
 import MenuPermsedit from "./menu-perms-dialog"
 import PageComponent from '@/components/common/Pagenation/index'
-import { headerStyle, columnStyle } from '@/utils/style'
+import { columnStyle } from '@/utils/style'
 // import { queryRoles } from '@/api/role'
 export default {
   components: {
@@ -72,7 +70,6 @@ export default {
     return {
       roleList: [], // 角色数据
       loading: true,
-      focusedData: {}, // table选中行数据
       searchForm: { // 搜索表单数据
         name: '',
         orgNode: '',
@@ -113,7 +110,6 @@ export default {
     this.queryRoles(null);
   },
   methods: {
-    headerStyle,
     columnStyle,
     // 查询数据
     queryRoles(param) {
