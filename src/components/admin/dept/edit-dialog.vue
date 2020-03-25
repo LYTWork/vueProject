@@ -26,11 +26,6 @@ export default {
     return {
       item: {},
       visible: false,
-      value1: '',
-      radio: '',
-      name: '',
-      code: '',
-      dep: [],
       rules: {
         name: [{ required: true, message: '请输入部门名称', trigger: 'blur' }],
         code: [{ required: true, message: '请输入部门代码', trigger: 'blur' }]

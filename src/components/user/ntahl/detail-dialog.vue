@@ -32,8 +32,8 @@
       <el-table-column type="index" label="序号" prop="id" width="55" />
       <el-table-column label="姓名" prop="emp" />
       <el-table-column label="员工工号" prop="empcode" />
-      <el-table-column label="部门" prop="dep" />
-      <el-table-column label="部门代码" prop="depcode" />
+      <el-table-column label="部门" prop="dept" />
+      <el-table-column label="部门代码" prop="deptcode" />
       <el-table-column label="性别" prop="gender" />
       <el-table-column label="状态" prop="status" />
       <el-table-column label="用户" prop="user" />
@@ -66,7 +66,7 @@ export default {
         empcode: '',
         status: '',
         inDate: '',
-        dep: ''
+        dept: ''
       }
     }
   },
@@ -104,12 +104,12 @@ export default {
       //   console.log('部门信息', res.data)
       //   this.deptlist = res.data
       // })
-      this.details = [{ id: '001', emp: '张三', empcode: '001', dep: '部门1', depcode: 'a', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 },
-        { id: '002', emp: '李四', empcode: '002', dep: '部门1', depcode: 'a', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 },
-        { id: '003', emp: '王五', empcode: '003', dep: '部门1', depcode: 'a', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 },
-        { id: '004', emp: '张三', empcode: '004', dep: '部门1', depcode: 'a', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 },
-        { id: '005', emp: '张三', empcode: '005', dep: '部门1', depcode: 'a', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 },
-        { id: '006', emp: '张三', empcode: '006', dep: '部门1', depcode: 'a', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 }
+      this.details = [{ id: '001', emp: '张三', empcode: '001', dept: '部门1', deptcode: 'a', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 },
+        { id: '002', emp: '李四', empcode: '002', dept: '部门1', deptcode: 'a', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 },
+        { id: '003', emp: '王五', empcode: '003', dept: '部门1', deptcode: 'a', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 },
+        { id: '004', emp: '张三', empcode: '004', dept: '部门1', deptcode: 'a', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 },
+        { id: '005', emp: '张三', empcode: '005', dept: '部门1', deptcode: 'a', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 },
+        { id: '006', emp: '张三', empcode: '006', dept: '部门1', deptcode: 'a', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 }
       ]
     },
 
@@ -117,8 +117,8 @@ export default {
       const item = {
         emp: data.emp,
         empcode: data.empcode,
-        dep: data.dep,
-        depcode: data.depcode
+        dept: data.dep,
+        deptcode: data.deptcode
       }
       this.$emit("OnConfirm", item);
       this.visible = false

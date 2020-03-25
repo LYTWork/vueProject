@@ -20,8 +20,7 @@
           </template>
         </el-table-column>
         <el-table-column :width="columnStyle(120,120,120)" prop="name" label="角色名称" />
-        <el-table-column :width="columnStyle(55,55,55)" prop="weight" label="权重" />
-        <el-table-column prop="orgnode" label="组织架构节点" />
+        <el-table-column prop="describe" label="角色描述" />
         <el-table-column :width="columnStyle(480,430,480)" label="操作">
           <template slot-scope="scope">
             <el-button
@@ -72,7 +71,6 @@ export default {
       loading: true,
       searchForm: { // 搜索表单数据
         name: '',
-        orgNode: '',
         currentPage: '',
         pageSize: ''
       },
@@ -86,22 +84,20 @@ export default {
         {
           id: 1,
           name: "管理员",
-          orgNode: null,
           users: [{ id: 1,
             imageUrl: null,
             name: "Admin",
             type: "公司" }],
-          weight: 10
+          describe: 'hhhhhhhh'
         },
         {
           id: 2,
           name: "测试",
-          orgNode: null,
           users: [{ id: 2,
             imageUrl: null,
             name: "test",
             type: "公司" }],
-          weight: 10
+          describe: "jalsg"
         }
       ]
     };

@@ -48,6 +48,13 @@ const user = [
       title: '排班'
       // roles: ['admin']
     }
+  }, {
+    path: '/user/pay',
+    component: () => import('../components/user/pay/index'),
+    meta: {
+      title: '工资信息'
+      // roles: ['admin']
+    }
   }
 ]
 export default user

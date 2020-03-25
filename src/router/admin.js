@@ -23,6 +23,14 @@ const admin = [{
   }
 },
 {
+  path: '/admin/position',
+  component: () => import('../components/admin/position/index'),
+  meta: {
+    title: '职位管理'
+    // roles: ['admin']
+  }
+},
+{
   path: '/admin/class',
   component: () => import('../components/admin/class/index'),
   meta: {

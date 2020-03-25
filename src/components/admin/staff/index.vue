@@ -117,7 +117,7 @@ export default {
         code: '',
         status: '',
         inDate: '',
-        dep: ''
+        dept: ''
       },
       page: {
         currentPage: 0,

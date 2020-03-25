@@ -42,16 +42,6 @@
               <i v-else class="el-icon-plus avatar-uploader-icon" />
             </el-upload>
           </el-form-item> -->
-      <el-form-item label="类型" prop="type">
-        <el-select v-model="item.type" clearable placeholder="请选择">
-          <el-option
-            v-for="type in userTypeList"
-            :key="type.value"
-            :label="type.label"
-            :value="type.value"
-          />
-        </el-select>
-      </el-form-item>
     </el-form>
     <span slot="footer">
       <el-button type="warning" plain @click="cancel('dataForm')">取消</el-button>
@@ -68,10 +58,6 @@ export default {
     title: {
       type: String,
       default: "title"
-    },
-    userTypeList: {
-      type: Array,
-      default: null
     }
   },
   data() {
@@ -101,8 +87,7 @@ export default {
       },
       rules: {
         name: [{ required: true, trigger: "blur", message: "请输入用户名" },
-          { trigger: "blur", validator: validateName }],
-        type: [{ required: true, message: "请选择类型", trigger: "change" }]
+          { trigger: "blur", validator: validateName }]
       }
     };
   },

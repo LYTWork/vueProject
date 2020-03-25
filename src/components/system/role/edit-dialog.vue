@@ -4,11 +4,8 @@
       <el-form-item label="角色名称" prop="name">
         <el-input v-model="item.name" placeholder="请输入角色名" />
       </el-form-item>
-      <el-form-item label="权重" prop="weight">
-        <el-input v-model="item.weight" placeholder="请输入权重" />
-      </el-form-item>
-      <el-form-item label="组织架构节点">
-        <el-input v-model="item.orgNode" placeholder="请输入组织架构节点" />
+      <el-form-item label="角色描述" prop="describe">
+        <el-input v-model="item.describe" placeholder="请对角色进行描述" />
       </el-form-item>
     </el-form>
     <span slot="footer">
@@ -47,9 +44,7 @@ export default {
       name: '',
       rules: {
         name: [{ required: true, trigger: "blur", message: "请输入角色名" },
-          { trigger: "blur", validator: validateName }],
-        weight: [{ required: true, message: "请填写权重", trigger: "blur" }],
-        orgNode: [{ required: true, message: "", trigger: "blur" }]
+          { trigger: "blur", validator: validateName }]
       }
     };
   },

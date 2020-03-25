@@ -107,6 +107,11 @@ export default {
           },
           { "id": 34,
             "parentId": 3,
+            "title": "职位管理",
+            "url": "/admin/position"
+          },
+          { "id": 35,
+            "parentId": 3,
             "title": "班别管理",
             "url": "/admin/class"
           }]
@@ -138,18 +143,19 @@ export default {
         },
         { "id": 5,
           "parentId": null,
-          "title": "错误处理",
+          "title": "考勤和薪资",
           "icon": "el-icon-watermelon",
-          "lowerMenu": [{ "id": 51,
-            "parentId": 5,
-            "title": "403",
-            "url": "/403"
-          },
-          { "id": 52,
-            "parentId": 5,
-            "title": "404",
-            "url": "/404"
-          }]
+          "lowerMenu": [
+            { "id": 51,
+              "parentId": 5,
+              "title": "考勤记录",
+              "url": "/user/sign"
+            },
+            { "id": 52,
+              "parentId": 5,
+              "title": "工资记录",
+              "url": "/user/pay"
+            }]
 
         },
         { "id": 6,

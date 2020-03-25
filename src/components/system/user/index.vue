@@ -3,14 +3,6 @@
     <div class="container">
       <div class="handle-box">
         <el-input v-model="searchForm.username" clearable placeholder="用户名" />
-        <el-select v-model="searchForm.usertype" filterable clearable placeholder="请选择类型">
-          <el-option
-            v-for="item in type"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
         <el-button type="success" icon="el-icon-search" plain @click="queryUsers(searchForm)">搜索</el-button>
         <el-button type="primary" icon="el-icon-plus" plain @click="$refs.addDialog.open(null)">新增用户</el-button>
 
@@ -34,7 +26,6 @@
             <img :src="avatar.row.imageUrl" min-width="30" height="30">
           </template>
         </el-table-column>
-        <el-table-column prop="type" label="类型" />
         <el-table-column :width="columnStyle(420,350,350)" label="操作">
           <template slot-scope="scope">
             <el-button
@@ -65,7 +56,7 @@
         </el-table-column>
       </el-table>
       <page-component :total="page.totalSize" :page="page" @pageChange="(item) => handlePageChange(item)" />
-      <edit-dialog ref="addDialog" :user-type-list="type" title="新增用户" @OnConfirm="(item)=>insertOne(item)" />
+      <edit-dialog ref="addDialog" title="新增用户" @OnConfirm="(item)=>insertOne(item)" />
       <edit-dialog ref="updateDialog" title="更新用户" @OnConfirm="(item)=>updateOne(item)" />
       <RolesDialog ref="rolesEditDialog" />
     </div>
@@ -95,16 +86,6 @@ export default {
         totalSize: 0,
         totalPage: 0
       },
-      type: [{
-        value: '公司',
-        label: '公司'
-      }, {
-        value: '客户',
-        label: '客户'
-      }, {
-        value: '供应商',
-        label: '供应商'
-      }],
       mockdata: [
         {
           id: 1,
@@ -112,10 +93,9 @@ export default {
           name: "admin",
           password: "9accb83c1e358e1287d785561056ec597a71eff0",
           roleList: [{ id: 12,
-            name: "管理员",
-            orgnode: null }],
-          timeStamp: null,
-          type: "公司"
+            name: "管理员"
+          }],
+          timeStamp: null
         },
         {
           id: 2,
@@ -123,10 +103,9 @@ export default {
           name: "测试新增",
           password: "9accb83c1e358e1287d785561056ec597a71eff0",
           roleList: [{ id: 2,
-            name: "测试",
-            orgnode: null }],
-          timeStamp: null,
-          type: "公司"
+            name: "测试"
+          }],
+          timeStamp: null
         }
       ]
     };

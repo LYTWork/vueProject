@@ -60,7 +60,7 @@
           <el-table-column
             :width="columnStyle(null,null,null)"
             label="部门"
-            prop="dep"
+            prop="dept"
           />
         </el-table-column>
 
@@ -150,7 +150,7 @@ export default {
     return {
       searchForm: {
         date: new Date(),
-        dep: '',
+        dept: '',
         type: '',
         number: ''
       },
@@ -303,7 +303,7 @@ export default {
         {
           id: 1,
           empcode: '111111',
-          dep: '工程B部',
+          dept: '工程B部',
           name: 'AAA',
           day1: 'A',
           day2: 'A',
@@ -340,7 +340,7 @@ export default {
         {
           id: 2,
           empcode: '22222',
-          dep: '工程D部',
+          dept: '工程D部',
           name: 'BBB',
           day1: 'b',
           day2: 'b',

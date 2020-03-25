@@ -73,7 +73,7 @@
       </el-form-item>
     </el-form>
     <el-form ref="dataForm4" :model="item" :rules="rules" inline label-width="90px">
-      <el-form-item label="部门" prop="dep">
+      <el-form-item label="部门" prop="dept">
         <el-select v-model="item.dep" placeholder="请选择部门">
           <el-option v-for="ele in deptlist" :key="ele.name" :label="ele.name" :value="ele.id" />
         </el-select>
@@ -176,7 +176,7 @@ export default {
       rules: {
         name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
         status: [{ required: true, message: "请选择状态", trigger: "blur" }],
-        dep: [{ required: true, message: "请选择部门", trigger: "blur" }],
+        dept: [{ required: true, message: "请选择部门", trigger: "blur" }],
         title: [{ required: true, message: "请输入职务", trigger: "blur" }],
         gender: [{ required: true, message: "请选择性别", trigger: "blur" }],
         empNum: [{ required: true, message: "请输入工号", trigger: "blur" }],

@@ -10,9 +10,9 @@
         />
 
       </el-form-item>
-      <el-form-item label="所属部门" prop="dep">
+      <el-form-item label="所属部门" prop="dept">
         <el-input
-          v-model="dep"
+          v-model="dept"
           :disabled="true"
           prefix-icon="el-icon-folder-opened"
         />
@@ -88,7 +88,7 @@ export default {
       item: {},
       visible: false,
       name: '',
-      dep: '',
+      dept: '',
       holidayType: [{ id: 1, name: '事假', code: 'a', standday: '8' },
         { id: 2, name: '病假', code: 'b', standday: '15' },
         { id: 3, name: '婚假', code: 'c', standday: '8' },
@@ -128,7 +128,7 @@ export default {
     setInfo(data) {
       console.log(data)
       this.name = data.emp + '-' + data.empcode
-      this.dep = data.dep + '-' + data.depcode
+      this.dept = data.dept + '-' + data.deptcode
     },
     getFormPromise(form) {
       return new Promise((resolve, reject) => {
