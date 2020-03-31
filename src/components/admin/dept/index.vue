@@ -27,6 +27,7 @@
         </el-table-column>
         <el-table-column label="部门名称" prop="name" />
         <el-table-column label="部门代码" prop="code" />
+        <el-table-column label="部门简介" prop="descrip" />
         <el-table-column
           width="160px"
           align="center"
