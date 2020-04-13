@@ -8,9 +8,9 @@
           <el-option v-for="(ele,index) of deptlist" :key="index" :label="ele.name" :value="ele.name" />
         </el-select>
         <el-button type="success" icon="el-icon-search" plain @click="queryposition(searchForm)">搜索</el-button>
-        <el-button type="danger" icon="el-icon-delete" plain @click="delAllSelection">批量删除</el-button>
         <el-button type="primary" icon="el-icon-plus" plain @click="$refs.addDialog.open(null)">新增职位</el-button>
         <el-button type="warning" icon="el-icon-download" plain @click="getExcel">导出EXCEL</el-button>
+        <el-button type="danger" icon="el-icon-delete" plain @click="delAllSelection">批量删除</el-button>
 
       </div>
       <el-table
@@ -51,7 +51,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <page-component :total="page.totalSize" :page="page" @pageChange="(item)=>handlePageChange(item)" />
+      <page-component :total="page.totalNum" :page="page" @pageChange="(item)=>handlePageChange(item)" />
       <edit-dialog ref="addDialog" :deptlist="deptlist" title="添加职位" @OnConfirm="(item)=>addOne(item,'post')" />
       <edit-dialog ref="updateDialog" :deptlist="deptlist" title="编辑信息" @OnConfirm="(item)=>updateposition(item)" />
     </div>
@@ -77,7 +77,7 @@ export default {
       page: {
         currentPage: 0,
         pageSize: 0,
-        totalSize: 0,
+        totalNum: 0,
         totalPage: 0
       },
       loading: false,
@@ -109,9 +109,9 @@ export default {
       // queryposition(param).then(res => {
       //   if (res.code === 200) {
       //     this.page.currentPage = res.data.currentPage;
-      //     this.page.pageSize = res.data.size;
-      //     this.page.totalPage = res.data.pages;
-      //     this.page.totalSize = res.data.total;
+      //     this.page.pageSize = res.data.totalpageSize;
+      //     this.page.totalPage = res.data.totalPages;
+      //     this.page.totalNum = res.data.total;
       //     this.allposition = res.data.list;
       //     this.loading = false
       //   }

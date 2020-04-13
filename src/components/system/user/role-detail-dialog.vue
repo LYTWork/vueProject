@@ -22,10 +22,12 @@
     >
       <el-table-column :selectable="selectInit" type="selection"/>
       <el-table-column type="index" label="序号" width="55" />
-      <el-table-column prop="name" label="角色名称" />
+      <el-table-column prop="rolename" label="角色名称" />
+      <el-table-column prop="roleDesc" label="角色描述" />
       <el-table-column label="操作" width="100">
         <template slot-scope="scope">
           <el-button
+            v-if="selectInit(scope.row,scope.$index)"
             type="text"
             icon="el-icon-plus"
             @click="addSelect([scope.row])"
@@ -74,16 +76,15 @@ export default {
     },
     // 获取新增角色下拉框的角色数据
     queryRoles() {
-      queryRoles().then(res => {
-        this.details = res.data.list;
+      queryRoles({}).then(res => {
+        this.details = res.data.items;
         this.details_copy = this.details;
         // 匹配搜索建议
         this.searchStates = [];
         this.details_copy.forEach(ele => {
-          const value = { value: ele.name };
+          const value = { value: ele.rolename };
           this.searchStates.push(value);
         });
-        // [{id: 7,name: "骄傲东"},.....{}]
       });
     },
     addSelect(data) {
@@ -121,7 +122,7 @@ export default {
     },
     selectInit(row, index) {
       console.log(2121231, this.existrole)
-      if (this.existrole.indexOf(row.id) !== -1) {
+      if (this.existrole.indexOf(row.roleId) !== -1) {
         // 判断 test 字符串是否存在于 arr 数组中，存在返回true 否则false，此处将返回true) {
         return false; // 不可勾选
       } else {

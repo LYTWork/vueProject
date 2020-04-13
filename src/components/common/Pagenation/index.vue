@@ -1,7 +1,7 @@
 <template>
   <div class="page-component">
     <el-pagination
-      :total="page.totalSize"
+      :total="page.totalNum"
       :current-page.sync="page.currentPage"
       :page-size.sync="page.pageSize"
       :page-sizes="[5, 10, 20, 50]"

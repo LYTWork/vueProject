@@ -11,7 +11,7 @@ import i18n from './i18n'
 
 // 设置反向代理(把前端的请求通过前端服务器转发给后端（称为反向代理）)，前端请求默认发送到 http://localhost:8443/api
 // var axios = require('axios')
-// axios.defaults.baseURL = ''
+// axios.defaults.baseURL = 'http://106.13.16.90:8080/api/login'
 
 // Vue.prototype.$axios = axios // 全局注册，之后可在其他组件中通过 this.$axios 发送数据
 Vue.config.productionTip = false // 阻止vue 在启动时生成生产提示

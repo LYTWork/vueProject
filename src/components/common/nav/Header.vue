@@ -29,7 +29,8 @@
         </div>
         <!-- 用户头像 -->
         <div class="user-avator">
-          <img src="@/assets/img/candy.jpg" >
+          <img v-if="token" src="@/assets/img/candy.jpg" >
+          <img v-else src="@/assets/img/noimg.jpg" >
         </div>
         <!-- 用户名下拉菜单 -->
         <el-dropdown class="user-name" trigger="click" @command="handleCommand">
@@ -39,7 +40,8 @@
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="changes">{{ $t('header.change') }}</el-dropdown-item>
-            <el-dropdown-item divided command="loginout">{{ $t('header.logout') }}</el-dropdown-item>
+            <el-dropdown-item v-if="token" divided command="loginout">{{ $t('header.logout') }}</el-dropdown-item>
+            <el-dropdown-item v-else divided command="login">{{ $t('header.login') }}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -59,7 +61,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["token", "username", "usertype", "imageUrl", "userid"]),
+    ...mapGetters(["token", "username", "userpassword", "imgurl", "userid"]),
     cheackusername() {
       // eslint-disable-next-line no-undef
       console.log(username)

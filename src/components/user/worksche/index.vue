@@ -158,7 +158,7 @@ export default {
         currentPage: 0,
         pagesize: 0,
         totalPage: 0,
-        totalSize: 0
+        totalNum: 0
       },
       showdate: '', // 显示日期
       days: 0, // 当月天数

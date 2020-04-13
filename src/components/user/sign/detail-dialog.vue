@@ -24,7 +24,7 @@
       </el-table-column>
     </el-table>
     <span slot="footer">
-      <page-component :total="page.totalSize" :page="page" @pageChange="(item)=>handlePageChange(item)" />
+      <page-component :total="page.totalNum" :page="page" @pageChange="(item)=>handlePageChange(item)" />
       <el-button type="warning" plain @click="cancel('dataForm')">取消</el-button>
     </span>
 
@@ -50,7 +50,7 @@ export default {
       page: {
         currentPage: 0,
         pageSize: 0,
-        totalSize: 0,
+        totalNum: 0,
         totalPage: 0
       },
       // 个人出勤详情的数据

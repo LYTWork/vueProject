@@ -63,51 +63,61 @@ export default {
         { "id": 1,
           "parentId": null,
           "title": "系统首页",
+          "type": "二级菜单",
           "url": "/user/welcom",
           "icon": "el-icon-user"
         },
         { "id": 2,
           "parentId": null,
           "title": "权限设置",
+          "type": "一级菜单",
           "icon": "el-icon-setting",
           "lowerMenu": [{ "id": 21,
             "parentId": 2,
             "title": "用户管理",
+            "type": "二级菜单",
             "url": "/system/user"
           },
           { "id": 22,
             "parentId": 2,
             "title": "角色管理",
+            "type": "二级菜单",
             "url": "/system/role"
           },
           { "id": 23,
             "parentId": 2,
             "title": "菜单管理",
+            "type": "二级菜单",
             "url": "/system/menu"
           }]
         },
         { "id": 3,
           "parentId": null,
           "title": "基础资料",
+          "type": "一级菜单",
           "icon": "el-icon-orange",
           "lowerMenu": [{ "id": 31,
             "parentId": 3,
             "title": "员工信息",
+            "type": "二级菜单",
             "url": "/admin/staff"
           },
           { "id": 32,
             "parentId": 3,
             "title": "部门管理",
+            "type": "二级菜单",
             "url": "/admin/dept"
           },
           { "id": 33,
             "parentId": 3,
             "title": "假种管理",
+            "type": "二级菜单",
             "url": "/admin/holiday"
           },
           { "id": 34,
             "parentId": 3,
             "title": "职位管理",
+            "type": "二级菜单",
             "url": "/admin/position"
           },
           { "id": 35,
@@ -119,24 +129,29 @@ export default {
         { "id": 4,
           "parentId": null,
           "title": "个人事务",
+          "type": "一级菜单",
           "icon": "el-icon-watermelon",
           "lowerMenu": [{ "id": 41,
             "parentId": 4,
             "title": "签到",
+            "type": "二级菜单",
             "url": "/user/sign"
           },
           { "id": 42,
             "parentId": 4,
             "title": "补签",
+            "type": "二级菜单",
             "url": "/user/signagin"
           }, { "id": 43,
             "parentId": 4,
             "title": "请假",
+            "type": "二级菜单",
             "url": "/user/ntahl"
           },
           { "id": 44,
             "parentId": 4,
             "title": "排班",
+            "type": "二级菜单",
             "url": "/user/worksche"
           }]
 
@@ -144,16 +159,19 @@ export default {
         { "id": 5,
           "parentId": null,
           "title": "考勤和薪资",
+          "type": "一级菜单",
           "icon": "el-icon-watermelon",
           "lowerMenu": [
             { "id": 51,
               "parentId": 5,
               "title": "考勤记录",
+              "type": "二级菜单",
               "url": "/user/sign"
             },
             { "id": 52,
               "parentId": 5,
               "title": "工资记录",
+              "type": "二级菜单",
               "url": "/user/pay"
             }]
 
@@ -161,6 +179,7 @@ export default {
         { "id": 6,
           "parentId": null,
           "title": "修改密码",
+          "type": "二级菜单",
           "url": "/user/resetpass",
           "icon": "el-icon-edit"
         }]
@@ -183,10 +202,6 @@ export default {
     this.savetoStore();
   },
   methods: {
-    hoverQueryMenu(val) {
-      // 查询对应二级菜单
-      this.handleChange(val)
-    },
     // 查询菜单信息
     savetoStore() {
     //   getSideBarMenu({ id: this.userid }).then(res => {

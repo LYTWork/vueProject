@@ -22,7 +22,7 @@
             <i :class="scope.row.icon" style="font-size:1.1rem" />
           </template>
         </el-table-column>
-        <el-table-column :formatter="parseType" prop="type" label="菜单类型" />
+        <el-table-column prop="type" label="菜单类型" />
         <el-table-column prop="url" label="菜单链接" />
         <el-table-column label="操作" width="260">
           <template >
@@ -40,7 +40,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <page-component :total="page.totalSize" :page="page" @pageChange="(item)=>handlePageChange(item)" />
+      <page-component :total="page.totalNum" :page="page" @pageChange="(item)=>handlePageChange(item)" />
       <edit-dialog
         ref="updateDialog"
         :menu-tree="mockdata"
@@ -86,6 +86,7 @@ export default {
         { "id": 1,
           "parentId": null,
           "title": "系统首页",
+          "type": "一级菜单",
           "url": "/user/welcom",
           "icon": "el-icon-user"
         },
@@ -96,16 +97,19 @@ export default {
           "lowerMenu": [{ "id": 21,
             "parentId": 2,
             "title": "用户管理",
+            "type": "二级菜单",
             "url": "/system/user"
           },
           { "id": 22,
             "parentId": 2,
             "title": "角色管理",
+            "type": "二级菜单",
             "url": "/system/role"
           },
           { "id": 23,
             "parentId": 2,
             "title": "菜单管理",
+            "type": "二级菜单",
             "url": "/system/menu"
           }]
         },
@@ -121,11 +125,13 @@ export default {
           { "id": 32,
             "parentId": 3,
             "title": "部门信息",
+            "type": "二级菜单",
             "url": "/admin/dept"
           },
           { "id": 33,
             "parentId": 3,
             "title": "假种信息",
+            "type": "二级菜单",
             "url": "/admin/holiday"
           }]
         },
@@ -135,11 +141,13 @@ export default {
           "icon": "el-icon-watermelon",
           "lowerMenu": [{ "id": 41,
             "parentId": 4,
+            "type": "二级菜单",
             "title": "403",
             "url": "/403"
           },
           { "id": 42,
             "parentId": 4,
+            "type": "二级菜单",
             "title": "404",
             "url": "/404"
           }]
@@ -148,6 +156,7 @@ export default {
         { "id": 5,
           "parentId": null,
           "title": "修改密码",
+          "type": "二级菜单",
           "url": "/user/resetpass",
           "icon": "el-icon-edit"
         }],
@@ -155,7 +164,7 @@ export default {
       page: {
         currentPage: 0,
         pageSize: 0,
-        totalSize: 0,
+        totalNum: 0,
         totalPage: 0
       },
       loading: false
@@ -236,13 +245,13 @@ export default {
       this.searchForm.currentPage = item.currentPage;
       this.searchForm.pageSize = item.pageSize;
       // 请求数据
-    },
-    parseType (row) {
-      // 枚举数字：1，2
-      row.type = Number(row.type);
-      const str = ["目录", "菜单"];
-      return str[row.type - 1];
     }
+    // parseType (row) {
+    //   // 枚举数字：1，2
+    //   row.type = Number(row.type);
+    //   const str = ["目录", "菜单"];
+    //   return str[row.type - 1];
+    // }
   }
 };
 </script>

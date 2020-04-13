@@ -49,7 +49,7 @@
 import { mapGetters, mapActions } from "vuex";
 import { removeToken } from "@/utils/token";
 import { logout } from "@/api/login";
-import { resetPass, getFlagUserPwd } from "@/api/sysuser";
+import { resetPass, getFlagUserPwd } from "@/api/user";
 
 export default {
   components: {},
@@ -120,8 +120,8 @@ export default {
     ...mapGetters([
       "token",
       "username",
-      "usertype",
-      "imageUrl",
+      "userpassword",
+      "imgurl",
       "userid",
       "userpassword"
     ])

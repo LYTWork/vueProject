@@ -46,7 +46,7 @@ export default {
       } else {
         var result = [];
         this.tablelist.map(ele => {
-          if (ele.name.indexOf(keyword) !== -1) {
+          if (ele.rolename.indexOf(keyword) !== -1) {
             result.push(ele)
           }
         });

@@ -1,11 +1,11 @@
 <template>
   <el-dialog id="edit-dialog" :title="title" :visible.sync="visible" :lock-scroll="false" :close-on-click-modal="false" :show-close="false">
     <el-form ref="dataForm" :model="item" :rules="rules" label-width="110px">
-      <el-form-item label="角色名称" prop="name">
-        <el-input v-model="item.name" placeholder="请输入角色名" />
+      <el-form-item label="角色名称" prop="rolename">
+        <el-input v-model="item.rolename" placeholder="请输入角色名" />
       </el-form-item>
-      <el-form-item label="角色描述" prop="describe">
-        <el-input v-model="item.describe" placeholder="请对角色进行描述" />
+      <el-form-item label="角色描述" prop="roleDesc">
+        <el-input v-model="item.roleDesc" placeholder="请对角色进行描述" />
       </el-form-item>
     </el-form>
     <span slot="footer">
@@ -15,7 +15,7 @@
   </el-dialog>
 </template>
 <script>
-import { getFlagRName } from "@/api/role";
+// import { getFlagRName } from "@/api/role";
 export default {
   props: {
     title: {
@@ -24,27 +24,25 @@ export default {
     }
   },
   data() {
-    const validateName = (rule, value, callback) => {
-      if (this.name === value) { // 没有修改名字
-        callback()
-      } else {
-        getFlagRName({ name: value }).then(res => {
-          if (res.data) {
-            callback(new Error('角色名已存在'))
-          } else {
-            callback()
-          }
-        });
-      }
-    }
+    // const validateName = (rule, value, callback) => {
+    //   if (this.name === value) { // 没有修改名字
+    //     callback()
+    //   } else {
+    //     getFlagRName({ name: value }).then(res => {
+    //       if (res.data) {
+    //         callback(new Error('角色名已存在'))
+    //       } else {
+    //         callback()
+    //       }
+    //     });
+    //   }
+    // }
     return {
       item: {},
       visible: false,
-      timeout: null,
-      name: '',
       rules: {
-        name: [{ required: true, trigger: "blur", message: "请输入角色名" },
-          { trigger: "blur", validator: validateName }]
+        rloename: [{ required: true, trigger: "blur", message: "请输入角色名" }],
+        roledesc: [{ required: true, trigger: "blur", message: "可对该角色进行描述" }]
       }
     };
   },
@@ -70,7 +68,7 @@ export default {
           }).then(() => {
             // this.item.name = this.name;
             this.$emit("OnConfirm", this.item);
-            this.cancel('dataForm')
+            this.visible = false
           }).catch(() => { return false });
         } else {
           return false

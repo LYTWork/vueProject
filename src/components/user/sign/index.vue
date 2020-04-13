@@ -13,9 +13,9 @@
           <el-option v-for="(ele,index) of deptlist" :key="index" :label="ele.name" :value="ele.name" />
         </el-select>
         <el-button type="success" icon="el-icon-search" plain @click="getsiginlist(searchForm)">搜索</el-button>
-        <el-button type="danger" icon="el-icon-delete" plain @click="delAllSelection">批量删除</el-button>
         <el-button type="primary" icon="el-icon-plus" plain @click="$refs.addntahldialog.open(null)">新增请假</el-button>
         <el-button v-if="$checkPermission(['管理员','测试'])" type="warning" icon="el-icon-download" plain @click="getExcel">导出EXCEL</el-button>
+        <el-button type="danger" icon="el-icon-delete" plain @click="delAllSelection">批量删除</el-button>
       </div>
       <el-table
         v-loading="loading"
@@ -95,7 +95,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <page-component :total="page.totalSize" :page="page" @pageChange="(item)=>handlePageChange(item)" />
+      <page-component :total="page.totalNum" :page="page" @pageChange="(item)=>handlePageChange(item)" />
       <edit-dialog ref="updateDialog" title="更改状态" @OnConfirm="(item)=>updateOne(item)" />
       <detail-dialog ref="detailDialog" title="详细信息" @OnConfirm="(item)=>updateOne(item)" />
       <add-ntahl-dialog ref="addntahldialog" title="新增气请假" @OnConfirm="(item)=>updateOne(item)" />
@@ -126,7 +126,7 @@ export default {
       page: {
         currentPage: 0,
         pageSize: 0,
-        totalSize: 0,
+        totalNum: 0,
         totalPage: 0
       },
       loading: false,
@@ -185,9 +185,9 @@ export default {
     //     console.log(res)
     //     if (res.dept === 200) {
     //       this.page.currentPage = res.data.currentPage;
-    //       this.page.pageSize = res.data.size;
-    //       this.page.totalPage = res.data.pages;
-    //       this.page.totalSize = res.data.total;
+    //       this.page.pageSize = res.data.totalpageSize;
+    //       this.page.totalPage = res.data.totalPages;
+    //       this.page.totalNum = res.data.total;
     //       this.siginList = res.data.list;
     //       this.loading = false;
     //     }

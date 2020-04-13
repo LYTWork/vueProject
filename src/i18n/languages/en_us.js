@@ -7,7 +7,8 @@ module.exports = {
   },
   header: {
     change: '中文',
-    logout: 'log out'
+    logout: 'log out',
+    login: 'log in'
   },
   button: {
     confirm: 'submit',

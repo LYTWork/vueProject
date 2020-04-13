@@ -3,7 +3,7 @@
     <div class="container">
       <div class="handle-box">
         <el-input v-model="searchForm.username" clearable placeholder="用户名" />
-        <el-button type="success" icon="el-icon-search" plain @click="queryUsers(searchForm)">搜索</el-button>
+        <el-button type="success" icon="el-icon-search" plain @click="onSearch()">搜索</el-button>
         <el-button type="primary" icon="el-icon-plus" plain @click="$refs.addDialog.open(null)">新增用户</el-button>
 
       </div>
@@ -20,10 +20,11 @@
             <span>{{ (page.currentPage - 1) * page.pageSize + scope.$index + 1 }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="用户名" />
-        <el-table-column prop="imageUrl" label="头像">
+        <el-table-column prop="username" label="用户名" />
+        <el-table-column prop="staffId" label="员工工号" />
+        <el-table-column prop="imgurl" label="头像">
           <template slot-scope="avatar">
-            <img :src="avatar.row.imageUrl" min-width="30" height="30">
+            <img :src="avatar.row.imgurl" min-width="30" height="30">
           </template>
         </el-table-column>
         <el-table-column :width="columnStyle(420,350,350)" label="操作">
@@ -38,7 +39,7 @@
               type="text"
               icon="el-icon-delete"
               class="red"
-              @click="delOne(scope.row.id)"
+              @click="delUser(scope.row.userId,scope.row.username)"
             >删除</el-button>
             <el-button
               type="text"
@@ -50,14 +51,14 @@
               type="text"
               icon="el-icon-warning-outline"
               class="gray"
-              @click="resetPass(scope.row.name,scope.row.id)"
+              @click="resetPass(scope.row)"
             >重置密码</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <page-component :total="page.totalSize" :page="page" @pageChange="(item) => handlePageChange(item)" />
-      <edit-dialog ref="addDialog" title="新增用户" @OnConfirm="(item)=>insertOne(item)" />
-      <edit-dialog ref="updateDialog" title="更新用户" @OnConfirm="(item)=>updateOne(item)" />
+      <page-component :total="page.totalNum" :page="page" @pageChange="(item) => handlePageChange(item)" />
+      <edit-dialog ref="addDialog" title="新增用户" @OnConfirm="(item)=>addUser(item)" />
+      <edit-dialog ref="updateDialog" title="更新用户" @OnConfirm="(item)=>modifyUser(item)" />
       <RolesDialog ref="rolesEditDialog" />
     </div>
   </div>
@@ -65,7 +66,7 @@
 
 <script>
 import PageComponent from '@/components/common/Pagenation/index';
-// import { queryUsers, insertOne, updateOne } from '@/api/sysuser'
+import { queryUsers, addUser, modifyUser, delUser } from '@/api/user'
 import EditDialog from './edit-dialog';
 import RolesDialog from './user-role-dialog';
 import { columnStyle } from '@/utils/style'
@@ -81,94 +82,71 @@ export default {
       loading: true,
       searchForm: {}, // 搜索表单数据
       page: {
-        currentPage: 0,
-        pageSize: 0,
-        totalSize: 0,
-        totalPage: 0
-      },
-      mockdata: [
-        {
-          id: 1,
-          imageUrl: "string",
-          name: "admin",
-          password: "9accb83c1e358e1287d785561056ec597a71eff0",
-          roleList: [{ id: 12,
-            name: "管理员"
-          }],
-          timeStamp: null
-        },
-        {
-          id: 2,
-          imageUrl: "string",
-          name: "测试新增",
-          password: "9accb83c1e358e1287d785561056ec597a71eff0",
-          roleList: [{ id: 2,
-            name: "测试"
-          }],
-          timeStamp: null
-        }
-      ]
+        currentPage: 0, // 第几页
+        pageSize: 0, // 每页多少条
+        totalNum: 0,
+        totalPage: 0 // 第几页
+      }
     };
   },
   mounted() {
-    this.queryUsers(null);
+    this.queryUsers({});
   },
   methods: {
     columnStyle,
     // 查询数据
+    onSearch() {
+      const para = {
+        currentPage: 1,
+        pageSize: 10,
+        condition: {
+          username: this.searchForm.username
+        }
+      }
+      this.queryUsers(para)
+    },
     queryUsers(params) {
-      // queryUsers(params).then(res => {
-      //   if (res.code === 200) {
-      //     this.page.currentPage = res.data.currentPage;
-      //     this.page.pageSize = res.data.size;
-      //     this.page.totalPage = res.data.pages;
-      //     this.page.totalSize = res.data.total;
-      //     this.userList = res.data.list;
-      //     this.loading = false;
-      //     console.log(11, res.data.list)
-      //   }
-      // })
-      this.loading = false;
-      this.userList = this.mockdata
+      queryUsers(params).then(res => {
+        console.log(res)
+        this.page.currentPage = res.data.currentPage;
+        this.page.pageSize = res.data.pageSize;
+        this.page.totalPage = res.data.totalPage;
+        this.page.totalNum = res.data.totalNum;
+        console.log(this.page)
+        this.userList = res.data.items;
+        this.loading = false;
+      })
     },
     // 插入数据
-    insertOne(user) {
+    addUser(user) {
       // 初始密码"123456"
+      console.log(user)
       user.password = this.$sha1("123456");
-      // insertOne(user).then(res => {
-      //   if (res.code === 200) {
-      //     this.$message({
-      //       message: "保存成功",
-      //       type: "success"
-      //     });
-      //     this.queryUsers();
-      //   } else {
-      //     this.$message({
-      //       message: "保存失败，原因：" + res.msg,
-      //       type: "danger"
-      //     });
-      //   }
-      // })
+      user.imgurl = '@/assets/img/noimg.jpg'
+      addUser(user).then(res => {
+        this.$message({
+          message: "保存成功",
+          type: "success"
+        });
+        this.queryUsers({})
+      })
     },
     // 修改数据
-    updateOne(user) {
-      // updateOne(user).then(res => {
-      //   if (res.code === 200) {
-      //     this.$message({
-      //       message: "保存成功",
-      //       type: "success"
-      //     });
-      //     this.queryUsers();
-      //   } else {
-      //     this.$message({
-      //       message: "保存失败，原因：" + res.msg,
-      //       type: "danger"
-      //     });
-      //   }
-      // })
+    modifyUser(user) {
+      modifyUser(user).then(res => {
+        this.$message({
+          message: "保存成功",
+          type: "success"
+        });
+        this.queryUsers({});
+      })
     },
     // 删除数据
-    delOne(id) {
+    delUser(Uid, Uname) {
+      const para = {
+        userId: Uid,
+        username: Uname
+      }
       this.$confirm("确认删除吗？", "询问", {
         cancelButtonText: "取消",
         confirmButtonText: "确认",
@@ -176,19 +154,17 @@ export default {
         lockScroll: "false",
         closeOnClickModal: "false"
       }).then(() => {
-        // delOne(id).then(res => {
-        //   if (res.code == 200) {
-        //     this.$message({
-        //       message: "删除成功",
-        //       type: "success"
-        //     })
-        //     this.queryUsers();
-        //   }
-        // })
+        delUser(para).then(res => {
+          this.$message({
+            message: "删除成功",
+            type: "success"
+          })
+          this.queryUsers({});
+        })
       }).catch(() => false)
     },
 
-    resetPass(Uname, Uid) {
+    resetPass(user) {
       // 发送请求
       this.$confirm("确认重置密码为123456吗？", "提示", {
         confirmButtonText: "确认",
@@ -198,21 +174,9 @@ export default {
         closeOnClickModal: "false"
       }).then(() => {
         // 重置密码为123456
-        // const pwd = this.$sha1(Uname + "123456");
-        // resetPass(Uid, pwd).then(res => {
-        //   if (res.code === 200) {
-        //     this.$message({
-        //       message: "重置密码为123456",
-        //       type: "success"
-        //     });
-        //     this.queryUsers();
-        //   } else {
-        //     this.$message({
-        //       message: "保存失败，原因：" + res.msg,
-        //       type: "danger"
-        //     });
-        //   }
-        // })
+        user.password = '123456'
+        console.log(user)
+        this.modifyUser(user)
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -221,7 +185,13 @@ export default {
       });
     },
     handlePageChange(item) {
-      const para = { currentPage: item.currentPage, pageSize: item.pageSize };
+      const para = {
+        currentPage: item.currentPage,
+        pageSize: item.pageSize,
+        condition: {
+          username: this.searchForm.username
+        }
+      }
       this.queryUsers(para);
     }
   }

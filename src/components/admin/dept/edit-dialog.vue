@@ -7,9 +7,6 @@
       <el-form-item label="部门代码" prop="code">
         <el-input v-model="item.code" />
       </el-form-item>
-      <el-form-item label="部门描述" prop="descrip">
-        <el-input v-model="item.descrip" />
-      </el-form-item>
     </el-form>
     <span slot="footer">
       <el-button type="warning" plain @click="cancel('dataForm')">{{ $t("button.cancel") }}</el-button>

@@ -3,8 +3,8 @@ const state = {
   token: getToken(),
   userid: '',
   username: '',
-  usertype: '',
-  imageUrl: '',
+  userpassword: '',
+  imgurl: '',
   roles: [],
   data: {}
 }
@@ -16,8 +16,8 @@ const mutations = {
     state.data = userdata;
     state.userid = userdata.userid;
     state.username = userdata.uname;
-    state.usertype = userdata.utype;
-    state.imageUrl = userdata.imageUrl;
+    state.userpassword = userdata.upass;
+    state.imgurl = userdata.imgurl;
     state.roles = userdata.roles;
   }
 }
@@ -31,8 +31,8 @@ const actions = {
     const data = state.data;
     state.userid = data.userid;
     state.username = data.uname;
-    state.usertype = data.utype;
-    state.imageUrl = data.imageUrl;
+    state.userpassword = data.upass;
+    state.imgurl = data.imgurl;
     state.roles = data.roles;
   },
   // remove Token

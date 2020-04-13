@@ -4,7 +4,7 @@ import store from "../store/index.js"
 import { getToken } from './token.js'
 
 const service = axios.create({
-  baseURL: '',
+  baseURL: 'http://106.13.16.90:8080/api',
   // baseURL: process.env.VUE_APP_BASE_URL,
   withCredentials: false,
   timeout: 5000,
@@ -22,7 +22,7 @@ service.interceptors.request.use(
     var userid = store.getters.userid;
     token = (token === undefined || token === '' || token === null) ? token : getToken();
     if (token !== undefined && token !== null && token !== '') {
-      config.headers['X-TOKEN'] = token
+      config.headers['token'] = token
       config.headers['userId'] = userid
     }
     config.params = {
@@ -39,7 +39,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   res => {
     // res.data.status = Number(res.data.status)
-    if (res.data.code === 200) {
+    if (res.data.code === '1') {
       return res.data;
     } else if (res.data.code === 404) {
       this.$router.push("/404")

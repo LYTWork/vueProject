@@ -13,17 +13,7 @@
         <el-button type="primary" icon="el-icon-plus" plain @click="$refs.addDialog.open(null)">新增员工</el-button>
         <el-button type="danger" icon="el-icon-delete" plain >批量删除</el-button>
         <el-button type="warning" icon="el-icon-download" plain @click="getExcel">导出EXCEL</el-button>
-        <!-- //筛选按钮 -->
-        <el-popover
-          title="列筛选"
-          trigger="click">
-          <el-checkbox-group v-model="checkList" @change="filter">
-            <el-checkbox v-for="(item,index) in tableList" :label="item.label" :key="index">{{ item.value }}</el-checkbox>
-          </el-checkbox-group>
-          <el-button slot="reference" size="small"><i class="el-icon-arrow-down el-icon-menu"/></el-button>
-        </el-popover>
       </div>
-
       <el-table
         v-loading="loading"
         :data="allstaff"
@@ -70,14 +60,14 @@
         <el-table-column label="姓名" prop="name" />
         <el-table-column label="性别" prop="egender" width="50" />
         <el-table-column label="工号" prop="code" />
-        <el-table-column v-if="uncheckList.dept" label="部门" prop="dept" />
-        <el-table-column v-if="uncheckList.position" label="职务" prop="title" width="90" />
-        <el-table-column v-if="uncheckList.birth" label="出生日期" prop="birth" />
-        <el-table-column v-if="uncheckList.emarried" label="婚姻状况" prop="emarried" width="80" />
-        <el-table-column v-if="uncheckList.epolity" label="政治面貌" prop="epolity" width="80" />
-        <el-table-column v-if="uncheckList.eeducation" label="学历" prop="eeducation" width="80" />
-        <el-table-column v-if="uncheckList.enativeName" label="籍贯" prop="enativeName" width="80" />
-        <el-table-column v-if="uncheckList.estatus" label="人员状态" prop="estatus" width="80" />
+        <el-table-column label="部门" prop="dept" />
+        <el-table-column label="职务" prop="title" width="90" />
+        <el-table-column label="出生日期" prop="birthday" />
+        <el-table-column label="婚姻状况" prop="emarried" width="80" />
+        <el-table-column label="政治面貌" prop="epolity" width="80" />
+        <el-table-column label="学历" prop="eeducation" width="80" />
+        <el-table-column label="籍贯" prop="enativeName" width="80" />
+        <el-table-column label="人员状态" prop="estatus" width="80" />
         <el-table-column
           width="140"
           prop="control"
@@ -99,7 +89,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <page-component :total="page.totalSize" :page="page" @pageChange="(item)=>handlePageChange(item)" />
+      <page-component :total="page.totalNum" :page="page" @pageChange="(item)=>handlePageChange(item)" />
       <edit-dialog ref="addDialog" title="新增员工" @OnConfirm="(item)=>addOne(item)" />
       <edit-dialog ref="updateDialog" title="编辑信息" @OnConfirm="(item)=>updateOne(item)" />
 
@@ -132,7 +122,7 @@ export default {
       page: {
         currentPage: 0,
         pageSize: 0,
-        totalSize: 0,
+        totalNum: 0,
         totalPage: 0
       },
       loading: false,
@@ -144,78 +134,23 @@ export default {
         { id: 5, name: '张三', code: '005', dept: '部门1', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 },
         { id: 6, name: '张三', code: '006', dept: '部门1', gender: 0, title: '前端工程师', married: 0, polity: 0, education: 0, status: 0 }
       ],
-      multipleSelection: [], // 多选
-      checkList: [], // 筛选列选中的数据列表
-      uncheckList: {}, // 控制筛选列显示隐藏
-      tableList: [
-        { label: 'dept',
-          value: '部门'
-        }, {
-          label: 'position',
-          value: '职位'
-        }, {
-          label: 'birth',
-          value: '出生日期'
-        }, {
-          label: 'emarried',
-          value: '婚姻状况'
-        }, {
-          label: 'epolity',
-          value: '政治面貌'
-        }, {
-          label: 'eeducation',
-          value: '学历'
-        }, {
-          label: 'enativeName',
-          value: '籍贯'
-        }, {
-          label: 'estatus',
-          value: '员工状态' }]
+      multipleSelection: [] // 多选
     }
   },
   mounted() {
     this.querydept();
     this.queryAll(null);
-    this.filter()
   },
   methods: {
-    // 控制隐藏显示的函数
-    filter(val) {
-      // 初始化数据
-      if (val === undefined) {
-        console.log('fif1')
-        this.tableList.forEach((table) => {
-          this.checkList.push(table.label);
-          this.uncheckList[table.label] = true;
-        })
-      } else {
-        console.log('fif2')
-        // 数据准备
-        for (var item in this.uncheckList) {
-          this.uncheckList[item] = false;
-        }
-        console.log(this.uncheckList)
-        // 数据处理
-        this.checkList.forEach((name) => {
-          console.log(name)
-          if (name in this.uncheckList) {
-            console.log('jh')
-            this.uncheckList[name] = true;
-          }
-        })
-      }
-
-      this.$forceUpdate();
-    },
     // 获取所有数据
     queryAll(param) {
       // querystaff(param).then(res => {
       //   console.log('员工信息', res);
       //   if (res.code == '200') {
       //     this.page.currentPage = res.data.currentPage;
-      //     this.page.pageSize = res.data.size;
-      //     this.page.totalPage = res.data.pages;
-      //     this.page.totalSize = res.data.total;
+      //     this.page.pageSize = res.data.totalpageSize;
+      //     this.page.totalPage = res.data.totalPages;
+      //     this.page.totalNum = res.data.total;
       //     this.allstaff = res.data.list;
       //     this.loading = false
       //   }
@@ -408,9 +343,6 @@ export default {
 }
 </script>
 <style lang="scss">
-.el-checkbox, .el-checkbox__input {
-    display: flex;
-}
 .subtitle-button{
   .el-select{
     width:6.3rem!important;

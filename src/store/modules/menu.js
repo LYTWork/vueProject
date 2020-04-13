@@ -1,13 +1,9 @@
 const state = {
-  menuType: '',
-  typeList: '',
   menuList: ''
 }
 
 const mutations = {
   MENU_MUTATION: (state, menudata) => {
-    state.menuType = menudata.menuType;
-    state.typeList = menudata.typeList;
     state.menuList = menudata.menuList
   }
 }
